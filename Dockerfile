@@ -64,12 +64,12 @@ RUN apt update && apt upgrade -y && \
 # Pypi package Repo upgrade
 RUN pip3 install --upgrade pip setuptools
 
-# Copy Python Requirements to /root/skyleebot
-RUN git clone https://github.com/starry69/skyleebot /root/skyleebot
-WORKDIR /root/skyleebot
+# Copy Python Requirements to /root/elfinabot
+RUN git clone https://github.com/TomyPrs/elfinafara.git /root/elfina
+WORKDIR /root/elfina
 
-#Copy config file to /root/skyleebot/skylee
-COPY ./skylee/sample_config.py ./skylee/config.py* /root/skyleebot/skylee/
+#Copy config file to /root/elfinabot/elfina
+COPY ./elfina/sample_config.py ./elfina/config.py* /root/elfinabot/elfina/
 
 ENV PATH="/home/bot/bin:$PATH"
 
@@ -77,4 +77,4 @@ ENV PATH="/home/bot/bin:$PATH"
 RUN pip3 install -U -r requirements.txt
 
 # Starting Worker
-CMD ["python3","-m","skylee"]
+CMD ["python3","-m","elfina"]
