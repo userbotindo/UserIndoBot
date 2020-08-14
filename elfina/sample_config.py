@@ -54,6 +54,7 @@ class Config(object):
     API_OPENWEATHER = None  # OpenWeather API
     SPAMWATCH_API = None  # Your SpamWatch token
     WALL_API = None
+    LASTFM_API_KEY = None
 
 class Production(Config):
     LOGGER = False
