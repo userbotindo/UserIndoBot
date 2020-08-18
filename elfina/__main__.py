@@ -37,7 +37,14 @@ Hey there! my name is *{dispatcher.bot.first_name}*. If you have any questions o
 I'm here to make your group management fun and easy!
 i have lots of handy features, such as flood control, a warning system, a note keeping system, and even replies on predetermined filters.
 
-Any issues or need help related to me? join our group [elfina support chat](https://t.me/userbotindo).
+Any issues or need help related to me? join our group [UserbotindoBot support chat](https://t.me/userbotindo).
+
+==========================
+-> This Bot Fully Open Source [UserbotindoBot's Repo](https://github.com/MoveAngel/UserbotindoBot)
+-> Report Related issue  [UserBot Indo Support](https://t.me/userbotindo)
+==========================
+
+`Maintained by` @MoveAngel & @tomyprs25
 
 Wanna Add me to your Group? Just click the button below!
 """
@@ -45,9 +52,9 @@ Wanna Add me to your Group? Just click the button below!
 buttons = [
     [
         InlineKeyboardButton(
-            text="Add to Group 👥", url="t.me/elfinafarabot?startgroup=true"
+            text="Add to Group 👥", url="t.me/userbotindobot?startgroup=true"
         ),
-        InlineKeyboardButton(text="Updates 📢", url="https://t.me/elfinaupdates"),
+        InlineKeyboardButton(text="Gban Logs 🚫", url="https://t.me/UserIndoBotLog"),
     ]
 ]
 
@@ -165,7 +172,7 @@ def start(update, context):
 
         else:
             update.effective_message.reply_photo(
-                "https://telegra.ph/file/c697d9855c9a58317d374.jpg",
+                "https://i.ibb.co/zJdLsyg/Userindobot.png",
                 PM_START_TEXT,
                 reply_markup=InlineKeyboardMarkup(buttons),
                 parse_mode=ParseMode.MARKDOWN,
