@@ -2,7 +2,7 @@
 
 import requests
 
-from telegram import Bot, Update, Message, Chat, ParseMode
+from telegram import ParseMode
 from telegram.ext import run_async, CommandHandler
 
 from elfina import dispatcher, LASTFM_API_KEY
