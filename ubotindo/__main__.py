@@ -37,14 +37,10 @@ Hey there! my name is *{dispatcher.bot.first_name}*. If you have any questions o
 I'm here to make your group management fun and easy!
 i have lots of handy features, such as flood control, a warning system, a note keeping system, and even replies on predetermined filters.
 
-Any issues or need help related to me? join our group [UserbotindoBot support chat](https://t.me/userbotindo).
-
 ==========================
--> This Bot Fully Open Source [UserbotindoBot's Repo](https://github.com/MoveAngel/UserbotindoBot)
--> Report Related issue  [UserBot Indo Support](https://t.me/userbotindo)
+-> `Maintained by` @MoveAngel & @tomyprs25 .
+-> Any issues or need help related to me? join our group [UserBot Indo Support](https://t.me/userbotindo)
 ==========================
-
-`Maintained by` @MoveAngel & @tomyprs25
 
 Wanna Add me to your Group? Just click the button below!
 """
