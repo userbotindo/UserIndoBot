@@ -1,4 +1,5 @@
 from elfina import LOAD, NO_LOAD, LOGGER
+import sys
 
 
 def __list_all_modules():
@@ -21,7 +22,7 @@ def __list_all_modules():
                 for mod in to_load
             ):
                 LOGGER.error("Invalid loadorder names. Quitting.")
-                quit(1)
+                sys.exit(1)
 
         else:
             to_load = all_modules
