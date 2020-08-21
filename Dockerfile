@@ -64,12 +64,12 @@ RUN apt update && apt upgrade -y && \
 # Pypi package Repo upgrade
 RUN pip3 install --upgrade pip setuptools
 
-# Copy Python Requirements to /root/elfinabot
-RUN git clone https://github.com/TomyPrs/elfinafara.git /root/elfina
-WORKDIR /root/elfina
+# Copy Python Requirements to /root/ubotindo
+RUN git clone -b elfina https://github.com/TomyPrs/UserindoBot.git /root/elfina
+WORKDIR /root/ubotindo
 
-#Copy config file to /root/elfinabot/elfina
-COPY ./elfina/sample_config.py ./elfina/config.py* /root/elfinabot/elfina/
+#Copy config file to /root/ubotindo/ubot
+COPY ./ubotindo/sample_config.py ./ubotindo/config.py* /root/ubotindo/ubot/
 
 ENV PATH="/home/bot/bin:$PATH"
 
@@ -77,4 +77,4 @@ ENV PATH="/home/bot/bin:$PATH"
 RUN pip3 install -U -r requirements.txt
 
 # Starting Worker
-CMD ["python3","-m","elfina"]
+CMD ["python3","-m","ubotindo"]

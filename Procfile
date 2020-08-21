@@ -1,1 +1,1 @@
-web: python3 -m elfina
+web: python3 -m ubotindo
