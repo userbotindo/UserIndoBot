@@ -1,9 +1,4 @@
-# SKYLEEBOT
-
-> **:warning: Project unmaintained!** Developers and maintainers of this bot doesn't have much free time to maintain the project. You have the right
-> to fork the code, but no technical support will be given if problems arise on your fork.
->
-> See also from the updates channel: <https://t.me/skyleebot/61>
+# USERBOTINDO
 
 [![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
 [![ForTheBadge built-with-love](http://ForTheBadge.com/images/badges/built-with-love.svg)](https://GitHub.com/Naereen/)
@@ -13,19 +8,21 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 
-![logo](https://telegra.ph/file/0dd4a92bb893c1aaa6cee.jpg)
+![logo](https://i.ibb.co/zJdLsyg/Userindobot.png)
 
 A modular telegram Python bot running on python3 with an sqlalchemy database.
 
 Originally a simple group management bot with multiple admin features, it has evolved, becoming extremely modular and 
 simple to use. Note that this project uses well-known Telegram-bot of it's time @BanhammerMarie_bot from Paul Larson as it's base.
 
-Can be found on telegram as [Skylee](https://t.me/skylee_bot).
+Can be found on telegram as [UserbotIndo](https://t.me/userbotindobot).
 
-Join the [news channel](https://t.me/skyleebot) if you just want to stay in the loop about new features or
+Join the [Group Support](https://t.me/userbotindo) if you just want to stay in the loop about new features or
 announcements.
 
 ## Credits
+
+Skyleebot For Awesome Bot , And This Base in They
 
 Skittbot for Stickers module and memes in extras module.
 
@@ -47,7 +44,7 @@ Any other missing Credits can be seen in commits!
 
 Once you've setup your database and your configuration (see below) is complete, simply run:
 
-`python3 -m skylee`
+`python3 -m ubotindo`
 
 
 ## Setting up the bot (Read this before trying to use!)
@@ -69,12 +66,12 @@ defaults set in the sample_config, hence making it easier to upgrade.
 
 An example `config.py` file could be:
 ```
-from skylee.sample_config import Config
+from ubotindo.sample_config import Config
 
 
 class Development(Config):
-    OWNER_ID =  894380120 # my telegram ID
-    OWNER_USERNAME = "starryboi"  # my telegram username
+    OWNER_ID = 1227561036 # my telegram ID
+    OWNER_USERNAME = "tomyprs25"  # my telegram username
     API_KEY = "your bot api key"  # my api key, as provided by the botfather
     SQLALCHEMY_DATABASE_URI = 'postgresql://username:password@localhost:5432/database'  # sample db credentials
     MESSAGE_DUMP = '-1234567890' # some group chat that your bot is a member of
@@ -155,7 +152,7 @@ All that is needed is that your .py file be in the modules folder.
 
 To add commands, make sure to import the dispatcher via
 
-`from skylee import dispatcher`.
+`from ubotindo import dispatcher`.
 
 You can then add commands using the usual
 
