@@ -50,7 +50,7 @@ buttons = [
         InlineKeyboardButton(
             text="Add to Group 👥", url="t.me/userbotindobot?startgroup=true"
         ),
-        InlineKeyboardButton(text="Gban Logs 🚫", url="https://t.me/UserIndoBotLog"),
+        InlineKeyboardButton(text="Global Logs 🚫", url="https://t.me/UserIndoBotLog"),
     ]
 ]
 
