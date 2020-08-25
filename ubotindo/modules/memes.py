@@ -466,7 +466,7 @@ __mod_name__ = "Memes"
 
 SHRUG_HANDLER = DisableAbleCommandHandler("shrug", shrug)
 DECIDE_HANDLER = DisableAbleMessageHandler(
-    Filters.regex(r"(?i)^ubotindo\?"), decide, friendly="decide"
+    Filters.regex(r"(?i)(ubotindo)"), decide, friendly="decide"
 )
 SNIPE_HANDLER = CommandHandler(
     "snipe", snipe, pass_args=True, filters=CustomFilters.sudo_filter
