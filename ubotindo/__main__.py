@@ -38,7 +38,7 @@ I'm here to make your group management fun and easy!
 i have lots of handy features, such as flood control, a warning system, a note keeping system, and even replies on predetermined filters.
 
 ==========================
--> `Maintained by` @MoveAngel & @tomyprs25 .
+-> `Maintained by` @MoveAngel & [UserbotIndo Group](https://t.me/userbotindo) .
 -> Any issues or need help related to me? join our group [UserBot Indo Support](https://t.me/userbotindo)
 ==========================
 
