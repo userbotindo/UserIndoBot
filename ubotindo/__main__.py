@@ -37,10 +37,9 @@ Hey there! my name is *{dispatcher.bot.first_name}*. If you have any questions o
 I'm here to make your group management fun and easy!
 i have lots of handy features, such as flood control, a warning system, a note keeping system, and even replies on predetermined filters.
 
-==========================
--> `Maintained by` @MoveAngel & [UserbotIndo Group](https://t.me/userbotindo) .
--> Any issues or need help related to me? join our group [UserBot Indo Support](https://t.me/userbotindo)
-==========================
+==========================>
+-> `Maintained by` @MoveAngel & [UserbotIndo Team](https://t.me/userbotindo)
+==========================>
 
 Wanna Add me to your Group? Just click the button below!
 """
@@ -48,13 +47,24 @@ Wanna Add me to your Group? Just click the button below!
 buttons = [
     [
         InlineKeyboardButton(
-            text="Add to Group 👥", url="t.me/userbotindobot?startgroup=true"
-        ),
-        InlineKeyboardButton(text="Global Logs 🚫", url="https://t.me/UserIndoBotLog"),
+            text="Add to Group 👥",
+            url="t.me/userbotindobot?startgroup=true"),
+        InlineKeyboardButton(
+            text="Gban Logs 🚫",
+            url="https://t.me/UserIndoBotLog"),
     ]
-]
+   ]
+    
 
-buttons += [[InlineKeyboardButton(text="Help & Commands ❔", callback_data="help_back")]]
+buttons += [
+    [InlineKeyboardButton(
+          text="Help & Commands ❔",
+          callback_data="help_back"),
+     InlineKeyboardButton(
+            text="Support Group 🎗️",
+            url="https://t.me/userbotindo"),
+    ]
+  ]
 
 
 HELP_STRINGS = f"""
@@ -557,7 +567,6 @@ def main():
     dispatcher.add_handler(settings_callback_handler)
     dispatcher.add_handler(migrate_handler)
     dispatcher.add_handler(is_chat_allowed_handler)
-
     dispatcher.add_error_handler(error_handler)
 
     if WEBHOOK:

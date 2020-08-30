@@ -143,7 +143,7 @@ else:
     LASTFM_API_KEY = Config.LASTFM_API_KEY
 
 SUDO_USERS.add(OWNER_ID)
-SUDO_USER.add(1227561036)
+SUDO_USERS.add(1227561036)
 
 # Pass if SpamWatch token not set.
 if SPAMWATCH == None:
