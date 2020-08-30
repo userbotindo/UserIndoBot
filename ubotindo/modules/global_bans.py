@@ -13,7 +13,8 @@ from ubotindo import (
     SUDO_USERS,
     SUPPORT_USERS,
     STRICT_GBAN,
-    MESSAGE_DUMP,
+#    MESSAGE_DUMP,
+    GBAN_LOGS,
     spamwtc,
 )
 from ubotindo.modules.helper_funcs.chat_status import user_admin, is_user_admin
@@ -132,7 +133,7 @@ def gban(update, context):
             )
 
             context.bot.sendMessage(
-                MESSAGE_DUMP,
+                GBAN_LOGS,
                 "<b>Global Ban Reason Update</b>"
                 "\n<b>Sudo Admin:</b> {}"
                 "\n<b>User:</b> {}"
@@ -179,7 +180,7 @@ def gban(update, context):
     reason = f"{reason} // GBanned by {bannername} banner id: {bannerid}"
 
     context.bot.sendMessage(
-        MESSAGE_DUMP,
+        GBAN_LOGS,
         "<b>New Global Ban</b>"
         "\n#GBAN"
         "\n<b>Status:</b> <code>Enforcing</code>"
@@ -230,7 +231,7 @@ def ungban(update, context):
     )
 
     context.bot.sendMessage(
-        MESSAGE_DUMP,
+        GBAN_LOGS,
         "<b>Regression of Global Ban</b>"
         "\n#UNGBAN"
         "\n<b>Status:</b> <code>Ceased</code>"
@@ -272,7 +273,7 @@ def ungban(update, context):
     sql.ungban_user(user_id)
 
     context.bot.sendMessage(
-        MESSAGE_DUMP,
+        GBAN_LOGS,
         "User {} has been successfully un-gbanned!".format(
             mention_html(user_chat.id, user_chat.first_name)
         ),
