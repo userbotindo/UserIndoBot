@@ -1,1 +1,1 @@
-web: python3 -m ubotindo
+worker: python3 -m ubotindo
