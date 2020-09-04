@@ -13,7 +13,7 @@ from ubotindo import (
     SUDO_USERS,
     SUPPORT_USERS,
     STRICT_GBAN,
-#    MESSAGE_DUMP,
+    #    MESSAGE_DUMP,
     GBAN_LOGS,
     spamwtc,
 )

@@ -93,7 +93,7 @@ else:
         OWNER_ID = int(Config.OWNER_ID)
     except ValueError:
         raise Exception("Your OWNER_ID variable is not a valid integer.")
-        
+
     OWNER_USERNAME = Config.OWNER_USERNAME
     MESSAGE_DUMP = Config.MESSAGE_DUMP
     GBAN_LOGS = Config.GBAN_LOGS

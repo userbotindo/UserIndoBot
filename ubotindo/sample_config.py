@@ -57,6 +57,7 @@ class Config(object):
     WALL_API = None
     LASTFM_API_KEY = None
 
+
 class Production(Config):
     LOGGER = False
 
