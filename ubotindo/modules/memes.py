@@ -1,5 +1,6 @@
 import random, re
 import requests as r
+import time
 
 from telegram import ParseMode, TelegramError, MAX_MESSAGE_LENGTH
 from telegram.ext import Filters, CommandHandler, run_async
@@ -108,6 +109,15 @@ def punch(update, context):
     repl = temp.format(user1=user1, user2=user2, item=item, punches=punch)
 
     reply_text(repl, parse_mode=ParseMode.MARKDOWN)
+    
+    
+@run_async
+@typing_action
+def police(update, context):
+    message = update.effective_message.reply_text('Wuanjayy...')
+    for i in fun.POLICE:
+        message.edit_text(i)
+        time.sleep(0.5)
 
 
 @run_async
@@ -472,6 +482,7 @@ SNIPE_HANDLER = CommandHandler(
     "snipe", snipe, pass_args=True, filters=CustomFilters.sudo_filter
 )
 ABUSE_HANDLER = DisableAbleCommandHandler("abuse", abuse)
+POLICE_HANDLER = DisableAbleCommandHandler("police", police)
 RUNS_HANDLER = DisableAbleCommandHandler("runs", runs)
 SLAP_HANDLER = DisableAbleCommandHandler("slap", slap, pass_args=True)
 PUNCH_HANDLER = DisableAbleCommandHandler("punch", punch, pass_args=True)
@@ -496,7 +507,7 @@ GDNIGHT_HANDLER = DisableAbleMessageHandler(
     Filters.regex(r"(?i)(goodnight)"), goodnight, friendly="goodnight"
 )
 
-
+dispatcher.add_handler(POLICE_HANDLER)
 dispatcher.add_handler(SHRUG_HANDLER)
 dispatcher.add_handler(DECIDE_HANDLER)
 dispatcher.add_handler(ABUSE_HANDLER)
