@@ -25,4 +25,3 @@ bleach
 markdown2
 alphabet_detector
 tswift
-coffeehouse
