@@ -1423,12 +1423,14 @@ def fed_ban_list(update, context):
             backups = "id,firstname,lastname,username,reason\n"
             for users in getfban:
                 getuserinfo = sql.get_all_fban_users_target(fed_id, users)
-                backups += "{user_id},{first_name},{last_name},{user_name},{reason}".format(
-                    user_id=users,
-                    first_name=getuserinfo["first_name"],
-                    last_name=getuserinfo["last_name"],
-                    user_name=getuserinfo["user_name"],
-                    reason=getuserinfo["reason"],
+                backups += (
+                    "{user_id},{first_name},{last_name},{user_name},{reason}".format(
+                        user_id=users,
+                        first_name=getuserinfo["first_name"],
+                        last_name=getuserinfo["last_name"],
+                        user_name=getuserinfo["user_name"],
+                        reason=getuserinfo["reason"],
+                    )
                 )
                 backups += "\n"
             with BytesIO(str.encode(backups)) as output:
@@ -2289,12 +2291,16 @@ def __user_info__(user_id, chat_id):
         infoname = info["fname"]
 
         if int(info["owner"]) == user_id:
-            text = "This user is the owner of the current Federation: <b>{}</b>.".format(
-                infoname
+            text = (
+                "This user is the owner of the current Federation: <b>{}</b>.".format(
+                    infoname
+                )
             )
         elif is_user_fed_admin(fed_id, user_id):
-            text = "This user is the admin of the current Federation: <b>{}</b>.".format(
-                infoname
+            text = (
+                "This user is the admin of the current Federation: <b>{}</b>.".format(
+                    infoname
+                )
             )
 
         elif fban:

@@ -11,7 +11,10 @@ from ubotindo.modules.helper_funcs.extraction import extract_user
 from ubotindo.modules.helper_funcs.filters import CustomFilters
 from ubotindo.modules.helper_funcs.alternate import typing_action
 from ubotindo import dispatcher, SUDO_USERS, SUPPORT_USERS, LOGGER
-from ubotindo.modules.disable import DisableAbleCommandHandler, DisableAbleMessageHandler
+from ubotindo.modules.disable import (
+    DisableAbleCommandHandler,
+    DisableAbleMessageHandler,
+)
 
 import ubotindo.modules.helper_funcs.fun_strings as fun
 
@@ -109,12 +112,12 @@ def punch(update, context):
     repl = temp.format(user1=user1, user2=user2, item=item, punches=punch)
 
     reply_text(repl, parse_mode=ParseMode.MARKDOWN)
-    
-    
+
+
 @run_async
 @typing_action
 def police(update, context):
-    message = update.effective_message.reply_text('Wuanjayy...')
+    message = update.effective_message.reply_text("Wuanjayy...")
     for i in fun.POLICE:
         message.edit_text(i)
         time.sleep(0.5)
@@ -439,7 +442,6 @@ def goodmorning(update, context):
     message = update.effective_message
     reply = random.choice(fun.GDMORNING)
     message.reply_text(reply, parse_mode=ParseMode.MARKDOWN)
-
 
 
 __help__ = """

@@ -47,24 +47,19 @@ Wanna Add me to your Group? Just click the button below!
 buttons = [
     [
         InlineKeyboardButton(
-            text="Add to Group 👥",
-            url="t.me/userbotindobot?startgroup=true"),
-        InlineKeyboardButton(
-            text="Gban Logs 🚫",
-            url="https://t.me/UserIndoBotLog"),
+            text="Add to Group 👥", url="t.me/userbotindobot?startgroup=true"
+        ),
+        InlineKeyboardButton(text="Gban Logs 🚫", url="https://t.me/UserIndoBotLog"),
     ]
-   ]
-    
+]
+
 
 buttons += [
-    [InlineKeyboardButton(
-          text="Help & Commands ❔",
-          callback_data="help_back"),
-     InlineKeyboardButton(
-            text="Support Group 🎗️",
-            url="https://t.me/userbotindo"),
+    [
+        InlineKeyboardButton(text="Help & Commands ❔", callback_data="help_back"),
+        InlineKeyboardButton(text="Support Group 🎗️", url="https://t.me/userbotindo"),
     ]
-  ]
+]
 
 
 HELP_STRINGS = f"""

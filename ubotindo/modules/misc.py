@@ -141,7 +141,7 @@ def info(update, context):
         else:
             pass
     except:
-        pass # don't crash if api is down somehow...
+        pass  # don't crash if api is down somehow...
 
     if user.id == OWNER_ID:
         text += "\n\nAye this guy is my owner.\nI would never do anything against him!"
@@ -343,11 +343,12 @@ def ud(update, context):
 @typing_action
 def src(update, context):
     update.effective_message.reply_text(
-        "Hey there! You can find what makes me click [here](www.github.com/MoveAngel/UserindBot.git).",        parse_mode=ParseMode.MARKDOWN,
+        "Hey there! You can find what makes me click [here](www.github.com/MoveAngel/UserindBot.git).",
+        parse_mode=ParseMode.MARKDOWN,
         disable_web_page_preview=True,
     )
 
-    
+
 @run_async
 def lyrics(update, context):
     msg = update.effective_message
@@ -367,14 +368,16 @@ def lyrics(update, context):
         else:
             reply = "Song not found!"
         if len(reply) > 4090:
-            with open("lyrics.txt", 'w') as f:
+            with open("lyrics.txt", "w") as f:
                 f.write(f"{reply}\n\n\nOwO UwU OmO")
-            with open("lyrics.txt", 'rb') as f:
-                msg.reply_document(document=f,
-                caption="Message length exceeded max limit! Sending as a text file.")
+            with open("lyrics.txt", "rb") as f:
+                msg.reply_document(
+                    document=f,
+                    caption="Message length exceeded max limit! Sending as a text file.",
+                )
         else:
             msg.reply_text(reply)
-            
+
 
 @run_async
 @send_action(ChatAction.UPLOAD_PHOTO)
