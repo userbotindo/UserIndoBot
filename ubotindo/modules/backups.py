@@ -1,4 +1,6 @@
-import json, time, os
+import json
+import time
+import os
 from io import BytesIO
 
 from telegram import ParseMode, Message
@@ -71,7 +73,7 @@ def import_data(update, context):
 
         # Check if backup is this chat
         try:
-            if data.get(str(chat.id)) == None:
+            if data.get(str(chat.id)) is None:
                 if conn:
                     text = "Backup comes from another chat, I can't return another chat to chat *{}*".format(
                         chat_name
@@ -345,8 +347,8 @@ def export_data(update, context):
         pass
     context.bot.sendDocument(
         current_chat_id,
-        document=open("UserIndo-Bot{}.backup".format(chat_id), "rb"),
-        caption="*Successfully imported backup:*\nChat: `{}`\nChat ID: `{}`\nOn: `{}`\n\nNote: This `Userindobot-Backup` is specially made for notes.".format(
+        document=open("Userindo-Bot{}.backup".format(chat_id), "rb"),
+        caption="*Successfully backup:*\nChat: `{}`\nChat ID: `{}`\nOn: `{}`\n\nNote: This `Userindobot-Backup` is specially made for notes.".format(
             chat.title, chat_id, tgl
         ),
         timeout=360,
@@ -359,7 +361,7 @@ def export_data(update, context):
 # Temporary data
 def put_chat(chat_id, value, chat_data):
     # print(chat_data)
-    if value == False:
+    if not value:
         status = False
     else:
         status = True
