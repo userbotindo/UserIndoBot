@@ -3,7 +3,6 @@ import re
 from typing import Optional, List
 
 from telegram import Message, Chat, User
-from telegram.error import BadRequest
 from telegram import ParseMode, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import CommandHandler, Filters, MessageHandler, CallbackQueryHandler
 from telegram.ext.dispatcher import run_async, DispatcherHandlerStop
@@ -48,19 +47,24 @@ Wanna Add me to your Group? Just click the button below!
 buttons = [
     [
         InlineKeyboardButton(
-            text="Add to Group 👥", url="t.me/userbotindobot?startgroup=true"
-        ),
-        InlineKeyboardButton(text="Gban Logs 🚫", url="https://t.me/UserIndoBotLog"),
+            text="Add to Group 👥",
+            url="t.me/userbotindobot?startgroup=true"),
+        InlineKeyboardButton(
+            text="Gban Logs 🚫",
+            url="https://t.me/UserIndoBotLog"),
     ]
-]
-
+   ]
+    
 
 buttons += [
-    [
-        InlineKeyboardButton(text="Help & Commands ❔", url="https://t.me/{}?start=help".format(context.bot.username)),
-        InlineKeyboardButton(text="Support Group 🎗️", url="https://t.me/userbotindo"),
+    [InlineKeyboardButton(
+          text="Help & Commands ❔",
+          callback_data="help_back"),
+     InlineKeyboardButton(
+            text="Support Group 🎗️",
+            url="https://t.me/userbotindo"),
     ]
-]
+  ]
 
 
 HELP_STRINGS = f"""
@@ -231,7 +235,7 @@ def help_button(update, context):
                 )
                 + HELPABLE[module].__help__
             )
-            query.message.edit_text(
+            query.message.reply_text(
                 text=text,
                 parse_mode=ParseMode.MARKDOWN,
                 reply_markup=InlineKeyboardMarkup(
@@ -241,8 +245,8 @@ def help_button(update, context):
 
         elif prev_match:
             curr_page = int(prev_match.group(1))
-            query.message.edit_text(
-                text=HELP_STRINGS,
+            query.message.reply_text(
+                HELP_STRINGS,
                 parse_mode=ParseMode.MARKDOWN,
                 reply_markup=InlineKeyboardMarkup(
                     paginate_modules(curr_page - 1, HELPABLE, "help")
@@ -251,8 +255,8 @@ def help_button(update, context):
 
         elif next_match:
             next_page = int(next_match.group(1))
-            query.message.edit_text(
-                text=HELP_STRINGS,
+            query.message.reply_text(
+                HELP_STRINGS,
                 parse_mode=ParseMode.MARKDOWN,
                 reply_markup=InlineKeyboardMarkup(
                     paginate_modules(next_page + 1, HELPABLE, "help")
@@ -260,7 +264,7 @@ def help_button(update, context):
             )
 
         elif back_match:
-            query.message.edit_text(
+            query.message.reply_text(
                 text=HELP_STRINGS,
                 parse_mode=ParseMode.MARKDOWN,
                 reply_markup=InlineKeyboardMarkup(
@@ -269,11 +273,18 @@ def help_button(update, context):
             )
 
         # ensure no spinny white circle
-        bot.answer_callback_query(query.id)
-    # query.message.delete()
-
-    except BadRequest:
-        pass
+        query.message.delete()
+        context.bot.answer_callback_query(query.id)
+    except Exception as excp:
+        if excp.message == "Message is not modified":
+            pass
+        elif excp.message == "Query_id_invalid":
+            pass
+        elif excp.message == "Message can't be deleted":
+            pass
+        else:
+            query.message.edit_text(excp.message)
+            LOGGER.exception("Exception in help buttons. %s", str(query.data))
 
 
 @run_async
