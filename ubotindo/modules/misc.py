@@ -136,11 +136,12 @@ def info(update, context):
         sw = spamwtc.get_ban(int(user.id))
         if sw:
             text += "\n\n<b>This person is banned in Spamwatch!</b>"
-            text += f"\nResason: <pre>{sw.reason}</pre>"
+            text += f"\nReason: <pre>{sw.reason}</pre>"
+            text += "\nAppeal at @SpamWatchSupport"
         else:
             pass
     except:
-        pass  # Don't break on exceptions like if api is down?
+        pass # don't crash if api is down somehow...
 
     if user.id == OWNER_ID:
         text += "\n\nAye this guy is my owner.\nI would never do anything against him!"
