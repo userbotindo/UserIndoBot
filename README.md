@@ -7,6 +7,7 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/1e855e9f1cad4cfca477c90a26f92280)](https://www.codacy.com/manual/TomyPrs/UserbotindoBot?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=TomyPrs/UserbotindoBot&amp;utm_campaign=Badge_Grade)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
+[![DeepSource](https://static.deepsource.io/deepsource-badge-light-mini.svg)](https://deepsource.io/gh/TomyPrs/UserbotindoBot/?ref=repository-badge)
 
 ![logo](https://i.ibb.co/zJdLsyg/Userindobot.png)
 
