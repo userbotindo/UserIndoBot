@@ -74,7 +74,7 @@ def slap(update, context):
 @typing_action
 def punch(update, context):
     args = context.args
-    msg = update.effective_message  # type: Optional[Message]
+    msg = update.effective_message
 
     # reply to correct message
     reply_text = (
@@ -127,7 +127,7 @@ def police(update, context):
 @typing_action
 def hug(update, context):
     args = context.args
-    msg = update.effective_message  # type: Optional[Message]
+    msg = update.effective_message
 
     # reply to correct message
     reply_text = (

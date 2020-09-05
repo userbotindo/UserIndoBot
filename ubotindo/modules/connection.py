@@ -279,13 +279,13 @@ def connected(bot, update, chat, user_id, need_admin=True):
             (isadmin)
             or (isallow and ismember)
             or (user.id in SUDO_USERS)
-            or (user.id in DEV_USERS)
+            # or (user.id in DEV_USERS)
         ):
             if need_admin == True:
                 if (
                     getstatusadmin.status in ("administrator", "creator")
                     or user_id in SUDO_USERS
-                    or user.id in DEV_USERS
+                    # or user.id in DEV_USERS
                 ):
                     return conn_id
                 else:

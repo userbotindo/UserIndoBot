@@ -354,8 +354,8 @@ def unlock(update, context) -> str:
 @run_async
 @user_not_admin
 def del_lockables(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    message = update.effective_message  # type: Optional[Message]
+    chat = update.effective_chat
+    message = update.effective_message
 
     for lockable, filter in LOCK_TYPES.items():
         if lockable == "rtl":
@@ -493,7 +493,7 @@ def build_lock_message(chat_id):
 @user_admin
 @typing_action
 def list_locks(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
+    chat = update.effective_chat
     user = update.effective_user
 
     # Connection check

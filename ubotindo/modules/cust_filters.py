@@ -43,7 +43,7 @@ ENUM_FUNC_MAP = {
     sql.Types.AUDIO.value: dispatcher.bot.send_audio,
     sql.Types.VOICE.value: dispatcher.bot.send_voice,
     sql.Types.VIDEO.value: dispatcher.bot.send_video,
-    # sql.Types.VIDEO_NOTE.value: dispatcher.bot.send_video_note
+    sql.Types.VIDEO_NOTE.value: dispatcher.bot.send_video_note,
 }
 
 
@@ -268,8 +268,8 @@ def stop_filter(update, context):
 
 @run_async
 def reply_filter(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    message = update.effective_message  # type: Optional[Message]
+    chat = update.effective_chat
+    message = update.effective_message
 
     to_match = extract_text(message)
     if not to_match:

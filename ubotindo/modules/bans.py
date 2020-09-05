@@ -29,9 +29,9 @@ from ubotindo.modules.log_channel import loggable
 @loggable
 @typing_action
 def ban(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
-    message = update.effective_message  # type: Optional[Message]
+    chat = update.effective_chat
+    user = update.effective_user
+    message = update.effective_message
     args = context.args
 
     if user_can_ban(chat, user, context.bot.id) is False:
@@ -113,9 +113,9 @@ def ban(update, context):
 @loggable
 @typing_action
 def temp_ban(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
-    message = update.effective_message  # type: Optional[Message]
+    chat = update.effective_chat
+    user = update.effective_user
+    message = update.effective_message
     args = context.args
 
     if user_can_ban(chat, user, context.bot.id) is False:
@@ -212,9 +212,9 @@ def temp_ban(update, context):
 @loggable
 @typing_action
 def kick(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
-    message = update.effective_message  # type: Optional[Message]
+    chat = update.effective_chat
+    user = update.effective_user
+    message = update.effective_message
     args = context.args
 
     if user_can_ban(chat, user, context.bot.id) is False:
@@ -329,9 +329,9 @@ def kickme(update, context):
 @loggable
 @typing_action
 def unban(update, context):
-    message = update.effective_message  # type: Optional[Message]
-    user = update.effective_user  # type: Optional[User]
-    chat = update.effective_chat  # type: Optional[Chat]
+    message = update.effective_message
+    user = update.effective_user
+    chat = update.effective_chat
     args = context.args
 
     if user_can_ban(chat, user, context.bot.id) is False:

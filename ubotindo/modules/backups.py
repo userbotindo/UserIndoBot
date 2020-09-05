@@ -126,8 +126,8 @@ def import_data(update, context):
 @user_admin
 def export_data(update, context):
     chat_data = context.chat_data
-    msg = update.effective_message  # type: Optional[Message]
-    user = update.effective_user  # type: Optional[User]
+    msg = update.effective_message
+    user = update.effective_user
     chat_id = update.effective_chat.id
     chat = update.effective_chat
     current_chat_id = update.effective_chat.id

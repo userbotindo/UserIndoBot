@@ -301,9 +301,8 @@ def new_member(update, context):
                         res,
                         keyboard,
                         sql.DEFAULT_WELCOME.format(first=first_name),
-                    )  # type: Optional[Message]
+                    )
 
-                    # User exception from mutes:
                     if (
                         is_user_ban_protected(
                             chat, new_mem.id, chat.get_member(new_mem.id)
@@ -379,7 +378,7 @@ def new_member(update, context):
 
 @run_async
 def left_member(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
+    chat = update.effective_chat
     should_goodbye, cust_goodbye, goodbye_type = sql.get_gdbye_pref(chat.id)
     cust_goodbye = markdown_to_html(cust_goodbye)
     if should_goodbye:
@@ -468,7 +467,7 @@ def left_member(update, context):
 @user_admin
 @typing_action
 def welcome(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
+    chat = update.effective_chat
     args = context.args
     # if no args, show current replies.
     if len(args) == 0 or args[0].lower() == "noformat":
@@ -535,7 +534,7 @@ def welcome(update, context):
 @user_admin
 @typing_action
 def goodbye(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
+    chat = update.effective_chat
     args = context.args
 
     if len(args) == 0 or args[0] == "noformat":
@@ -589,9 +588,9 @@ def goodbye(update, context):
 @loggable
 @typing_action
 def set_welcome(update, context) -> str:
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
-    msg = update.effective_message  # type: Optional[Message]
+    chat = update.effective_chat
+    user = update.effective_user
+    msg = update.effective_message
 
     text, data_type, content, buttons = get_welcome_type(msg)
 
@@ -617,8 +616,8 @@ def set_welcome(update, context) -> str:
 @loggable
 @typing_action
 def reset_welcome(update, context) -> str:
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
+    chat = update.effective_chat
+    user = update.effective_user
     sql.set_custom_welcome(chat.id, None, sql.DEFAULT_WELCOME, sql.Types.TEXT)
     update.effective_message.reply_text(
         "Successfully reset welcome message to default!"
@@ -638,9 +637,9 @@ def reset_welcome(update, context) -> str:
 @loggable
 @typing_action
 def set_goodbye(update, context) -> str:
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
-    msg = update.effective_message  # type: Optional[Message]
+    chat = update.effective_chat
+    user = update.effective_user
+    msg = update.effective_message
     text, data_type, content, buttons = get_welcome_type(msg)
 
     if data_type is None:
@@ -664,8 +663,8 @@ def set_goodbye(update, context) -> str:
 @loggable
 @typing_action
 def reset_goodbye(update, context) -> str:
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
+    chat = update.effective_chat
+    user = update.effective_user
     sql.set_custom_gdbye(chat.id, sql.DEFAULT_GOODBYE, sql.Types.TEXT)
     update.effective_message.reply_text(
         "Successfully reset goodbye message to default!"
@@ -685,9 +684,9 @@ def reset_goodbye(update, context) -> str:
 @loggable
 @typing_action
 def welcomemute(update, context) -> str:
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
-    msg = update.effective_message  # type: Optional[Message]
+    chat = update.effective_chat
+    user = update.effective_user
+    msg = update.effective_message
     args = context.args
 
     if len(args) >= 1:
@@ -747,8 +746,8 @@ def welcomemute(update, context) -> str:
 @loggable
 @typing_action
 def clean_welcome(update, context) -> str:
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
+    chat = update.effective_chat
+    user = update.effective_user
     args = context.args
 
     if not args:
@@ -795,7 +794,7 @@ def clean_welcome(update, context) -> str:
 @user_admin
 @typing_action
 def cleanservice(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
+    chat = update.effective_chat
     args = context.args
     if chat.type != chat.PRIVATE:
         if len(args) >= 1:
@@ -832,11 +831,11 @@ def cleanservice(update, context):
 
 @run_async
 def user_button(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
-    query = update.callback_query  # type: Optional[CallbackQuery]
+    chat = update.effective_chat
+    user = update.effective_user
+    query = update.callback_query
     match = re.match(r"user_join_\((.+?)\)", query.data)
-    message = update.effective_message  # type: Optional[Message]
+    message = update.effective_message
     db_checks = sql.set_human_checks(user.id, chat.id)
     join_user = int(match.group(1))
 

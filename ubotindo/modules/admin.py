@@ -208,8 +208,8 @@ def pin(update, context):
 @user_admin
 @run_async
 def permanent_pin_set(update, context) -> str:
-    user = update.effective_user  # type: Optional[User]
-    chat = update.effective_chat  # type: Optional[Chat]
+    user = update.effective_user
+    chat = update.effective_chat
     args = context.args
     bot = context.bot
 
@@ -290,8 +290,8 @@ def permanent_pin_set(update, context) -> str:
 
 @run_async
 def permanent_pin(update, context):
-    user = update.effective_user  # type: Optional[User]
-    chat = update.effective_chat  # type: Optional[Chat]
+    user = update.effective_user
+    chat = update.effective_chat
     message = update.effective_message
     bot = context.bot
 

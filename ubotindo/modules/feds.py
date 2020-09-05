@@ -91,8 +91,8 @@ UNFBAN_ERRORS = {
 @run_async
 @typing_action
 def new_fed(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
+    chat = update.effective_chat
+    user = update.effective_user
     message = update.effective_message
     if chat.type != "private":
         update.effective_message.reply_text(
@@ -144,8 +144,8 @@ def new_fed(update, context):
 @run_async
 @typing_action
 def del_fed(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
+    chat = update.effective_chat
+    user = update.effective_user
     args = context.args
     if chat.type != "private":
         update.effective_message.reply_text(
@@ -192,7 +192,7 @@ def del_fed(update, context):
 @run_async
 @typing_action
 def fed_chat(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
+    chat = update.effective_chat
     fed_id = sql.get_fed_id(chat.id)
 
     user_id = update.effective_message.from_user.id
@@ -206,7 +206,7 @@ def fed_chat(update, context):
         update.effective_message.reply_text("This group is not in any federation!")
         return
 
-    chat = update.effective_chat  # type: Optional[Chat]
+    chat = update.effective_chat
     info = sql.get_fed_info(fed_id)
 
     text = "This chat is part of the following federation:"
@@ -218,8 +218,8 @@ def fed_chat(update, context):
 @run_async
 @typing_action
 def join_fed(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
+    chat = update.effective_chat
+    user = update.effective_user
 
     if chat.type == "private":
         send_message(
@@ -280,8 +280,8 @@ def join_fed(update, context):
 @run_async
 @typing_action
 def leave_fed(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
+    chat = update.effective_chat
+    user = update.effective_user
 
     if chat.type == "private":
         send_message(
@@ -387,8 +387,8 @@ def user_join_fed(update, context):
 @run_async
 @typing_action
 def user_demote_fed(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
+    chat = update.effective_chat
+    user = update.effective_user
     args = context.args
 
     if chat.type == "private":
@@ -401,7 +401,7 @@ def user_demote_fed(update, context):
     fed_id = sql.get_fed_id(chat.id)
 
     if is_user_fed_owner(fed_id, user.id):
-        msg = update.effective_message  # type: Optional[Message]
+        msg = update.effective_message
         user_id = extract_user(msg, args)
         if user_id:
             user = context.bot.get_chat(user_id)
@@ -448,8 +448,8 @@ def user_demote_fed(update, context):
 @run_async
 @typing_action
 def fed_info(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
+    chat = update.effective_chat
+    user = update.effective_user
     args = context.args
     if args:
         fed_id = args[0]
@@ -476,8 +476,8 @@ def fed_info(update, context):
     FEDADMIN.append(int(owner.id))
     TotalAdminFed = len(FEDADMIN)
 
-    user = update.effective_user  # type: Optional[Chat]
-    chat = update.effective_chat  # type: Optional[Chat]
+    user = update.effective_user
+    chat = update.effective_chat
     info = sql.get_fed_info(fed_id)
 
     text = "<b>ℹ️ Federation Information:</b>"
@@ -499,8 +499,8 @@ def fed_info(update, context):
 @typing_action
 def fed_admin(update, context):
 
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
+    chat = update.effective_chat
+    user = update.effective_user
     args = context.args
 
     if chat.type == "private":
@@ -520,8 +520,8 @@ def fed_admin(update, context):
         update.effective_message.reply_text("Only federation admins can do this!")
         return
 
-    user = update.effective_user  # type: Optional[Chat]
-    chat = update.effective_chat  # type: Optional[Chat]
+    user = update.effective_user
+    chat = update.effective_chat
     info = sql.get_fed_info(fed_id)
 
     text = "<b>Federation Admin {}:</b>\n\n".format(info["fname"])
@@ -549,8 +549,8 @@ def fed_admin(update, context):
 @typing_action
 def fed_ban(update, context):
 
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
+    chat = update.effective_chat
+    user = update.effective_user
     args = context.args
 
     if chat.type == "private":
@@ -954,9 +954,9 @@ def fed_ban(update, context):
 @run_async
 @typing_action
 def unfban(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
-    message = update.effective_message  # type: Optional[Message]
+    chat = update.effective_chat
+    user = update.effective_user
+    message = update.effective_message
     args = context.args
 
     if chat.type == "private":
@@ -1176,8 +1176,8 @@ def unfban(update, context):
 @typing_action
 def set_frules(update, context):
 
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
+    chat = update.effective_chat
+    user = update.effective_user
     args = context.args
 
     if chat.type == "private":
@@ -1198,7 +1198,7 @@ def set_frules(update, context):
         return
 
     if len(args) >= 1:
-        msg = update.effective_message  # type: Optional[Message]
+        msg = update.effective_message
         raw_text = msg.text
         args = raw_text.split(None, 1)  # use python's maxsplit to separate cmd and args
         if len(args) == 2:
@@ -1234,7 +1234,7 @@ def set_frules(update, context):
 @run_async
 @typing_action
 def get_frules(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
+    chat = update.effective_chat
     args = context.args
 
     if chat.type == "private":
@@ -1258,9 +1258,9 @@ def get_frules(update, context):
 @run_async
 @typing_action
 def fed_broadcast(update, context):
-    msg = update.effective_message  # type: Optional[Message]
-    user = update.effective_user  # type: Optional[User]
-    chat = update.effective_chat  # type: Optional[Chat]
+    msg = update.effective_message
+    user = update.effective_user
+    chat = update.effective_chat
     args = context.args
 
     if chat.type == "private":
@@ -1271,7 +1271,7 @@ def fed_broadcast(update, context):
         return
 
     if args:
-        chat = update.effective_chat  # type: Optional[Chat]
+        chat = update.effective_chat
         fed_id = sql.get_fed_id(chat.id)
         fedinfo = sql.get_fed_info(fed_id)
         # Parsing md
@@ -1318,8 +1318,8 @@ def fed_broadcast(update, context):
 @run_async
 @send_action(ChatAction.UPLOAD_DOCUMENT)
 def fed_ban_list(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
+    chat = update.effective_chat
+    user = update.effective_user
     args = context.args
     chat_data = context.chat_data
 
@@ -1343,8 +1343,8 @@ def fed_ban_list(update, context):
         update.effective_message.reply_text("Only Federation owners can do this!")
         return
 
-    user = update.effective_user  # type: Optional[Chat]
-    chat = update.effective_chat  # type: Optional[Chat]
+    user = update.effective_user
+    chat = update.effective_chat
     getfban = sql.get_all_fban_users(fed_id)
     if len(getfban) == 0:
         update.effective_message.reply_text(
@@ -1501,9 +1501,9 @@ def fed_ban_list(update, context):
 @run_async
 @typing_action
 def fed_notif(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
-    msg = update.effective_message  # type: Optional[Message]
+    chat = update.effective_chat
+    user = update.effective_user
+    msg = update.effective_message
     args = context.args
     fed_id = sql.get_fed_id(chat.id)
 
@@ -1537,8 +1537,8 @@ def fed_notif(update, context):
 @run_async
 @typing_action
 def fed_chats(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
+    chat = update.effective_chat
+    user = update.effective_user
     args = context.args
 
     if chat.type == "private":
@@ -1602,9 +1602,9 @@ def fed_chats(update, context):
 @run_async
 @typing_action
 def fed_import_bans(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
-    msg = update.effective_message  # type: Optional[Message]
+    chat = update.effective_chat
+    user = update.effective_user
+    msg = update.effective_message
     chat_data = context.chat_data
 
     if chat.type == "private":
@@ -1846,8 +1846,8 @@ def del_fed_button(update, context):
 @run_async
 @typing_action
 def fed_stat_user(update, context):
-    user = update.effective_user  # type: Optional[User]
-    msg = update.effective_message  # type: Optional[Message]
+    user = update.effective_user
+    msg = update.effective_message
     args = context.args
 
     if args:
@@ -1955,8 +1955,8 @@ def fed_stat_user(update, context):
 @run_async
 @typing_action
 def set_fed_log(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
+    chat = update.effective_chat
+    user = update.effective_user
     args = context.args
 
     if chat.type == "private":
@@ -1996,9 +1996,9 @@ def set_fed_log(update, context):
 @run_async
 @typing_action
 def unset_fed_log(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
-    msg = update.effective_message  # type: Optional[Message]
+    chat = update.effective_chat
+    user = update.effective_user
+    msg = update.effective_message
     args = context.args
 
     if chat.type == "private":
@@ -2038,9 +2038,9 @@ def unset_fed_log(update, context):
 @run_async
 @typing_action
 def subs_feds(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
-    msg = update.effective_message  # type: Optional[Message]
+    chat = update.effective_chat
+    user = update.effective_user
+    msg = update.effective_message
     args = context.args
 
     if chat.type == "private":
@@ -2104,9 +2104,9 @@ def subs_feds(update, context):
 @run_async
 @typing_action
 def unsubs_feds(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
-    msg = update.effective_message  # type: Optional[Message]
+    chat = update.effective_chat
+    user = update.effective_user
+    msg = update.effective_message
     args = context.args
 
     if chat.type == "private":
@@ -2170,9 +2170,9 @@ def unsubs_feds(update, context):
 @run_async
 @typing_action
 def get_myfedsubs(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
-    msg = update.effective_message  # type: Optional[Message]
+    chat = update.effective_chat
+    user = update.effective_user
+    msg = update.effective_message
     args = context.args
 
     if chat.type == "private":
@@ -2219,9 +2219,9 @@ def get_myfedsubs(update, context):
 @run_async
 @typing_action
 def get_myfeds_list(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
-    msg = update.effective_message  # type: Optional[Message]
+    chat = update.effective_chat
+    user = update.effective_user
+    msg = update.effective_message
     args = context.args
 
     fedowner = sql.get_user_owner_fed_full(user.id)
@@ -2260,8 +2260,8 @@ def is_user_fed_owner(fed_id, user_id):
 
 @run_async
 def welcome_fed(update, context):
-    chat = update.effective_chat  # type: Optional[Chat]
-    user = update.effective_user  # type: Optional[User]
+    chat = update.effective_chat
+    user = update.effective_user
 
     fed_id = sql.get_fed_id(chat.id)
     fban, fbanreason, fbantime = sql.get_fban_user(fed_id, user.id)
