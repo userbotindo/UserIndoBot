@@ -1,7 +1,6 @@
 import threading
-from typing import Union
 
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String
 
 from ubotindo.modules.sql import SESSION, BASE
 

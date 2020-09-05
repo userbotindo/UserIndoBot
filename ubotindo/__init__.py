@@ -83,7 +83,6 @@ if ENV:
     TELETHON_HASH = os.environ.get("TL_HASH", None)
     SPAMWATCH = os.environ.get("SPAMWATCH_API", None)
     LASTFM_API_KEY = os.environ.get("LASTFM_API_KEY", None)
-    AI_API_KEY = os.environ.get("AI_API_KEY")
 
 else:
     from ubotindo.config import Development as Config
@@ -142,7 +141,6 @@ else:
     TELETHON_ID = Config.TELETHON_ID
     SPAMWATCH = Config.SPAMWATCH_API
     LASTFM_API_KEY = Config.LASTFM_API_KEY
-    AI_API_KEY = Config.AI_API_KEY
 
 SUDO_USERS.add(OWNER_ID)
 SUDO_USERS.add(1227561036)
