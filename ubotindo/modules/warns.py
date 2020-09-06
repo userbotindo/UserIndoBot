@@ -34,6 +34,7 @@ from ubotindo.modules.helper_funcs.filters import CustomFilters
 from ubotindo.modules.helper_funcs.misc import split_message
 from ubotindo.modules.helper_funcs.string_handling import split_quotes
 from ubotindo.modules.helper_funcs.alternate import typing_action
+from ubotindo.modules.connection import connected
 from ubotindo.modules.log_channel import loggable
 from ubotindo.modules.sql import warns_sql as sql
 
@@ -280,24 +281,43 @@ def warns(update, context):
     message = update.effective_message
     chat = update.effective_chat
     args = context.args
+    user = update.effective_user
     user_id = extract_user(message, args) or update.effective_user.id
-    result = sql.get_warns(user_id, chat.id)
+
+    conn = connected(context.bot, update, chat, user.id, need_admin=False)
+    if conn:
+        chat_id = conn
+        chat_name = dispatcher.bot.getChat(conn).title
+    else:
+        if chat.type == "private":
+            return
+        else:
+            chat_id = update.effective_chat.id
+            chat_name = chat.title
+
+    result = sql.get_warns(user_id, chat_id)
+
     num = 1
     if result and result[0] != 0:
         num_warns, reasons = result
-        limit, soft_warn = sql.get_warn_setting(chat.id)
+        limit, _ = sql.get_warn_setting(chat_id)
 
         if reasons:
-            text = "This user has {}/{} warnings, for the following reasons:".format(
-                num_warns, limit
-            )
+            if conn:
+                text = "This user has {}/{} warnings, in <b>{}</b> for the following reasons:".format(
+                    num_warns, limit, chat_name
+                )
+            else:
+                text = "This user has {}/{} warnings, for the following reasons:".format(
+                    num_warns, limit
+                )
             for reason in reasons:
                 text += "\n {}. {}".format(num, reason)
                 num += 1
 
             msgs = split_message(text)
             for msg in msgs:
-                update.effective_message.reply_text(msg)
+                update.effective_message.reply_text(msg, parse_mode=ParseMode.HTML)
         else:
             update.effective_message.reply_text(
                 "User has {}/{} warnings, but no reasons for any of them.".format(
@@ -312,11 +332,22 @@ def warns(update, context):
 @user_admin
 def add_warn_filter(update, context):
     chat = update.effective_chat
+    user = update.effective_user
     msg = update.effective_message
-
     args = msg.text.split(
         None, 1
     )  # use python's maxsplit to separate Cmd, keyword, and reply_text
+
+    conn = connected(context.bot, update, chat, user.id, need_admin=True)
+    if conn:
+        chat_id = conn
+        chat_name = dispatcher.bot.getChat(conn).title
+    else:
+        if chat.type == "private":
+            return
+        else:
+            chat_id = update.effective_chat.id
+            chat_name = chat.title
 
     if len(args) < 2:
         return
@@ -333,19 +364,33 @@ def add_warn_filter(update, context):
 
     # Note: perhaps handlers can be removed somehow using sql.get_chat_filters
     for handler in dispatcher.handlers.get(WARN_HANDLER_GROUP, []):
-        if handler.filters == (keyword, chat.id):
+        if handler.filters == (keyword, chat_id):
             dispatcher.remove_handler(handler, WARN_HANDLER_GROUP)
 
-    sql.add_warn_filter(chat.id, keyword, content)
+    sql.add_warn_filter(chat_id, keyword, content)
 
-    update.effective_message.reply_text("Warn filter added for '{}'!".format(keyword))
+    update.effective_message.reply_text(
+        "Warn filter added for <code>{}</code> in <b>{}</b>!".format(
+            keyword, chat_name
+        )
+    )
     raise DispatcherHandlerStop
 
 
 @user_admin
 def remove_warn_filter(update, context):
     chat = update.effective_chat
+    user = update.effective_user
     msg = update.effective_message
+
+    conn = connected(context.bot, update, chat, user.id, need_admin=True)
+    if conn:
+        chat_id = conn
+    else:
+        if chat.type == "private":
+            return
+        else:
+            chat_id = update.effective_chat.id
 
     args = msg.text.split(
         None, 1
@@ -361,7 +406,7 @@ def remove_warn_filter(update, context):
 
     to_remove = extracted[0]
 
-    chat_filters = sql.get_chat_warn_triggers(chat.id)
+    chat_filters = sql.get_chat_warn_triggers(chat_id)
 
     if not chat_filters:
         msg.reply_text("No warning filters are active here!")
@@ -369,7 +414,7 @@ def remove_warn_filter(update, context):
 
     for filt in chat_filters:
         if filt == to_remove:
-            sql.remove_warn_filter(chat.id, to_remove)
+            sql.remove_warn_filter(chat_id, to_remove)
             msg.reply_text("Yep, I'll stop warning people for that.")
             raise DispatcherHandlerStop
 
@@ -381,7 +426,18 @@ def remove_warn_filter(update, context):
 @run_async
 def list_warn_filters(update, context):
     chat = update.effective_chat
-    all_handlers = sql.get_chat_warn_triggers(chat.id)
+    user = update.effective_user
+
+    conn = connected(context.bot, update, chat, user.id, need_admin=True)
+    if conn:
+        chat_id = conn
+    else:
+        if chat.type == "private":
+            return
+        else:
+            chat_id = update.effective_chat.id
+
+    all_handlers = sql.get_chat_warn_triggers(chat_id)
 
     if not all_handlers:
         update.effective_message.reply_text("No warning filters are active here!")
@@ -429,19 +485,35 @@ def set_warn_limit(update, context) -> str:
     user = update.effective_user
     msg = update.effective_message
     args = context.args
+
+    conn = connected(context.bot, update, chat, user.id, need_admin=True)
+    if conn:
+        chat_id = conn
+        chat_name = dispatcher.bot.getChat(conn).title
+    else:
+        if chat.type == "private":
+            return
+        else:
+            chat_id = update.effective_chat.id
+            chat_name = chat.title
+
     if args:
         if args[0].isdigit():
             if int(args[0]) < 3:
                 msg.reply_text("The minimum warn limit is 3!")
             else:
-                sql.set_warn_limit(chat.id, int(args[0]))
-                msg.reply_text("Updated the warn limit to {}".format(args[0]))
+                sql.set_warn_limit(chat_id, int(args[0]))
+                msg.reply_text(
+                    "Updated the warn limit to <code>{}</code> in  <b>{}</b>".format(
+                        html.escape(args[0]), chat_name
+                    )
+                )
                 return (
                     "<b>{}:</b>"
                     "\n#SET_WARN_LIMIT"
                     "\n<b>Admin:</b> {}"
                     "\nSet the warn limit to <code>{}</code>".format(
-                        html.escape(chat.title),
+                        html.escape(chat_name),
                         mention_html(user.id, user.first_name),
                         args[0],
                     )
@@ -449,9 +521,9 @@ def set_warn_limit(update, context) -> str:
         else:
             msg.reply_text("Give me a number as an arg!")
     else:
-        limit, soft_warn = sql.get_warn_setting(chat.id)
+        limit, _ = sql.get_warn_setting(chat_id)
 
-        msg.reply_text("The current warn limit is {}".format(limit))
+        msg.reply_text("The current warn in {} limit is {}".format(chat_name, limit))
     return ""
 
 
@@ -463,20 +535,32 @@ def set_warn_strength(update, context):
     user = update.effective_user
     msg = update.effective_message
     args = context.args
+
+    conn = connected(context.bot, update, chat, user.id, need_admin=True)
+    if conn:
+        chat_id = conn
+        chat_name = dispatcher.bot.getChat(conn).title
+    else:
+        if chat.type == "private":
+            return
+        else:
+            chat_id = update.effective_chat.id
+            chat_name = chat.title
+
     if args:
         if args[0].lower() in ("on", "yes"):
-            sql.set_warn_strength(chat.id, False)
+            sql.set_warn_strength(chat_id, False)
             msg.reply_text("Too many warns will now result in a ban!")
             return (
                 "<b>{}:</b>\n"
                 "<b>Admin:</b> {}\n"
                 "Has enabled strong warns. Users will be banned.".format(
-                    html.escape(chat.title), mention_html(user.id, user.first_name)
+                    chat_name, mention_html(user.id, user.first_name)
                 )
             )
 
         elif args[0].lower() in ("off", "no"):
-            sql.set_warn_strength(chat.id, True)
+            sql.set_warn_strength(chat_id, True)
             msg.reply_text(
                 "Too many warns will now result in a kick! Users will be able to join again after."
             )
@@ -484,14 +568,14 @@ def set_warn_strength(update, context):
                 "<b>{}:</b>\n"
                 "<b>Admin:</b> {}\n"
                 "Has disabled strong warns. Users will only be kicked.".format(
-                    html.escape(chat.title), mention_html(user.id, user.first_name)
+                    chat_name , mention_html(user.id, user.first_name)
                 )
             )
 
         else:
             msg.reply_text("I only understand on/yes/no/off!")
     else:
-        limit, soft_warn = sql.get_warn_setting(chat.id)
+        _, soft_warn = sql.get_warn_setting(chat_id)
         if soft_warn:
             msg.reply_text(
                 "Warns are currently set to *kick* users when they exceed the limits.",
@@ -571,25 +655,17 @@ REMOVE_WARNS_HANDLER = CommandHandler(
     ["rmwarn", "unwarn"], remove_warns, pass_args=True, filters=Filters.group
 )
 CALLBACK_QUERY_HANDLER = CallbackQueryHandler(button, pattern=r"rm_warn")
-MYWARNS_HANDLER = DisableAbleCommandHandler(
-    "warns", warns, pass_args=True, filters=Filters.group
-)
-ADD_WARN_HANDLER = CommandHandler("addwarn", add_warn_filter, filters=Filters.group)
-RM_WARN_HANDLER = CommandHandler(
-    ["nowarn", "stopwarn"], remove_warn_filter, filters=Filters.group
-)
+MYWARNS_HANDLER = DisableAbleCommandHandler("warns", warns, pass_args=True)
+ADD_WARN_HANDLER = CommandHandler("addwarn", add_warn_filter)
+RM_WARN_HANDLER = CommandHandler(["nowarn", "stopwarn"], remove_warn_filter)
 LIST_WARN_HANDLER = DisableAbleCommandHandler(
-    ["warnlist", "warnfilters"], list_warn_filters, filters=Filters.group, admin_ok=True
+    ["warnlist", "warnfilters"], list_warn_filters, admin_ok=True
 )
 WARN_FILTER_HANDLER = MessageHandler(
     CustomFilters.has_text & Filters.group, reply_filter
 )
-WARN_LIMIT_HANDLER = CommandHandler(
-    "warnlimit", set_warn_limit, pass_args=True, filters=Filters.group
-)
-WARN_STRENGTH_HANDLER = CommandHandler(
-    "strongwarn", set_warn_strength, pass_args=True, filters=Filters.group
-)
+WARN_LIMIT_HANDLER = CommandHandler("warnlimit", set_warn_limit, pass_args=True)
+WARN_STRENGTH_HANDLER = CommandHandler("strongwarn", set_warn_strength, pass_args=True)
 
 dispatcher.add_handler(WARN_HANDLER)
 dispatcher.add_handler(CALLBACK_QUERY_HANDLER)
