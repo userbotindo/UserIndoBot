@@ -501,7 +501,7 @@ def set_warn_limit(update, context) -> str:
                     "<b>{}:</b>"
                     "\n#SET_WARN_LIMIT"
                     "\n<b>Admin:</b> {}"
-                    "\nSet the warn limit to <code>{}</code".format(
+                    "\nSet the warn limit to <code>{}</code>".format(
                         html.escape(chat_name),
                         mention_html(user.id, user.first_name),
                         args[0],
