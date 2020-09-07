@@ -134,15 +134,15 @@ def info(update, context):
     )
     
     if chat.type != "private":
-       status = bot.get_chat_member(chat.id, user.id).status
+       status = context.bot.get_chat_member(chat.id, user.id).status
        if status:
           _stext = "\nStatus: {}"
 
        afk_st = is_afk(user.id)
        if afk_st:
-          text += _stext.format("Sleeping")
+          text += _stext.format("Away From Keyboard")
        else:
-          status = status = bot.get_chat_member(chat.id, user.id).status
+          status = status = context.bot.get_chat_member(chat.id, user.id).status
           if status:
               if status in {"left", "kicked"}:
                   text += _stext.format("Absent")
