@@ -38,6 +38,7 @@ from ubotindo.modules.disable import DisableAbleCommandHandler
 from ubotindo.modules.helper_funcs.extraction import extract_user
 from ubotindo.modules.helper_funcs.filters import CustomFilters
 from ubotindo.modules.helper_funcs.alternate import typing_action, send_action
+from ubotindo.modules.sql.afk_sql import is_afk
 
 
 @run_async
@@ -131,6 +132,24 @@ def info(update, context):
     text += "\nNumber of profile pics: {}".format(
         context.bot.get_user_profile_photos(user.id).total_count
     )
+    
+    if chat.type != "private":
+       status = bot.get_chat_member(chat.id, user.id).status
+       if status:
+          _stext = "\nStatus: {}"
+
+       afk_st = is_afk(user.id)
+       if afk_st:
+          text += _stext.format("Sleeping")
+       else:
+          status = status = bot.get_chat_member(chat.id, user.id).status
+          if status:
+              if status in {"left", "kicked"}:
+                  text += _stext.format("Absent")
+              elif status == "member":
+                  text += _stext.format("Present")
+              elif status in {"administrator", "creator"}:
+                  text += _stext.format("Admin")
 
     try:
         sw = spamwtc.get_ban(int(user.id))
