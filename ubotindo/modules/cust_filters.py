@@ -2,7 +2,7 @@ import re
 from html import escape
 
 import telegram
-from telegram import ParseMode, InlineKeyboardMarkup, Message
+from telegram import ParseMode, InlineKeyboardMarkup
 from telegram.error import BadRequest
 from telegram.ext import (
     CommandHandler,

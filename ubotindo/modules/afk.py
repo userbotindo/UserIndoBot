@@ -1,8 +1,6 @@
 from typing import Optional
 import random
-
-from telegram import Message, User
-from telegram import MessageEntity, ParseMode, Update
+from telegram import MessageEntity
 from telegram.error import BadRequest
 from telegram.ext import Filters, MessageHandler, run_async
 
@@ -13,8 +11,6 @@ from ubotindo.modules.disable import (
 )
 from ubotindo.modules.sql import afk_sql as sql
 from ubotindo.modules.users import get_user_id
-
-from ubotindo.modules.helper_funcs.alternate import send_message
 import ubotindo.modules.helper_funcs.fun_strings as fun
 
 AFK_GROUP = 7

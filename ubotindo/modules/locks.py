@@ -1,6 +1,6 @@
 import html
 
-from telegram import Message, Chat, ParseMode, MessageEntity
+from telegram import ParseMode, MessageEntity
 from telegram import TelegramError, ChatPermissions
 from telegram.error import BadRequest
 from telegram.ext import CommandHandler, MessageHandler, Filters

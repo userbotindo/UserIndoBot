@@ -9,7 +9,6 @@ from telegram import (
     InlineKeyboardMarkup,
     InlineKeyboardButton,
 )
-from telegram import Message
 from telegram.error import BadRequest
 from telegram.ext import CommandHandler, MessageHandler, Filters, CallbackQueryHandler
 from telegram.ext.dispatcher import run_async

@@ -10,13 +10,10 @@ import os
 from telegram.error import BadRequest, TelegramError, Unauthorized
 from telegram import (
     ParseMode,
-    Chat,
-    User,
     MessageEntity,
     InlineKeyboardMarkup,
     InlineKeyboardButton,
-    ChatAction,
-)
+    ChatAction)
 from telegram.ext import run_async, CommandHandler, CallbackQueryHandler
 from telegram.utils.helpers import mention_html, mention_markdown
 

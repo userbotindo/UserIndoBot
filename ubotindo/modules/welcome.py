@@ -6,9 +6,7 @@ from telegram import (
     ParseMode,
     InlineKeyboardMarkup,
     InlineKeyboardButton,
-    ChatPermissions,
-    CallbackQuery,
-)
+    ChatPermissions)
 from telegram.error import BadRequest
 from telegram.ext import (
     MessageHandler,
