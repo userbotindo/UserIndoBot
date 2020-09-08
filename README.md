@@ -66,7 +66,7 @@ It is recommended to import sample_config and extend the Config class, as this w
 defaults set in the sample_config, hence making it easier to upgrade.
 
 An example `config.py` file could be:
-"""
+```
 from ubotindo.sample_config import Config
 
 
