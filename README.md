@@ -4,7 +4,7 @@
 [![ForTheBadge built-with-love](http://ForTheBadge.com/images/badges/built-with-love.svg)](https://GitHub.com/Naereen/)
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/1e855e9f1cad4cfca477c90a26f92280)](https://www.codacy.com/manual/TomyPrs/UserbotindoBot?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=TomyPrs/UserbotindoBot&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/6bbe3cf7286643c4ab89da5613be08b0)](https://www.codacy.com/manual/TomyPrs/UserbotindoBot?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=TomyPrs/UserbotindoBot&amp;utm_campaign=Badge_Grade)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
 [![DeepSource](https://static.deepsource.io/deepsource-badge-light-mini.svg)](https://deepsource.io/gh/TomyPrs/UserbotindoBot/?ref=repository-badge)
