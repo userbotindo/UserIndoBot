@@ -32,6 +32,7 @@ if ENV:
 
     MESSAGE_DUMP = os.environ.get("MESSAGE_DUMP", None)
     GBAN_LOGS = os.environ.get("GBAN_LOGS", None)
+    ERROR_DUMP = os.environ.get("ERROR_DUMP", None)
     OWNER_USERNAME = os.environ.get("OWNER_USERNAME", None)
 
     try:
@@ -95,6 +96,7 @@ else:
 
     OWNER_USERNAME = Config.OWNER_USERNAME
     MESSAGE_DUMP = Config.MESSAGE_DUMP
+    ERROR_DUMP = Config.ERROR_DUMP
     GBAN_LOGS = Config.GBAN_LOGS
 
     try:

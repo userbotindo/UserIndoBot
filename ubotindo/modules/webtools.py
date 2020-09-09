@@ -10,11 +10,34 @@ from telegram import __version__
 from spamwatch import __version__ as __sw__
 from telegram import ParseMode
 from telegram.ext import CommandHandler, run_async, Filters
+from telegram.error import BadRequest
 from ubotindo import dispatcher, OWNER_ID
 from ubotindo.modules.helper_funcs.filters import CustomFilters
 from ubotindo.modules.helper_funcs.alternate import typing_action
 
 
+@run_async
+@typing_action
+def leavechat(update, context):
+	args = context.args
+	if args:
+		chat_id = int(args[0])
+	else:
+		send_message(update.effective_message, "Bro.. idk Wheree I leave, Give Me ChatId!!")
+	try:
+		chat = context.bot.getChat(chat_id)
+		titlechat = context.bot.get_chat(chat_id).title
+		context.bot.sendMessage(chat_id, "I'm here trying to survive, but this world is too cruel, goodbye everyone 😌")
+		context.bot.leaveChat(chat_id)
+		send_message(update.effective_message, "I have left the group {}".format(titlechat))
+
+	except BadRequest as excp:
+		if excp.message == "Chat not found":
+			send_message(update.effective_message, "good news, I am no longer there, Before you told Mee😏")
+		else:
+			return
+
+			
 @run_async
 @typing_action
 def ping(update, context):
@@ -110,8 +133,10 @@ SPEED_HANDLER = CommandHandler("speedtest", speedtst, filters=CustomFilters.sudo
 SYS_STATUS_HANDLER = CommandHandler(
     "sysinfo", system_status, filters=CustomFilters.sudo_filter
 )
+LEAVECHAT_HANDLER = CommandHandler(["leavechat", "leavegroup", "leave"], leavechat, pass_args=True, filters=Filters.user(OWNER_ID))
 
 dispatcher.add_handler(IP_HANDLER)
 dispatcher.add_handler(SPEED_HANDLER)
 dispatcher.add_handler(PING_HANDLER)
 dispatcher.add_handler(SYS_STATUS_HANDLER)
+dispatcher.add_handler(LEAVECHAT_HANDLER)
