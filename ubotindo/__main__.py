@@ -56,7 +56,9 @@ buttons = [
 
 buttons += [
     [
-        InlineKeyboardButton(text="Help & Commands ❔", callback_data="help_back"),
+        InlineKeyboardButton(
+            text="Help & Commands ❔", url=f"t.me/{dispatcher.bot.username}?start=help"
+            ),
         InlineKeyboardButton(text="Support Group 🎗️", url="https://t.me/userbotindo"),
     ]
 ]
@@ -218,8 +220,6 @@ def error_handler(update, context):
 def help_button(update, context):
     query = update.callback_query
     mod_match = re.match(r"help_module\((.+?)\)", query.data)
-    prev_match = re.match(r"help_prev\((.+?)\)", query.data)
-    next_match = re.match(r"help_next\((.+?)\)", query.data)
     back_match = re.match(r"help_back", query.data)
     try:
         if mod_match:
@@ -230,7 +230,7 @@ def help_button(update, context):
                 )
                 + HELPABLE[module].__help__
             )
-            query.message.reply_text(
+            query.message.edit_text(
                 text=text,
                 parse_mode=ParseMode.MARKDOWN,
                 reply_markup=InlineKeyboardMarkup(
@@ -238,28 +238,8 @@ def help_button(update, context):
                 ),
             )
 
-        elif prev_match:
-            curr_page = int(prev_match.group(1))
-            query.message.reply_text(
-                HELP_STRINGS,
-                parse_mode=ParseMode.MARKDOWN,
-                reply_markup=InlineKeyboardMarkup(
-                    paginate_modules(curr_page - 1, HELPABLE, "help")
-                ),
-            )
-
-        elif next_match:
-            next_page = int(next_match.group(1))
-            query.message.reply_text(
-                HELP_STRINGS,
-                parse_mode=ParseMode.MARKDOWN,
-                reply_markup=InlineKeyboardMarkup(
-                    paginate_modules(next_page + 1, HELPABLE, "help")
-                ),
-            )
-
         elif back_match:
-            query.message.reply_text(
+            query.message.edit_text(
                 text=HELP_STRINGS,
                 parse_mode=ParseMode.MARKDOWN,
                 reply_markup=InlineKeyboardMarkup(
@@ -268,7 +248,6 @@ def help_button(update, context):
             )
 
         # ensure no spinny white circle
-        query.message.delete()
         context.bot.answer_callback_query(query.id)
     except Exception as excp:
         if excp.message == "Message is not modified":
