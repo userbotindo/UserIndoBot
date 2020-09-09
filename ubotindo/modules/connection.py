@@ -313,6 +313,7 @@ CONN_HELP = """
  • Set and control AntiFlood settings.
  • Set and control Blacklist settings.
  • Set Locks and Unlocks in chat.
+ • Set Warn setting of chat.
  • Enable and Disable commands in chat.
  • Export and Imports of chat backup.
  • More in future!"""
@@ -320,8 +321,6 @@ CONN_HELP = """
 
 @run_async
 def help_connect_chat(update, context):
-
-    args = context.args
 
     if update.effective_message.chat.type != "private":
         send_message(update.effective_message, "PM me with that command to get help.")
