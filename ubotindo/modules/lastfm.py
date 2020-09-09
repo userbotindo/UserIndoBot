@@ -1,6 +1,6 @@
 # Last.fm module by @TheRealPhoenix - https://github.com/rsktg
 
-import requests
+import requests, time
 
 from telegram import ParseMode
 from telegram.ext import run_async, CommandHandler
@@ -19,20 +19,25 @@ def set_user(update, context):
         user = update.effective_user.id
         username = " ".join(args)
         sql.set_user(user, username)
-        msg.reply_text(f"Username set as {username}!")
+        del_msg = msg.reply_text(f"Username set as {username}!")
+        
     else:
-        msg.reply_text(
-            "That's not how this works...\nRun /setuser followed by your username!"
-        )
+    	del_error = msg.reply_text("That's not how this works...\nRun /setuser followed by your username!")
+    time.sleep(10)
+    del_error.delete()
+    del_msg.delete()
+    
 
 
 @run_async
 def clear_user(update, context):
     user = update.effective_user.id
     sql.set_user(user, "")
-    update.effective_message.reply_text(
+    clear = update.effective_message.reply_text(
         "Last.fm username successfully cleared from my database!"
     )
+    time.sleep(10)
+    clear.delete()
 
 
 @run_async
@@ -91,7 +96,9 @@ def last_fm(update, context):
         scrobbles = last_user.get("playcount")
         rep += f"\n(<code>{scrobbles}</code> scrobbles so far)"
 
-    msg.reply_text(rep, parse_mode=ParseMode.HTML)
+    send = msg.reply_text(rep, parse_mode=ParseMode.HTML)
+    time.sleep(25)
+    send.delete()
 
 
 SET_USER_HANDLER = CommandHandler("setuser", set_user, pass_args=True)

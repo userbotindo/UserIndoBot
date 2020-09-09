@@ -1,5 +1,5 @@
 from typing import Optional
-import random
+import random, time
 from telegram import MessageEntity
 from telegram.error import BadRequest
 from telegram.ext import Filters, MessageHandler, run_async
@@ -31,9 +31,11 @@ def afk(update, context):
 
     sql.set_afk(update.effective_user.id, reason)
     afkstr = random.choice(fun.AFK)
-    update.effective_message.reply_text(
-        afkstr.format(update.effective_user.first_name, notice)
-    )
+    msg = update.effective_message
+    afksend = msg.reply_text(
+        afkstr.format(update.effective_user.first_name, notice))
+    time.sleep(5)
+    afksend.delete()
 
 
 @run_async
@@ -61,7 +63,9 @@ def no_longer_afk(update, context):
                 "Where is {}?\nIn the chat!",
             ]
             chosen_option = random.choice(options)
-            update.effective_message.reply_text(chosen_option.format(firstname))
+            unafk = update.effective_message.reply_text(chosen_option.format(firstname))
+            time.sleep(10)
+            unafk.delete()
         except BaseException:
             return
 
@@ -138,7 +142,9 @@ def check_afk(update, context, user_id, fst_name, userc_id):
             res = "<b>{}</b> is away from keyboard! says it's because of <b>Reason:</b> <code>{}</code>".format(
                 fst_name, user.reason
             )
-            update.effective_message.reply_text(res, parse_mode="html")
+            reply_afk = update.effective_message.reply_text(res, parse_mode="html")
+            time.sleep(10)
+            reply_afk.delete
 
 
 def __gdpr__(user_id):
