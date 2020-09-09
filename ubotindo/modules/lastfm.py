@@ -97,7 +97,7 @@ def last_fm(update, context):
         rep += f"\n(<code>{scrobbles}</code> scrobbles so far)"
 
     send = msg.reply_text(rep, parse_mode=ParseMode.HTML)
-    time.sleep(25)
+    time.sleep(60)
     send.delete()
 
 
