@@ -279,7 +279,7 @@ def snipe(update, context):
     try:
         chat_id = str(args[0])
         del args[0]
-    except TypeError:
+    except (TypeError, IndexError):
         update.effective_message.reply_text("Please give me a chat to echo to!")
     to_send = " ".join(args)
     if len(to_send) >= 2:
@@ -290,6 +290,8 @@ def snipe(update, context):
             update.effective_message.reply_text(
                 "Couldn't send the message. Perhaps I'm not part of that group?"
             )
+    else:
+        update.effective_message.reply_text("Where should i send??\nGive me the chat id!")
 
 
 @run_async
