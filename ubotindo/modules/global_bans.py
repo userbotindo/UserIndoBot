@@ -400,8 +400,8 @@ def __user_info__(user_id):
         text = text.format("Yes")
         user = sql.get_gbanned_user(user_id)
         if user.reason:
-            text += "\nReason: {}".format(html.escape(user.reason))
-            text += "\n\nAppeal at @userbotspamgroup if you think it's invalid."
+            text += "\n<b>Reason:</b> {}".format(html.escape(user.reason))
+            text += "\nAppeal at @userbotspamgroup if you think it's invalid."
     else:
         text = text.format("No")
     return text

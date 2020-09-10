@@ -117,32 +117,32 @@ def info(update, context):
 
     text = (
         "<b>USER INFO</b>:"
-        "\n\nID: <code>{}</code>"
-        "\nFirst Name: {}".format(user.id, html.escape(user.first_name))
+        "\n<b>ID:</b> <code>{}</code>"
+        "\n<b>First Name:</b> <code>{}</code>".format(user.id, html.escape(user.first_name))
     )
 
     if user.last_name:
-        text += "\nLast Name: {}".format(html.escape(user.last_name))
+        text += "\n<b>Last Name:</b> <code>{}</code>".format(html.escape(user.last_name))
 
     if user.username:
-        text += "\nUsername: @{}".format(html.escape(user.username))
+        text += "\n<b>Username:</b> @{}".format(html.escape(user.username))
 
-    text += "\nPermanent user link: {}".format(mention_html(user.id, "link"))
+    text += "\n<b>Permanent user link:</b> {}".format(mention_html(user.id, "link"))
 
-    text += "\nNumber of profile pics: {}".format(
+    text += "\n<b>Number of profile pics:</b> <code>{}</code>".format(
         context.bot.get_user_profile_photos(user.id).total_count
     )
     
     if chat.type != "private":
        status = context.bot.get_chat_member(chat.id, user.id).status
        if status:
-          _stext = "\nStatus: {}"
+          _stext = "\n<b>Status:</b> <code>{}</code>"
 
        afk_st = is_afk(user.id)
        if afk_st:
           text += _stext.format("Away From Keyboard")
        else:
-          status = status = context.bot.get_chat_member(chat.id, user.id).status
+          status = context.bot.get_chat_member(chat.id, user.id).status
           if status:
               if status in {"left", "kicked"}:
                   text += _stext.format("Absent")
@@ -155,7 +155,7 @@ def info(update, context):
         sw = spamwtc.get_ban(int(user.id))
         if sw:
             text += "\n\n<b>This person is banned in Spamwatch!</b>"
-            text += f"\nReason: <pre>{sw.reason}</pre>"
+            text += f"\n<b>Reason:</b> <pre>{sw.reason}</pre>"
             text += "\nAppeal at @SpamWatchSupport"
         else:
             pass
