@@ -8,7 +8,7 @@ from telegram.error import BadRequest
 from telegram.ext import CommandHandler, run_async
 
 import ubotindo.modules.sql.notes_sql as sql
-from ubotindo import dispatcher, LOGGER, OWNER_ID, MESSAGE_DUMP
+from ubotindo import dispatcher, LOGGER, OWNER_ID, DEV_USERS, MESSAGE_DUMP
 from ubotindo.__main__ import DATA_IMPORT
 from ubotindo.modules.helper_funcs.chat_status import user_admin
 from ubotindo.modules.helper_funcs.alternate import typing_action
@@ -162,10 +162,10 @@ def export_data(update, context):
             )
             return
         else:
-            if user.id != OWNER_ID:
+            if user.id != OWNER_ID or user.id not in DEV_USERS:
                 put_chat(chat_id, new_jam, chat_data)
     else:
-        if user.id != OWNER_ID:
+        if user.id != OWNER_ID or user.id not in DEV_USERS:
             put_chat(chat_id, new_jam, chat_data)
 
     note_list = sql.get_all_chat_notes(chat_id)

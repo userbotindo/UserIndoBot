@@ -4,9 +4,10 @@ from telegram import Bot, Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.error import BadRequest, Unauthorized
 from telegram.ext import CommandHandler, CallbackQueryHandler, run_async, Filters
 
+from ubotindo.modules.helper_funcs.filters import CustomFilters
 import ubotindo.modules.sql.global_bans_sql as gban_sql
 import ubotindo.modules.sql.users_sql as user_sql
-from ubotindo import dispatcher, OWNER_ID
+from ubotindo import dispatcher, OWNER_ID, DEV_USERS
 
 
 def get_invalid_chats(bot: Bot, update: Update, remove: bool = False):
@@ -174,7 +175,7 @@ def callback_button(update, context):
     chat_id = update.effective_chat.id
     query_type = query.data
 
-    admin_list = [OWNER_ID]
+    admin_list = [OWNER_ID, DEV_USERS]
 
     bot.answer_callback_query(query.id)
 
@@ -199,10 +200,10 @@ def callback_button(update, context):
 
 
 DB_CLEANUP_HANDLER = CommandHandler(
-    "dbcleanup", dbcleanup, filters=Filters.chat(OWNER_ID)
+    "dbcleanup", dbcleanup, filters=CustomFilters.dev_filter
 )
 LEAVE_MUTED_CHATS_HANDLER = CommandHandler(
-    "leavemutedchats", leave_muted_chats, filters=Filters.chat(OWNER_ID)
+    "leavemutedchats", leave_muted_chats, filters=CustomFilters.dev_filter
 )
 BUTTON_HANDLER = CallbackQueryHandler(callback_button, pattern="db_.*")
 

@@ -10,7 +10,7 @@ from telegram.utils.helpers import mention_html
 from alphabet_detector import AlphabetDetector
 
 import ubotindo.modules.sql.locks_sql as sql
-from ubotindo import dispatcher, SUDO_USERS, LOGGER
+from ubotindo import dispatcher, SUDO_USERS, DEV_USERS, LOGGER
 from ubotindo.modules.disable import DisableAbleCommandHandler
 from ubotindo.modules.helper_funcs.chat_status import (
     can_delete,
@@ -99,7 +99,7 @@ def restr_members(
     bot, chat_id, members, messages=False, media=False, other=False, previews=False
 ):
     for mem in members:
-        if mem.user in SUDO_USERS:
+        if mem.user in SUDO_USERS or mem.user in DEV_USERS:
             pass
         try:
             bot.restrict_chat_member(

@@ -10,7 +10,7 @@ from telegram.utils.helpers import escape_markdown
 from ubotindo.modules.helper_funcs.extraction import extract_user
 from ubotindo.modules.helper_funcs.filters import CustomFilters
 from ubotindo.modules.helper_funcs.alternate import typing_action
-from ubotindo import dispatcher, SUDO_USERS, SUPPORT_USERS, LOGGER
+from ubotindo import dispatcher, DEV_USERS, SUDO_USERS, SUPPORT_USERS, LOGGER
 from ubotindo.modules.disable import (
     DisableAbleCommandHandler,
     DisableAbleMessageHandler,
@@ -268,7 +268,7 @@ def gbun(update, context):
 
     if update.effective_message.chat.type == "private":
         return
-    if int(user.id) in SUDO_USERS or int(user.id) in SUPPORT_USERS:
+    if int(user.id) in SUDO_USERS or int(user.id) in SUPPORT_USERS or int(user.id) in DEV_USERS:
         context.bot.sendMessage(chat.id, (random.choice(fun.GBUN)))
 
 

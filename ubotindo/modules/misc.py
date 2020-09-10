@@ -27,6 +27,7 @@ from telegram.error import BadRequest
 from ubotindo import (
     dispatcher,
     OWNER_ID,
+    DEV_USERS,
     SUDO_USERS,
     SUPPORT_USERS,
     WHITELIST_USERS,
@@ -164,6 +165,12 @@ def info(update, context):
 
     if user.id == OWNER_ID:
         text += "\n\nAye this guy is my owner.\nI would never do anything against him!"
+    
+    elif user.id in DEV_USERS:
+        text += (
+            "\n\nThis person does maintain me! "
+            "Have the most command for me after my owner :)"
+        )
 
     elif user.id in SUDO_USERS:
         text += (
@@ -529,6 +536,7 @@ def rmemes(update, context):
 @run_async
 def staff_ids(update, context):
     sfile = "List of SUDO & SUPPORT users:\n"
+    sfile += f"× DEV USER IDs; {DEV_USERS}\n"
     sfile += f"× SUDO USER IDs; {SUDO_USERS}\n"
     sfile += f"× SUPPORT USER IDs; {SUPPORT_USERS}"
     with BytesIO(str.encode(sfile)) as output:
@@ -573,14 +581,14 @@ ID_HANDLER = DisableAbleCommandHandler("id", get_id, pass_args=True)
 INFO_HANDLER = DisableAbleCommandHandler("info", info, pass_args=True)
 ECHO_HANDLER = CommandHandler("echo", echo, filters=CustomFilters.sudo_filter)
 MD_HELP_HANDLER = CommandHandler("markdownhelp", markdown_help, filters=Filters.private)
-STATS_HANDLER = CommandHandler("stats", stats, filters=Filters.user(OWNER_ID))
+STATS_HANDLER = CommandHandler("stats", stats, filters=CustomFilters.dev_filter)
 GDPR_HANDLER = CommandHandler("gdpr", gdpr, filters=Filters.private)
 WIKI_HANDLER = DisableAbleCommandHandler("wiki", wiki)
 WALLPAPER_HANDLER = DisableAbleCommandHandler("wall", wall, pass_args=True)
 UD_HANDLER = DisableAbleCommandHandler("ud", ud)
 LYRICS_HANDLER = DisableAbleCommandHandler("lyrics", lyrics, pass_args=True)
 GETLINK_HANDLER = CommandHandler(
-    "getlink", getlink, pass_args=True, filters=Filters.user(OWNER_ID)
+    "getlink", getlink, pass_args=True, filters=CustomFilters.dev_filter
 )
 STAFFLIST_HANDLER = CommandHandler(
     "staffids", staff_ids, filters=Filters.user(OWNER_ID)

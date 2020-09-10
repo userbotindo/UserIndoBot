@@ -118,7 +118,7 @@ IP_HANDLER = CommandHandler("ip", get_bot_ip, filters=Filters.chat(OWNER_ID))
 PING_HANDLER = CommandHandler("ping", ping, filters=CustomFilters.sudo_filter)
 SPEED_HANDLER = CommandHandler("speedtest", speedtst, filters=CustomFilters.sudo_filter)
 SYS_STATUS_HANDLER = CommandHandler(
-    "sysinfo", system_status, filters=CustomFilters.sudo_filter
+    "sysinfo", system_status, filters=CustomFilters.dev_filter
 )
 LEAVECHAT_HANDLER = CommandHandler(["leavechat", "leavegroup", "leave"], leavechat, pass_args=True, filters=Filters.user(OWNER_ID))
 

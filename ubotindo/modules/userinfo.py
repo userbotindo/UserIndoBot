@@ -7,7 +7,7 @@ from telegram.ext.dispatcher import run_async
 from telegram.utils.helpers import escape_markdown
 
 import ubotindo.modules.sql.userinfo_sql as sql
-from ubotindo import dispatcher, SUDO_USERS
+from ubotindo import dispatcher, DEV_USERS
 from ubotindo.modules.disable import DisableAbleCommandHandler
 from ubotindo.modules.helper_funcs.extraction import extract_user
 from ubotindo.modules.helper_funcs.alternate import typing_action
@@ -103,8 +103,8 @@ def set_about_bio(update, context):
         if user_id == message.from_user.id:
             message.reply_text("Are you looking to change your own ... ?? That 's it.")
             return
-        elif user_id == context.bot.id and sender.id not in SUDO_USERS:
-            message.reply_text(" Only SUDO USERS can change my information.")
+        elif user_id == context.bot.id and sender.id not in DEV_USERS :
+            message.reply_text(" Only DEV USERS can change my information.")
             return
 
         text = message.text

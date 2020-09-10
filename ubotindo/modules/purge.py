@@ -1,4 +1,4 @@
-from ubotindo import client, SUDO_USERS
+from ubotindo import client, SUDO_USERS, DEV_USERS
 
 import asyncio
 from telethon import events
@@ -11,7 +11,7 @@ async def is_administrator(user_id: int, message):
     async for user in client.iter_participants(
         message.chat_id, filter=ChannelParticipantsAdmins
     ):
-        if user_id == user.id or user_id in SUDO_USERS:
+        if user_id == user.id or user_id in SUDO_USERS or user_id in DEV_USERS:
             admin = True
             break
     return admin

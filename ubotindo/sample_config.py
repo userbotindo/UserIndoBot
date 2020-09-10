@@ -33,6 +33,9 @@ class Config(object):
     URL = None
 
     # OPTIONAL
+    DEV_USERS = (
+        []
+    )  # List of id's (not usernames) for users which have access to dev's command.
     SUDO_USERS = (
         []
     )  # List of id's (not usernames) for users which have sudo access to the bot.

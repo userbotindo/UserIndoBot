@@ -10,6 +10,7 @@ import ubotindo.modules.sql.global_bans_sql as sql
 from ubotindo import (
     dispatcher,
     OWNER_ID,
+    DEV_USERS,
     SUDO_USERS,
     SUPPORT_USERS,
     STRICT_GBAN,
@@ -79,6 +80,12 @@ def gban(update, context):
 
     if user_id == OWNER_ID:
         message.reply_text("Nice try -_- but I'm never gonna gban him.")
+        return
+
+    if int(user_id) in DEV_USERS:
+        message.reply_text(
+            "Whatt... How can i gban someone that does manage me +_+"
+        )
         return
 
     if int(user_id) in SUDO_USERS:
@@ -394,7 +401,7 @@ def __user_info__(user_id):
 
     text = "<b>Globally banned</b>: {}"
 
-    if int(user_id) in SUDO_USERS + SUPPORT_USERS:
+    if int(user_id) in DEV_USERS + SUDO_USERS + SUPPORT_USERS:
         return ""
     if is_gbanned:
         text = text.format("Yes")
@@ -433,18 +440,18 @@ GBAN_HANDLER = CommandHandler(
     "gban",
     gban,
     pass_args=True,
-    filters=CustomFilters.sudo_filter | CustomFilters.support_filter,
+    filters=CustomFilters.support_filter,
 )
 UNGBAN_HANDLER = CommandHandler(
     "ungban",
     ungban,
     pass_args=True,
-    filters=CustomFilters.sudo_filter | CustomFilters.support_filter,
+    filters=CustomFilters.support_filter,
 )
 GBAN_LIST = CommandHandler(
     "gbanlist",
     gbanlist,
-    filters=CustomFilters.sudo_filter | CustomFilters.support_filter,
+    filters=CustomFilters.support_filter,
 )
 
 GBAN_STATUS = CommandHandler(
