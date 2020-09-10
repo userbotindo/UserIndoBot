@@ -270,14 +270,6 @@ def ungban(update, context):
             pass
 
     sql.ungban_user(user_id)
-
-    context.bot.sendMessage(
-        GBAN_LOGS,
-        "User {} has been successfully un-gbanned!".format(
-            mention_html(user_chat.id, user_chat.first_name)
-        ),
-        parse_mode=ParseMode.HTML,
-    )
     message.reply_text("Person has been un-gbanned.")
 
 
