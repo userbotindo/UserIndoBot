@@ -3,6 +3,7 @@
 import requests, time
 
 from telegram import ParseMode
+from telegram import error
 from telegram.ext import run_async, CommandHandler
 
 from ubotindo import dispatcher, LASTFM_API_KEY
@@ -22,10 +23,12 @@ def set_user(update, context):
         del_msg = msg.reply_text(f"Username set as {username}!")
         
     else:
-    	del_error = msg.reply_text("That's not how this works...\nRun /setuser followed by your username!")
+    	del_msg = msg.reply_text("That's not how this works...\nRun /setuser followed by your username!")
     time.sleep(10)
-    del_error.delete()
-    del_msg.delete()
+    try:
+        del_msg.delete()
+    except error.BadRequest:
+        return
     
 
 
@@ -98,7 +101,11 @@ def last_fm(update, context):
 
     send = msg.reply_text(rep, parse_mode=ParseMode.HTML)
     time.sleep(60)
-    send.delete()
+    try:
+        send.delete()
+        msg.delete()
+    except error.BadRequest:
+        return
 
 
 SET_USER_HANDLER = CommandHandler("setuser", set_user, pass_args=True)
