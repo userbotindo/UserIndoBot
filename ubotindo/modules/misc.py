@@ -1,6 +1,8 @@
+import datetime
 import html
 import random, re
 import wikipedia
+from covid import Covid
 from typing import Optional, List
 from requests import get
 from tswift import Song
@@ -555,7 +557,72 @@ def stats(update, context):
     )
 
 
-# /ip is for private use
+@run_async
+@typing_action
+def covid(update, context):
+    message = update.effective_message
+    country = str(message.text[len(f'/covid '):])
+    data = Covid(source="worldometers")
+    
+    if country == '':
+        country = "world"
+        link = "https://www.worldometers.info/coronavirus"
+    elif country.lower() in ["south korea", "korea"]:
+        country = "s. korea"
+        link = "https://www.worldometers.info/coronavirus/country/south-korea"
+    else:
+        link = f"https://www.worldometers.info/coronavirus/country/{country}"
+    try:
+        c_case = data.get_status_by_country_name(country)
+    except Exception:
+        message.reply_text("An error have occured! Are you sure the country name is correct?")
+        return
+    total_tests = c_case['total_tests']
+    if total_tests == 0:
+        total_tests = "N/A"
+    else:
+        total_tests = format_integer(c_case['total_tests'])
+
+    date = datetime.datetime.now().strftime("%d %b %Y")
+
+    output = (
+        f"<b>Corona Virus Statistics in {c_case['country']}</b>\n"
+        f"<b>on {date}</b>\n\n"
+        f"<b>Confirmed Cases :</b> <code>{format_integer(c_case['confirmed'])}</code>\n"
+        f"<b>Active Cases :</b> <code>{format_integer(c_case['active'])}</code>\n"
+        f"<b>Deaths :</b> <code>{format_integer(c_case['deaths'])}</code>\n"
+        f"<b>Recovered :</b> <code>{format_integer(c_case['recovered'])}</code>\n\n"
+        f"<b>New Cases :</b> <code>{format_integer(c_case['new_cases'])}</code>\n"
+        f"<b>New Deaths :</b> <code>{format_integer(c_case['new_deaths'])}</code>\n"
+        f"<b>Critical Cases :</b> <code>{format_integer(c_case['critical'])}</code>\n"
+        f"<b>Total Tests :</b> <code>{total_tests}</code>\n\n"
+        f"Data provided by <a href='{link}'>Worldometer</a>")
+
+    message.reply_text(
+        output, parse_mode=ParseMode.HTML, disable_web_page_preview=True
+        )
+
+
+def format_integer(number, thousand_separator='.'):
+    def reverse(string):
+        string = "".join(reversed(string))
+        return string
+
+    s = reverse(str(number))
+    count = 0
+    result = ''
+    for char in s:
+        count = count + 1
+        if count % 3 == 0:
+            if len(s) == count:
+                result = char + result
+            else:
+                result = thousand_separator + char + result
+        else:
+            result = char + result
+    return result
+
+
 __help__ = """
 An "odds and ends" module for small, simple commands which don't really fit anywhere
 
@@ -567,6 +634,7 @@ An "odds and ends" module for small, simple commands which don't really fit anyw
  × /wall <query> : Get random wallpapers directly from bot! 
  × /reverse : Reverse searches image or stickers on google.
  × /lyrics <query> : You can either enter just the song name or both the artist and song name.
+ × /covid <country name>: Give stats about COVID-19.
  × /gdpr: Deletes your information from the bot's database. Private chats only.
  × /markdownhelp: Quick summary of how markdown works in telegram - can only be called in private chats.
 *Last.FM*
@@ -595,6 +663,7 @@ STAFFLIST_HANDLER = CommandHandler(
 )
 REDDIT_MEMES_HANDLER = DisableAbleCommandHandler("rmeme", rmemes)
 SRC_HANDLER = CommandHandler("source", src, filters=Filters.private)
+COVID_HANDLER = CommandHandler("covid", covid)
 
 dispatcher.add_handler(WALLPAPER_HANDLER)
 dispatcher.add_handler(UD_HANDLER)
@@ -610,3 +679,4 @@ dispatcher.add_handler(STAFFLIST_HANDLER)
 dispatcher.add_handler(REDDIT_MEMES_HANDLER)
 dispatcher.add_handler(SRC_HANDLER)
 dispatcher.add_handler(LYRICS_HANDLER)
+dispatcher.add_handler(COVID_HANDLER)
