@@ -1,5 +1,6 @@
 from typing import Optional
-import random, time
+import random
+from time import sleep
 from telegram import MessageEntity
 from telegram.error import BadRequest
 from telegram.ext import Filters, MessageHandler, run_async
@@ -34,7 +35,7 @@ def afk(update, context):
     msg = update.effective_message
     afksend = msg.reply_text(
         afkstr.format(update.effective_user.first_name, notice))
-    time.sleep(5)
+    sleep(5)
     afksend.delete()
 
 
@@ -64,7 +65,7 @@ def no_longer_afk(update, context):
             ]
             chosen_option = random.choice(options)
             unafk = update.effective_message.reply_text(chosen_option.format(firstname))
-            time.sleep(10)
+            sleep(10)
             unafk.delete()
         except BaseException:
             return
@@ -135,16 +136,20 @@ def check_afk(update, context, user_id, fst_name, userc_id):
             if int(userc_id) == int(user_id):
                 return
             res = "{} is afk".format(fst_name)
-            update.effective_message.reply_text(res)
+            noreason = update.effective_message.reply_text(res)
+            sleep(10)
+            noreason.delete()
         else:
             if int(userc_id) == int(user_id):
                 return
             res = "<b>{}</b> is away from keyboard! says it's because of <b>Reason:</b> <code>{}</code>".format(
                 fst_name, user.reason
             )
-            reply_afk = update.effective_message.reply_text(res, parse_mode="html")
-            time.sleep(10)
-            reply_afk.delete()
+            replafk = update.effective_message.reply_text(res, parse_mode="html")
+            sleep(10)
+            replafk.delete()
+            
+            
 
 
 def __gdpr__(user_id):
