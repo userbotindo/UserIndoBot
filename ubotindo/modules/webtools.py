@@ -23,18 +23,19 @@ def leavechat(update, context):
 	msg = update.effective_message
 	if args:
 		chat_id = int(args[0])
+		
 	else:
-		msg.reply_text(update.effective_message, "Bro.. idk Wheree I leave, Give Me ChatId!!")
+		msg.reply_text("Bro.. Give Me ChatId And boom!!")
 	try:
-		chat = context.bot.getChat(chat_id)
 		titlechat = context.bot.get_chat(chat_id).title
 		context.bot.sendMessage(chat_id, "I'm here trying to survive, but this world is too cruel, goodbye everyone 😌")
 		context.bot.leaveChat(chat_id)
 		msg.reply_text("I have left the group {}".format(titlechat))
 
 	except BadRequest as excp:
-		if excp.message == "Chat not found":
-			msg.reply_text("Sepertinya saya sudah keluar atau di tendang di grup tersebut")
+		if excp.message == "bot is not a member of the supergroup chat":
+			msg = update.effective_message.reply_text("I'Am not Joined The Group, Maybe You set wrong id or I Already Kicked out")
+			
 		else:
 			return
 

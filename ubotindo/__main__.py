@@ -37,13 +37,15 @@ from ubotindo.modules.helper_funcs.alternate import typing_action
 
 PM_START_TEXT = f"""
 Hey there! my name is *{dispatcher.bot.first_name}*. If you have any questions on how to use me, Click Help button.
+you have any questions on how to use me, Click Help button.
 
 I'm here to make your group management fun and easy!
-i have lots of handy features, such as flood control, a warning system, a note keeping system, and even replies on predetermined filters.
+I have lots of handy features ☺️ such as :
 
-==========================>
--> `Maintained by` @MoveAngel & [UserbotIndo Team](https://t.me/userbotindo)
-==========================>
+• flood control.         • Note'S keeping system.
+• Warning System.   • Predetermined Filters.
+
+*Managed With ❤️ By :* [UserbotIndo Team](https://t.me/userbotindo)
 
 Wanna Add me to your Group? Just click the button below!
 """

@@ -144,7 +144,7 @@ def check_afk(update, context, user_id, fst_name, userc_id):
             )
             reply_afk = update.effective_message.reply_text(res, parse_mode="html")
             time.sleep(10)
-            reply_afk.delete
+            reply_afk.delete()
 
 
 def __gdpr__(user_id):
