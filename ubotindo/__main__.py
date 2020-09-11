@@ -15,7 +15,7 @@ from ubotindo import (
     SUPPORT_USERS,
     updater,
     TOKEN,
-    ERROR_DUMP,
+    MESSAGE_DUMP,
     WEBHOOK,
     CERT_PATH,
     PORT,
@@ -36,7 +36,8 @@ from ubotindo.modules.helper_funcs.alternate import typing_action
 
 
 PM_START_TEXT = f"""
-Hey there! my name is *{dispatcher.bot.first_name}*. If you have any questions on how to use me, Click Help button.
+Hey there! my name is *{dispatcher.bot.first_name}*. 
+If you have any questions on how to use me, Click Help button.
 you have any questions on how to use me, Click Help button.
 
 I'm here to make your group management fun and easy!
@@ -258,7 +259,7 @@ def error_handler(update, context):
     if len(message) >= 4096:
         message = message[:4096]
     # Finally, send the message
-    context.bot.send_message(chat_id=ERROR_DUMP, text=message, parse_mode=ParseMode.HTML)
+    context.bot.send_message(chat_id=MESSAGE_DUMP, text=message, parse_mode=ParseMode.HTML)
 
 
 @run_async
