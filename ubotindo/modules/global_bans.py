@@ -84,7 +84,7 @@ def gban(update, context):
 
     if int(user_id) in DEV_USERS:
         message.reply_text(
-            "Whatt... How can i gban someone that does manage me +_+"
+            "Whatt... How can i gban someone that take care of me +_+"
         )
         return
 

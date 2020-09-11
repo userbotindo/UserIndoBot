@@ -131,7 +131,9 @@ SPEED_HANDLER = CommandHandler("speedtest", speedtst, filters=CustomFilters.sudo
 SYS_STATUS_HANDLER = CommandHandler(
     "sysinfo", system_status, filters=CustomFilters.dev_filter
 )
-LEAVECHAT_HANDLER = CommandHandler(["leavechat", "leavegroup", "leave"], leavechat, pass_args=True, filters=Filters.user(OWNER_ID))
+LEAVECHAT_HANDLER = CommandHandler(
+    ["leavechat", "leavegroup", "leave"], leavechat, pass_args=True, filters=CustomFilters.dev_filter
+)
 
 dispatcher.add_handler(IP_HANDLER)
 dispatcher.add_handler(SPEED_HANDLER)

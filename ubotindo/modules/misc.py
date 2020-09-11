@@ -168,8 +168,8 @@ def info(update, context):
     
     elif user.id in DEV_USERS:
         text += (
-            "\n\nThis person does maintain me! "
-            "Have the most command for me after my owner :)"
+            "\n\nThis person is one of my dev users! "
+            "\nHe has the most command for me after my owner."
         )
 
     elif user.id in SUDO_USERS:

@@ -10,6 +10,9 @@ from telegram.utils.helpers import escape_markdown
 
 from ubotindo import (
     dispatcher,
+    DEV_USERS,
+    SUDO_USERS,
+    SUPPORT_USERS,
     updater,
     TOKEN,
     ERROR_DUMP,
@@ -27,6 +30,7 @@ from ubotindo import (
 from ubotindo.modules import ALL_MODULES
 from ubotindo.modules.purge import client
 from ubotindo.modules.helper_funcs.chat_status import is_user_admin
+from ubotindo.modules.helper_funcs.filters import CustomFilters
 from ubotindo.modules.helper_funcs.misc import paginate_modules
 from ubotindo.modules.helper_funcs.alternate import typing_action
 
@@ -76,6 +80,35 @@ the things I can help you with.
  × /settings: in PM: will send you your settings for all supported modules.
    - in a group: will redirect you to pm, with all that chat's settings.
  \nClick on the buttons below to get documentation about specific modules!"""
+
+
+STAFF_HELP_STRINGS = """Hey there staff users. Nice to see you :)
+Here is all the staff's commands. Users above has the command access for all commands below.
+
+*OWNER*
+× /broadcast: Send a broadcast message to all chat that i'm currently in.
+× /staffids: Get all staff's you have.
+× /ip: Sends the bot's IP address to ssh in if necessary (PM only).
+
+*DEV USERS*
+× /dbcleanup: Clean my invalid database.
+× /leavemutedchats: Leave all chats where i can't send message.
+× /leave <chatid>: Tell me to leave the given group. (alias /leavechat /leavegroup).
+× /stats: List of all blacklists, filters, federations, gbans, etc from all group.
+× /getlink <chatid>: Get chat invite link.
+× /sysinfo: Get my system info.
+
+*SUDO USERS*
+× /snipe <chatid> <string>: Tell me to send a message to the given chat.
+× /echo <string>: Like snipe but on the current chat.
+× /chatlist: Get the list of chat that i'm currently in.
+× /ping: Start a ping test.
+× /speedtest: Start a speedtest from my server.
+
+*SUPPORT USERS*
+× /gban <userid>: global ban a user.
+× /ungban <userid>: remove currently gbanned user.
+× /gbanlist: Get the list of currently gbanned users."""
 
 
 IMPORTED = {}
@@ -159,7 +192,17 @@ def start(update, context):
         args = context.args
         if len(args) >= 1:
             if args[0].lower() == "help":
-                send_help(update.effective_chat.id, HELP_STRINGS)
+                user = update.effective_user
+                keyb = paginate_modules(0, HELPABLE, "help")
+
+                if user.id in DEV_USERS or user.id in SUDO_USERS or user.id in SUPPORT_USERS:
+                    keyb += [[InlineKeyboardButton(text="Staff", callback_data="help_staff")]]
+
+                send_help(
+                    update.effective_chat.id,
+                    HELP_STRINGS,
+                    InlineKeyboardMarkup(keyb)
+                )
 
             elif args[0].lower().startswith("stngs_"):
                 match = re.match("stngs_(.*)", args[0].lower())
@@ -219,7 +262,9 @@ def error_handler(update, context):
 @run_async
 def help_button(update, context):
     query = update.callback_query
+    user = update.effective_user
     mod_match = re.match(r"help_module\((.+?)\)", query.data)
+    staff_match = re.match(r"help_staff", query.data)
     back_match = re.match(r"help_back", query.data)
     try:
         if mod_match:
@@ -238,13 +283,25 @@ def help_button(update, context):
                 ),
             )
 
+        elif staff_match:
+            query.message.edit_text(
+                text=STAFF_HELP_STRINGS,
+                parse_mode=ParseMode.MARKDOWN,
+                reply_markup=InlineKeyboardMarkup(
+                    [[InlineKeyboardButton(text="⬅️ Back", callback_data="help_back")]]
+                ),
+            )
+
         elif back_match:
+            keyb = paginate_modules(0, HELPABLE, "help")
+            # Add aditional button if staff user detected
+            if user.id in DEV_USERS or user.id in SUDO_USERS or user.id in SUPPORT_USERS:
+                keyb += [[InlineKeyboardButton(text="Staff", callback_data="help_staff")]]
+
             query.message.edit_text(
                 text=HELP_STRINGS,
                 parse_mode=ParseMode.MARKDOWN,
-                reply_markup=InlineKeyboardMarkup(
-                    paginate_modules(0, HELPABLE, "help")
-                ),
+                reply_markup=InlineKeyboardMarkup(keyb)
             )
 
         # ensure no spinny white circle
@@ -263,8 +320,31 @@ def help_button(update, context):
 
 @run_async
 @typing_action
+def staff_help(update, context):
+    chat = update.effective_chat
+    user = update.effective_user
+
+    if chat.type != chat.PRIVATE:
+        update.effective_message.reply_text("Contact me in PM to get the list of staff's command")
+        return
+
+    if user.id in DEV_USERS or user.id in SUDO_USERS or user.id in SUPPORT_USERS:
+        update.effective_message.reply_text(
+            text=STAFF_HELP_STRINGS,
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=InlineKeyboardMarkup(
+                [[InlineKeyboardButton(text="Modules help", callback_data="help_back")]]
+            )
+        )
+    else:
+        update.effective_message.reply_text("You can't access this command")
+
+
+@run_async
+@typing_action
 def get_help(update, context):
     chat = update.effective_chat  # type: Optional[Chat]
+    user = update.effective_user
     args = update.effective_message.text.split(None, 1)
 
     # ONLY send help in PM
@@ -302,7 +382,12 @@ def get_help(update, context):
         )
 
     else:
-        send_help(chat.id, HELP_STRINGS)
+        keyb = paginate_modules(0, HELPABLE, "help")
+        # Add aditional button if staff user detected
+        if user.id in DEV_USERS or user.id in SUDO_USERS or user.id in SUPPORT_USERS:
+            keyb += [[InlineKeyboardButton(text="Staff", callback_data="help_staff")]]
+
+        send_help(chat.id, HELP_STRINGS, InlineKeyboardMarkup(keyb))
 
 
 def send_settings(chat_id, user_id, user=False):
@@ -526,6 +611,7 @@ def main():
 
     help_handler = CommandHandler("help", get_help)
     help_callback_handler = CallbackQueryHandler(help_button, pattern=r"help_")
+    help_staff_handler = CommandHandler("staffhelp", staff_help, filters=CustomFilters.support_filter)
 
     settings_handler = CommandHandler("settings", get_settings)
     settings_callback_handler = CallbackQueryHandler(settings_button, pattern=r"stngs_")
@@ -538,6 +624,7 @@ def main():
     dispatcher.add_handler(help_handler)
     dispatcher.add_handler(settings_handler)
     dispatcher.add_handler(help_callback_handler)
+    dispatcher.add_handler(help_staff_handler)
     dispatcher.add_handler(settings_callback_handler)
     dispatcher.add_handler(migrate_handler)
     dispatcher.add_handler(is_chat_allowed_handler)
