@@ -7,7 +7,7 @@ from telegram.ext import CommandHandler, CallbackQueryHandler, run_async, Filter
 from ubotindo.modules.helper_funcs.filters import CustomFilters
 import ubotindo.modules.sql.global_bans_sql as gban_sql
 import ubotindo.modules.sql.users_sql as user_sql
-from ubotindo import dispatcher, OWNER_ID, DEV_USERS
+from ubotindo import dispatcher, DEV_USERS
 
 
 def get_invalid_chats(bot: Bot, update: Update, remove: bool = False):
@@ -175,19 +175,17 @@ def callback_button(update, context):
     chat_id = update.effective_chat.id
     query_type = query.data
 
-    admin_list = [OWNER_ID, DEV_USERS]
-
     bot.answer_callback_query(query.id)
 
     if query_type == "db_leave_chat":
-        if query.from_user.id in admin_list:
+        if query.from_user.id in DEV_USERS:
             bot.editMessageText("Leaving chats ...", chat_id, message.message_id)
             chat_count = get_muted_chats(bot, update, True)
             bot.sendMessage(chat_id, f"Left {chat_count} chats.")
         else:
             query.answer("You are not allowed to use this.")
     elif query_type == "db_cleanup":
-        if query.from_user.id in admin_list:
+        if query.from_user.id in DEV_USERS:
             bot.editMessageText("Cleaning up DB ...", chat_id, message.message_id)
             invalid_chat_count = get_invalid_chats(bot, update, True)
             invalid_gban_count = get_invalid_gban(bot, update, True)
