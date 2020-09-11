@@ -19,7 +19,7 @@ from telegram.utils.helpers import mention_html
 
 import ubotindo.modules.sql.welcome_sql as sql
 from ubotindo.modules.sql.global_bans_sql import is_user_gbanned
-from ubotindo import dispatcher, OWNER_ID, LOGGER, MESSAGE_DUMP, spamwtc
+from ubotindo import dispatcher, OWNER_ID, DEV_USERS, LOGGER, MESSAGE_DUMP, spamwtc
 from ubotindo.modules.helper_funcs.chat_status import user_admin, is_user_ban_protected
 from ubotindo.modules.helper_funcs.misc import (
     build_keyboard,
@@ -186,7 +186,15 @@ def new_member(update, context):
             # Give the owner a special welcome
             if new_mem.id == OWNER_ID:
                 update.effective_message.reply_text(
-                    "Master is in the houseeee, let's get this party started!",
+                    "My Owner is in the houseeee, let's get this party started!",
+                    reply_to_message_id=reply,
+                )
+                continue
+                
+            # Give the DEV a special welcome
+            if new_mem.id in DEV_USERS:
+                update.effective_message.reply_text(
+                    "My Dev Here, Let's See What Happened Now.. 🔥",
                     reply_to_message_id=reply,
                 )
                 continue
