@@ -6,7 +6,8 @@ from telegram import (
     ParseMode,
     InlineKeyboardMarkup,
     InlineKeyboardButton,
-    ChatPermissions)
+    ChatPermissions,
+)
 from telegram.error import BadRequest
 from telegram.ext import (
     MessageHandler,
@@ -190,7 +191,7 @@ def new_member(update, context):
                     reply_to_message_id=reply,
                 )
                 continue
-                
+
             # Give the DEV a special welcome
             if new_mem.id in DEV_USERS:
                 update.effective_message.reply_text(

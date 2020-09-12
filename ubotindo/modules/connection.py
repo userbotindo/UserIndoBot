@@ -121,7 +121,12 @@ def connect_chat(update, context):
             ismember = getstatusadmin.status in ("member")
             isallow = sql.allow_connect_to_chat(connect_chat)
 
-            if (isadmin) or (isallow and ismember) or (user.id in SUDO_USERS) or (user.id in DEV_USERS):
+            if (
+                (isadmin)
+                or (isallow and ismember)
+                or (user.id in SUDO_USERS)
+                or (user.id in DEV_USERS)
+            ):
                 connection_status = sql.connect(
                     update.effective_message.from_user.id, connect_chat
                 )
@@ -216,7 +221,12 @@ def connect_chat(update, context):
         isadmin = getstatusadmin.status in ("administrator", "creator")
         ismember = getstatusadmin.status in ("member")
         isallow = sql.allow_connect_to_chat(chat.id)
-        if (isadmin) or (isallow and ismember) or (user.id in SUDO_USERS) or (user.id in DEV_USERS):
+        if (
+            (isadmin)
+            or (isallow and ismember)
+            or (user.id in SUDO_USERS)
+            or (user.id in DEV_USERS)
+        ):
             connection_status = sql.connect(
                 update.effective_message.from_user.id, chat.id
             )
@@ -348,7 +358,12 @@ def connect_button(update, context):
         ismember = getstatusadmin.status in ("member")
         isallow = sql.allow_connect_to_chat(target_chat)
 
-        if (isadmin) or (isallow and ismember) or (user.id in SUDO_USERS) or (user.id in DEV_USERS):
+        if (
+            (isadmin)
+            or (isallow and ismember)
+            or (user.id in SUDO_USERS)
+            or (user.id in DEV_USERS)
+        ):
             connection_status = sql.connect(query.from_user.id, target_chat)
 
             if connection_status:

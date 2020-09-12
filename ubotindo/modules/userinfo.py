@@ -103,7 +103,7 @@ def set_about_bio(update, context):
         if user_id == message.from_user.id:
             message.reply_text("Are you looking to change your own ... ?? That 's it.")
             return
-        elif user_id == context.bot.id and sender.id not in DEV_USERS :
+        elif user_id == context.bot.id and sender.id not in DEV_USERS:
             message.reply_text(" Only DEV USERS can change my information.")
             return
 

@@ -66,7 +66,7 @@ buttons += [
     [
         InlineKeyboardButton(
             text="Help & Commands ❔", url=f"t.me/{dispatcher.bot.username}?start=help"
-            ),
+        ),
         InlineKeyboardButton(text="Support Group 🎗️", url="https://t.me/userbotindo"),
     ]
 ]
@@ -199,13 +199,17 @@ def start(update, context):
                 user = update.effective_user
                 keyb = paginate_modules(0, HELPABLE, "help")
 
-                if user.id in DEV_USERS or user.id in SUDO_USERS or user.id in SUPPORT_USERS:
-                    keyb += [[InlineKeyboardButton(text="Staff", callback_data="help_staff")]]
+                if (
+                    user.id in DEV_USERS
+                    or user.id in SUDO_USERS
+                    or user.id in SUPPORT_USERS
+                ):
+                    keyb += [
+                        [InlineKeyboardButton(text="Staff", callback_data="help_staff")]
+                    ]
 
                 send_help(
-                    update.effective_chat.id,
-                    HELP_STRINGS,
-                    InlineKeyboardMarkup(keyb)
+                    update.effective_chat.id, HELP_STRINGS, InlineKeyboardMarkup(keyb)
                 )
 
             elif args[0].lower().startswith("stngs_"):
@@ -260,7 +264,9 @@ def error_handler(update, context):
     if len(message) >= 4096:
         message = message[:4096]
     # Finally, send the message
-    context.bot.send_message(chat_id=MESSAGE_DUMP, text=message, parse_mode=ParseMode.HTML)
+    context.bot.send_message(
+        chat_id=MESSAGE_DUMP, text=message, parse_mode=ParseMode.HTML
+    )
 
 
 @run_async
@@ -299,13 +305,19 @@ def help_button(update, context):
         elif back_match:
             keyb = paginate_modules(0, HELPABLE, "help")
             # Add aditional button if staff user detected
-            if user.id in DEV_USERS or user.id in SUDO_USERS or user.id in SUPPORT_USERS:
-                keyb += [[InlineKeyboardButton(text="Staff", callback_data="help_staff")]]
+            if (
+                user.id in DEV_USERS
+                or user.id in SUDO_USERS
+                or user.id in SUPPORT_USERS
+            ):
+                keyb += [
+                    [InlineKeyboardButton(text="Staff", callback_data="help_staff")]
+                ]
 
             query.message.edit_text(
                 text=HELP_STRINGS,
                 parse_mode=ParseMode.MARKDOWN,
-                reply_markup=InlineKeyboardMarkup(keyb)
+                reply_markup=InlineKeyboardMarkup(keyb),
             )
 
         # ensure no spinny white circle
@@ -329,7 +341,9 @@ def staff_help(update, context):
     user = update.effective_user
 
     if chat.type != chat.PRIVATE:
-        update.effective_message.reply_text("Contact me in PM to get the list of staff's command")
+        update.effective_message.reply_text(
+            "Contact me in PM to get the list of staff's command"
+        )
         return
 
     if user.id in DEV_USERS or user.id in SUDO_USERS or user.id in SUPPORT_USERS:
@@ -338,7 +352,7 @@ def staff_help(update, context):
             parse_mode=ParseMode.MARKDOWN,
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton(text="Modules help", callback_data="help_back")]]
-            )
+            ),
         )
     else:
         update.effective_message.reply_text("You can't access this command")
@@ -615,7 +629,9 @@ def main():
 
     help_handler = CommandHandler("help", get_help)
     help_callback_handler = CallbackQueryHandler(help_button, pattern=r"help_")
-    help_staff_handler = CommandHandler("staffhelp", staff_help, filters=CustomFilters.support_filter)
+    help_staff_handler = CommandHandler(
+        "staffhelp", staff_help, filters=CustomFilters.support_filter
+    )
 
     settings_handler = CommandHandler("settings", get_settings)
     settings_callback_handler = CallbackQueryHandler(settings_button, pattern=r"stngs_")

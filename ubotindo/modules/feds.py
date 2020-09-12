@@ -13,7 +13,8 @@ from telegram import (
     MessageEntity,
     InlineKeyboardMarkup,
     InlineKeyboardButton,
-    ChatAction)
+    ChatAction,
+)
 from telegram.ext import run_async, CommandHandler, CallbackQueryHandler
 from telegram.utils.helpers import mention_html, mention_markdown
 
@@ -334,7 +335,11 @@ def user_join_fed(update, context):
 
     fed_id = sql.get_fed_id(chat.id)
 
-    if is_user_fed_owner(fed_id, user.id) or user.id in SUDO_USERS or user.id in DEV_USERS:
+    if (
+        is_user_fed_owner(fed_id, user.id)
+        or user.id in SUDO_USERS
+        or user.id in DEV_USERS
+    ):
         user_id = extract_user(msg, args)
         if user_id:
             user = context.bot.get_chat(user_id)

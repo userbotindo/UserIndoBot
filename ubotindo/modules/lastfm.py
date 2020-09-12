@@ -21,15 +21,16 @@ def set_user(update, context):
         username = " ".join(args)
         sql.set_user(user, username)
         del_msg = msg.reply_text(f"Username set as {username}!")
-        
+
     else:
-    	del_msg = msg.reply_text("That's not how this works...\nRun /setuser followed by your username!")
+        del_msg = msg.reply_text(
+            "That's not how this works...\nRun /setuser followed by your username!"
+        )
     time.sleep(10)
     try:
         del_msg.delete()
     except error.BadRequest:
         return
-    
 
 
 @run_async

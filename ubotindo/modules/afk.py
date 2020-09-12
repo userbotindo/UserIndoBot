@@ -33,8 +33,7 @@ def afk(update, context):
     sql.set_afk(update.effective_user.id, reason)
     afkstr = random.choice(fun.AFK)
     msg = update.effective_message
-    afksend = msg.reply_text(
-        afkstr.format(update.effective_user.first_name, notice))
+    afksend = msg.reply_text(afkstr.format(update.effective_user.first_name, notice))
     sleep(5)
     afksend.delete()
 
@@ -148,8 +147,6 @@ def check_afk(update, context, user_id, fst_name, userc_id):
             replafk = update.effective_message.reply_text(res, parse_mode="html")
             sleep(10)
             replafk.delete()
-            
-            
 
 
 def __gdpr__(user_id):
@@ -169,7 +166,9 @@ AFK_REGEX_HANDLER = DisableAbleMessageHandler(
     Filters.regex("(?i)brb"), afk, friendly="afk"
 )
 NO_AFK_HANDLER = MessageHandler(Filters.all & Filters.group, no_longer_afk)
-AFK_REPLY_HANDLER = MessageHandler(Filters.all & Filters.group & ~Filters.update.edited_message, reply_afk)
+AFK_REPLY_HANDLER = MessageHandler(
+    Filters.all & Filters.group & ~Filters.update.edited_message, reply_afk
+)
 
 
 dispatcher.add_handler(AFK_HANDLER, AFK_GROUP)

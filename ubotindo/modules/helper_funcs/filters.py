@@ -8,26 +8,31 @@ class CustomFilters(object):
     class _Supporters(BaseFilter):
         def filter(self, message: Message):
             return bool(
-                message.from_user and message.from_user.id in SUPPORT_USERS or
-                message.from_user and message.from_user.id in SUDO_USERS or
-                message.from_user and message.from_user.id in DEV_USERS
-                )
+                message.from_user
+                and message.from_user.id in SUPPORT_USERS
+                or message.from_user
+                and message.from_user.id in SUDO_USERS
+                or message.from_user
+                and message.from_user.id in DEV_USERS
+            )
 
     support_filter = _Supporters()
 
     class _Sudoers(BaseFilter):
         def filter(self, message: Message):
             return bool(
-                message.from_user and message.from_user.id in SUDO_USERS or
-                message.from_user and message.from_user.id in DEV_USERS
-                )
+                message.from_user
+                and message.from_user.id in SUDO_USERS
+                or message.from_user
+                and message.from_user.id in DEV_USERS
+            )
 
     sudo_filter = _Sudoers()
 
     class _Devs(BaseFilter):
         def filter(self, message: Message):
             return bool(message.from_user and message.from_user.id in DEV_USERS)
-    
+
     dev_filter = _Devs()
 
     class _MimeType(BaseFilter):

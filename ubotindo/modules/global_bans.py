@@ -83,9 +83,7 @@ def gban(update, context):
         return
 
     if int(user_id) in DEV_USERS:
-        message.reply_text(
-            "Whatt... How can i gban someone that take care of me +_+"
-        )
+        message.reply_text("Whatt... How can i gban someone that take care of me +_+")
         return
 
     if int(user_id) in SUDO_USERS:

@@ -121,11 +121,15 @@ def info(update, context):
     text = (
         "<b>USER INFO</b>:"
         "\n<b>ID:</b> <code>{}</code>"
-        "\n<b>First Name:</b> <code>{}</code>".format(user.id, html.escape(user.first_name))
+        "\n<b>First Name:</b> <code>{}</code>".format(
+            user.id, html.escape(user.first_name)
+        )
     )
 
     if user.last_name:
-        text += "\n<b>Last Name:</b> <code>{}</code>".format(html.escape(user.last_name))
+        text += "\n<b>Last Name:</b> <code>{}</code>".format(
+            html.escape(user.last_name)
+        )
 
     if user.username:
         text += "\n<b>Username:</b> @{}".format(html.escape(user.username))
@@ -135,24 +139,24 @@ def info(update, context):
     text += "\n<b>Number of profile pics:</b> <code>{}</code>".format(
         context.bot.get_user_profile_photos(user.id).total_count
     )
-    
-    if chat.type != "private":
-       status = context.bot.get_chat_member(chat.id, user.id).status
-       if status:
-          _stext = "\n<b>Status:</b> <code>{}</code>"
 
-       afk_st = is_afk(user.id)
-       if afk_st:
-          text += _stext.format("Away From Keyboard")
-       else:
-          status = context.bot.get_chat_member(chat.id, user.id).status
-          if status:
-              if status in {"left", "kicked"}:
-                  text += _stext.format("Absent")
-              elif status == "member":
-                  text += _stext.format("Present")
-              elif status in {"administrator", "creator"}:
-                  text += _stext.format("Admin")
+    if chat.type != "private":
+        status = context.bot.get_chat_member(chat.id, user.id).status
+        if status:
+            _stext = "\n<b>Status:</b> <code>{}</code>"
+
+        afk_st = is_afk(user.id)
+        if afk_st:
+            text += _stext.format("Away From Keyboard")
+        else:
+            status = context.bot.get_chat_member(chat.id, user.id).status
+            if status:
+                if status in {"left", "kicked"}:
+                    text += _stext.format("Absent")
+                elif status == "member":
+                    text += _stext.format("Present")
+                elif status in {"administrator", "creator"}:
+                    text += _stext.format("Admin")
 
     try:
         sw = spamwtc.get_ban(int(user.id))
@@ -167,7 +171,7 @@ def info(update, context):
 
     if user.id == OWNER_ID:
         text += "\n\nAye this guy is my owner.\nI would never do anything against him!"
-    
+
     elif user.id in DEV_USERS:
         text += (
             "\n\nThis person is one of my dev users! "
@@ -561,10 +565,10 @@ def stats(update, context):
 @typing_action
 def covid(update, context):
     message = update.effective_message
-    country = str(message.text[len(f'/covid '):])
+    country = str(message.text[len(f"/covid ") :])
     data = Covid(source="worldometers")
-    
-    if country == '':
+
+    if country == "":
         country = "world"
         link = "https://www.worldometers.info/coronavirus"
     elif country.lower() in ["south korea", "korea"]:
@@ -575,13 +579,15 @@ def covid(update, context):
     try:
         c_case = data.get_status_by_country_name(country)
     except Exception:
-        message.reply_text("An error have occured! Are you sure the country name is correct?")
+        message.reply_text(
+            "An error have occured! Are you sure the country name is correct?"
+        )
         return
-    total_tests = c_case['total_tests']
+    total_tests = c_case["total_tests"]
     if total_tests == 0:
         total_tests = "N/A"
     else:
-        total_tests = format_integer(c_case['total_tests'])
+        total_tests = format_integer(c_case["total_tests"])
 
     date = datetime.datetime.now().strftime("%d %b %Y")
 
@@ -596,21 +602,20 @@ def covid(update, context):
         f"<b>New Deaths :</b> <code>{format_integer(c_case['new_deaths'])}</code>\n"
         f"<b>Critical Cases :</b> <code>{format_integer(c_case['critical'])}</code>\n"
         f"<b>Total Tests :</b> <code>{total_tests}</code>\n\n"
-        f"Data provided by <a href='{link}'>Worldometer</a>")
+        f"Data provided by <a href='{link}'>Worldometer</a>"
+    )
 
-    message.reply_text(
-        output, parse_mode=ParseMode.HTML, disable_web_page_preview=True
-        )
+    message.reply_text(output, parse_mode=ParseMode.HTML, disable_web_page_preview=True)
 
 
-def format_integer(number, thousand_separator='.'):
+def format_integer(number, thousand_separator="."):
     def reverse(string):
         string = "".join(reversed(string))
         return string
 
     s = reverse(str(number))
     count = 0
-    result = ''
+    result = ""
     for char in s:
         count = count + 1
         if count % 3 == 0:

@@ -304,11 +304,15 @@ def warns(update, context):
 
         if reasons:
             if conn:
-                text = "This user has {}/{} warnings, in *{}* for the following reasons:".format(num_warns, limit, chat_name)
+                text = "This user has {}/{} warnings, in *{}* for the following reasons:".format(
+                    num_warns, limit, chat_name
+                )
             else:
-                text = "This user has {}/{} warnings, for the following reasons:".format(
-                    num_warns, 
-                    limit,
+                text = (
+                    "This user has {}/{} warnings, for the following reasons:".format(
+                        num_warns,
+                        limit,
+                    )
                 )
             for reason in reasons:
                 text += "\n {}. {}".format(num, reason)
@@ -319,7 +323,11 @@ def warns(update, context):
                 update.effective_message.reply_text(msg, parse_mode="markdown")
         else:
             update.effective_message.reply_text(
-                "User has {}/{} warnings, but no reasons for any of them.".format(num_warns, limit), parse_mode="markdown")
+                "User has {}/{} warnings, but no reasons for any of them.".format(
+                    num_warns, limit
+                ),
+                parse_mode="markdown",
+            )
     else:
         update.effective_message.reply_text("This user hasn't got any warnings!")
 
@@ -366,7 +374,9 @@ def add_warn_filter(update, context):
     sql.add_warn_filter(chat_id, keyword, content)
 
     update.effective_message.reply_text(
-        "Warn filter added for `{}` in *{}*!".format(keyword, chat_name), parse_mode="markdown")
+        "Warn filter added for `{}` in *{}*!".format(keyword, chat_name),
+        parse_mode="markdown",
+    )
     raise DispatcherHandlerStop
 
 
@@ -496,7 +506,12 @@ def set_warn_limit(update, context) -> str:
                 msg.reply_text("The minimum warn limit is 3!")
             else:
                 sql.set_warn_limit(chat_id, int(args[0]))
-                msg.reply_text("Updated the warn limit to `{}` in *{}*".format(escape_markdown(args[0]), chat_name), parse_mode="markdown")
+                msg.reply_text(
+                    "Updated the warn limit to `{}` in *{}*".format(
+                        escape_markdown(args[0]), chat_name
+                    ),
+                    parse_mode="markdown",
+                )
                 return (
                     "<b>{}:</b>"
                     "\n#SET_WARN_LIMIT"
@@ -557,7 +572,7 @@ def set_warn_strength(update, context):
                 "<b>{}:</b>\n"
                 "<b>Admin:</b> {}\n"
                 "Has disabled strong warns. Users will only be kicked.".format(
-                    chat_name , mention_html(user.id, user.first_name)
+                    chat_name, mention_html(user.id, user.first_name)
                 )
             )
 

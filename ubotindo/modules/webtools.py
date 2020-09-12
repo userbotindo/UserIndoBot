@@ -19,27 +19,32 @@ from ubotindo.modules.helper_funcs.alternate import typing_action
 @run_async
 @typing_action
 def leavechat(update, context):
-	args = context.args
-	msg = update.effective_message
-	if args:
-		chat_id = int(args[0])
-		
-	else:
-		msg.reply_text("Bro.. Give Me ChatId And boom!!")
-	try:
-		titlechat = context.bot.get_chat(chat_id).title
-		context.bot.sendMessage(chat_id, "I'm here trying to survive, but this world is too cruel, goodbye everyone 😌")
-		context.bot.leaveChat(chat_id)
-		msg.reply_text("I have left the group {}".format(titlechat))
+    args = context.args
+    msg = update.effective_message
+    if args:
+        chat_id = int(args[0])
 
-	except BadRequest as excp:
-		if excp.message == "bot is not a member of the supergroup chat":
-			msg = update.effective_message.reply_text("I'Am not Joined The Group, Maybe You set wrong id or I Already Kicked out")
-			
-		else:
-			return
+    else:
+        msg.reply_text("Bro.. Give Me ChatId And boom!!")
+    try:
+        titlechat = context.bot.get_chat(chat_id).title
+        context.bot.sendMessage(
+            chat_id,
+            "I'm here trying to survive, but this world is too cruel, goodbye everyone 😌",
+        )
+        context.bot.leaveChat(chat_id)
+        msg.reply_text("I have left the group {}".format(titlechat))
 
-			
+    except BadRequest as excp:
+        if excp.message == "bot is not a member of the supergroup chat":
+            msg = update.effective_message.reply_text(
+                "I'Am not Joined The Group, Maybe You set wrong id or I Already Kicked out"
+            )
+
+        else:
+            return
+
+
 @typing_action
 @run_async
 def ping(update, context):
@@ -51,7 +56,7 @@ def ping(update, context):
     message.edit_text(
         "*Pong!!!*\n`{}ms`".format(ping_time), parse_mode=ParseMode.MARKDOWN
     )
-    
+
 
 @run_async
 @typing_action
@@ -117,9 +122,9 @@ def system_status(update, context):
 
 def speed_convert(size):
     """Hi human, you can't read bytes?"""
-    power = 2**10
+    power = 2 ** 10
     zero = 0
-    units = {0: '', 1: 'Kb/s', 2: 'Mb/s', 3: 'Gb/s', 4: 'Tb/s'}
+    units = {0: "", 1: "Kb/s", 2: "Mb/s", 3: "Gb/s", 4: "Tb/s"}
     while size > power:
         size /= power
         zero += 1
@@ -133,7 +138,10 @@ SYS_STATUS_HANDLER = CommandHandler(
     "sysinfo", system_status, filters=CustomFilters.dev_filter
 )
 LEAVECHAT_HANDLER = CommandHandler(
-    ["leavechat", "leavegroup", "leave"], leavechat, pass_args=True, filters=CustomFilters.dev_filter
+    ["leavechat", "leavegroup", "leave"],
+    leavechat,
+    pass_args=True,
+    filters=CustomFilters.dev_filter,
 )
 
 dispatcher.add_handler(IP_HANDLER)

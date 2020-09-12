@@ -268,7 +268,11 @@ def gbun(update, context):
 
     if update.effective_message.chat.type == "private":
         return
-    if int(user.id) in SUDO_USERS or int(user.id) in SUPPORT_USERS or int(user.id) in DEV_USERS:
+    if (
+        int(user.id) in SUDO_USERS
+        or int(user.id) in SUPPORT_USERS
+        or int(user.id) in DEV_USERS
+    ):
         context.bot.sendMessage(chat.id, (random.choice(fun.GBUN)))
 
 
@@ -291,7 +295,9 @@ def snipe(update, context):
                 "Couldn't send the message. Perhaps I'm not part of that group?"
             )
     else:
-        update.effective_message.reply_text("Where should i send??\nGive me the chat id!")
+        update.effective_message.reply_text(
+            "Where should i send??\nGive me the chat id!"
+        )
 
 
 @run_async
