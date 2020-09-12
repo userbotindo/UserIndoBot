@@ -203,9 +203,12 @@ def pin(update, context):
     return ""
 
 
+@run_async
+@bot_admin
 @can_pin
 @user_admin
-@run_async
+@loggable
+@typing_action
 def permanent_pin_set(update, context) -> str:
     user = update.effective_user
     chat = update.effective_chat
@@ -216,7 +219,6 @@ def permanent_pin_set(update, context) -> str:
     if conn:
         chat = dispatcher.bot.getChat(conn)
         chat_id = conn
-        dispatcher.bot.getChat(conn).title
         if not args:
             get_permapin = sql.get_permapin(chat_id)
             text_maker = "Permanent pin is currently set:`{}`".format(
@@ -249,7 +251,6 @@ def permanent_pin_set(update, context) -> str:
             return ""
         chat = update.effective_chat
         chat_id = update.effective_chat.id
-        update.effective_message.chat.title
         if update.effective_message.reply_to_message:
             prev_message = update.effective_message.reply_to_message.message_id
         elif len(args) >= 1 and args[0] == "off":
@@ -361,7 +362,6 @@ def invite(update, context):
     user = update.effective_user
     msg = update.effective_message
     chat = update.effective_chat
-    context.args
 
     conn = connected(context.bot, update, chat, user.id, need_admin=True)
     if conn:

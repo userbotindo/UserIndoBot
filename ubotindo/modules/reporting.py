@@ -85,7 +85,6 @@ def report(update, context) -> str:
         reported_user = message.reply_to_message.from_user  # type: Optional[User]
         chat_name = chat.title or chat.first or chat.username
         admin_list = chat.get_administrators()
-        update.effective_message
 
         isadmeme = chat.get_member(reported_user.id).status
         if isadmeme == "administrator" or isadmeme == "creator":
@@ -245,8 +244,8 @@ an easy way to call all admins.
 
 *Admin only:*
  × /reports <on/off>: Change report setting, or view current status.
-   • If done in pm, toggles your status.
-   • If in chat, toggles that chat's status.
+   × If done in pm, toggles your status.
+   × If in chat, toggles that chat's status.
 
 To report a user, simply reply to user's message with @admin or /report. \
 This message tags all the chat admins; same as if they had been @'ed.

@@ -57,7 +57,6 @@ def get(bot, update, notename, show_none=True, no_format=False):
     conn = connected(bot, update, chat, user.id, need_admin=False)
     if conn:
         chat_id = conn
-        user.id
     else:
         chat_id = update.effective_chat.id
 
@@ -370,7 +369,7 @@ def clear_notes(update, context):
                     [
                         [
                             InlineKeyboardButton(
-                                text="Yes I'm sure️", callback_data="rmnotes_true"
+                                text="Yes I'm sure", callback_data="rmnotes_true"
                             )
                         ],
                         [
