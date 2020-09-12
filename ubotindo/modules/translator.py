@@ -1,4 +1,3 @@
-from typing import Optional, List
 from gtts import gTTS
 import os
 import requests

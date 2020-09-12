@@ -1,6 +1,5 @@
 import html
 import os
-from typing import Optional
 
 from telegram import ParseMode
 from telegram.error import BadRequest
@@ -217,7 +216,7 @@ def permanent_pin_set(update, context) -> str:
     if conn:
         chat = dispatcher.bot.getChat(conn)
         chat_id = conn
-        chat_name = dispatcher.bot.getChat(conn).title
+        dispatcher.bot.getChat(conn).title
         if not args:
             get_permapin = sql.get_permapin(chat_id)
             text_maker = "Permanent pin is currently set:`{}`".format(
@@ -250,7 +249,7 @@ def permanent_pin_set(update, context) -> str:
             return ""
         chat = update.effective_chat
         chat_id = update.effective_chat.id
-        chat_name = update.effective_message.chat.title
+        update.effective_message.chat.title
         if update.effective_message.reply_to_message:
             prev_message = update.effective_message.reply_to_message.message_id
         elif len(args) >= 1 and args[0] == "off":
@@ -362,7 +361,7 @@ def invite(update, context):
     user = update.effective_user
     msg = update.effective_message
     chat = update.effective_chat
-    args = context.args
+    context.args
 
     conn = connected(context.bot, update, chat, user.id, need_admin=True)
     if conn:

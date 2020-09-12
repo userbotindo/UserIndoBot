@@ -1,5 +1,5 @@
 import html
-from typing import Optional, List
+from typing import Optional
 
 from telegram import Message, Chat, User, ParseMode
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
@@ -85,7 +85,7 @@ def report(update, context) -> str:
         reported_user = message.reply_to_message.from_user  # type: Optional[User]
         chat_name = chat.title or chat.first or chat.username
         admin_list = chat.get_administrators()
-        messages = update.effective_message
+        update.effective_message
 
         isadmeme = chat.get_member(reported_user.id).status
         if isadmeme == "administrator" or isadmeme == "creator":

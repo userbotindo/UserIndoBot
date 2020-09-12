@@ -1,4 +1,3 @@
-from typing import Optional
 import random
 from time import sleep
 from telegram import MessageEntity

@@ -1,5 +1,5 @@
 import html
-from typing import Optional, List
+from typing import Optional
 
 from telegram import Message, User
 from telegram import ParseMode, MAX_MESSAGE_LENGTH

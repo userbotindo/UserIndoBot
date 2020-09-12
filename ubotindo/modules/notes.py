@@ -1,7 +1,6 @@
 import re, ast
 from html import escape
 from io import BytesIO
-from typing import Optional
 
 from telegram import (
     MAX_MESSAGE_LENGTH,
@@ -58,10 +57,9 @@ def get(bot, update, notename, show_none=True, no_format=False):
     conn = connected(bot, update, chat, user.id, need_admin=False)
     if conn:
         chat_id = conn
-        send_id = user.id
+        user.id
     else:
         chat_id = update.effective_chat.id
-        send_id = chat_id
 
     note = sql.get_note(chat_id, notename)
     message = update.effective_message

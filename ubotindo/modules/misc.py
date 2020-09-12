@@ -3,7 +3,7 @@ import html
 import random, re
 import wikipedia
 from covid import Covid
-from typing import Optional, List
+from typing import Optional
 from requests import get
 from tswift import Song
 

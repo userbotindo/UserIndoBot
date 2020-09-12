@@ -1,6 +1,5 @@
 import html
 import re
-from typing import Optional
 
 import telegram
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode, User

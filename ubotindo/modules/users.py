@@ -1,6 +1,5 @@
 from io import BytesIO
 from time import sleep
-from typing import Optional
 
 from telegram import TelegramError
 from telegram.error import BadRequest

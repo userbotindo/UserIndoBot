@@ -1,5 +1,4 @@
 from io import BytesIO
-from typing import Optional
 import uuid
 import re
 import json
@@ -504,7 +503,7 @@ def fed_admin(update, context):
 
     chat = update.effective_chat
     user = update.effective_user
-    args = context.args
+    context.args
 
     if chat.type == "private":
         send_message(
@@ -997,8 +996,8 @@ def unfban(update, context):
         isvalid = True
         fban_user_id = user_chat.id
         fban_user_name = user_chat.first_name
-        fban_user_lname = user_chat.last_name
-        fban_user_uname = user_chat.username
+        user_chat.last_name
+        user_chat.username
     except BadRequest as excp:
         if not str(user_id).isdigit():
             send_message(update.effective_message, excp.message)
@@ -1009,8 +1008,6 @@ def unfban(update, context):
         isvalid = False
         fban_user_id = int(user_id)
         fban_user_name = "user({})".format(user_id)
-        fban_user_lname = None
-        fban_user_uname = None
 
     if isvalid and user_chat.type != "private":
         message.reply_text("That's so not a user!")
@@ -1241,7 +1238,7 @@ def set_frules(update, context):
 @typing_action
 def get_frules(update, context):
     chat = update.effective_chat
-    args = context.args
+    context.args
 
     if chat.type == "private":
         send_message(
@@ -1545,7 +1542,7 @@ def fed_notif(update, context):
 def fed_chats(update, context):
     chat = update.effective_chat
     user = update.effective_user
-    args = context.args
+    context.args
 
     if chat.type == "private":
         send_message(
@@ -1858,7 +1855,7 @@ def del_fed_button(update, context):
 @run_async
 @typing_action
 def fed_stat_user(update, context):
-    user = update.effective_user
+    update.effective_user
     msg = update.effective_message
     args = context.args
 
@@ -2010,7 +2007,7 @@ def set_fed_log(update, context):
 def unset_fed_log(update, context):
     chat = update.effective_chat
     user = update.effective_user
-    msg = update.effective_message
+    update.effective_message
     args = context.args
 
     if chat.type == "private":
@@ -2052,7 +2049,7 @@ def unset_fed_log(update, context):
 def subs_feds(update, context):
     chat = update.effective_chat
     user = update.effective_user
-    msg = update.effective_message
+    update.effective_message
     args = context.args
 
     if chat.type == "private":
@@ -2118,7 +2115,7 @@ def subs_feds(update, context):
 def unsubs_feds(update, context):
     chat = update.effective_chat
     user = update.effective_user
-    msg = update.effective_message
+    update.effective_message
     args = context.args
 
     if chat.type == "private":
@@ -2184,8 +2181,8 @@ def unsubs_feds(update, context):
 def get_myfedsubs(update, context):
     chat = update.effective_chat
     user = update.effective_user
-    msg = update.effective_message
-    args = context.args
+    update.effective_message
+    context.args
 
     if chat.type == "private":
         send_message(
@@ -2231,10 +2228,10 @@ def get_myfedsubs(update, context):
 @run_async
 @typing_action
 def get_myfeds_list(update, context):
-    chat = update.effective_chat
+    update.effective_chat
     user = update.effective_user
-    msg = update.effective_message
-    args = context.args
+    update.effective_message
+    context.args
 
     fedowner = sql.get_user_owner_fed_full(user.id)
     if fedowner:

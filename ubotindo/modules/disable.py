@@ -143,7 +143,6 @@ if is_module_loaded(FILENAME):
         conn = connected(context.bot, update, chat, user.id, need_admin=True)
         if conn:
             chat = dispatcher.bot.getChat(conn)
-            chat_id = conn
             chat_name = dispatcher.bot.getChat(conn).title
         else:
             if update.effective_message.chat.type == "private":
@@ -153,7 +152,7 @@ if is_module_loaded(FILENAME):
                 )
                 return ""
             chat = update.effective_chat
-            chat_id = update.effective_chat.id
+            update.effective_chat.id
             chat_name = update.effective_message.chat.title
 
         if len(args) >= 1:
@@ -211,7 +210,6 @@ if is_module_loaded(FILENAME):
         conn = connected(context.bot, update, chat, user.id, need_admin=True)
         if conn:
             chat = dispatcher.bot.getChat(conn)
-            chat_id = conn
         else:
             if update.effective_message.chat.type == "private":
                 send_message(
@@ -220,7 +218,7 @@ if is_module_loaded(FILENAME):
                 )
                 return ""
             chat = update.effective_chat
-            chat_id = update.effective_chat.id
+            update.effective_chat.id
 
         text = build_curr_disabled(chat.id)
         send_message(update.effective_message, text, parse_mode=ParseMode.MARKDOWN)
