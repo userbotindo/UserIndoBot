@@ -217,7 +217,7 @@ if is_module_loaded(FILENAME):
                 )
                 return ""
             chat = update.effective_chat
-            
+
         text = build_curr_disabled(chat.id)
         send_message(update.effective_message, text, parse_mode=ParseMode.MARKDOWN)
 
