@@ -96,9 +96,7 @@ def get_welcome_type(msg: Message):
             else:
                 args = msg.reply_to_message.caption
         else:
-            args = msg.text.split(
-                None, 1
-            )  # use python's maxsplit to separate cmd and args
+            args = msg.text.split(None, 1)  # use python's maxsplit to separate cmd and args
     except AttributeError:
         args = False
 
@@ -141,20 +139,14 @@ def get_welcome_type(msg: Message):
     # determine what the contents of the filter are - text, image, sticker, etc
     if args:
         if msg.reply_to_message:
-            argumen = (
-                msg.reply_to_message.caption if msg.reply_to_message.caption else ""
-            )
-            offset = 0  # offset is no need since target was in reply
+            argumen = msg.reply_to_message.caption if msg.reply_to_message.caption else ""
+            offset = 0 # offset is no need since target was in reply
             entities = msg.reply_to_message.parse_entities()
         else:
             argumen = args[1]
-            offset = len(argumen) - len(
-                msg.text
-            )  # set correct offset relative to command + notename
+            offset = len(argumen) - len(msg.text)  # set correct offset relative to command + notename
             entities = msg.parse_entities()
-        text, buttons = button_markdown_parser(
-            argumen, entities=entities, offset=offset
-        )
+        text, buttons = button_markdown_parser(argumen, entities=entities, offset=offset)
 
     if not data_type:
         if text and buttons:

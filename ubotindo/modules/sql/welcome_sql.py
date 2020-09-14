@@ -5,8 +5,8 @@ from sqlalchemy import Column, String, Boolean, UnicodeText, Integer, BigInteger
 from ubotindo.modules.helper_funcs.msg_types import Types
 from ubotindo.modules.sql import SESSION, BASE
 
-DEFAULT_WELCOME = "Hi {first}, Nice To meet You Here 🙂"
-DEFAULT_GOODBYE = "{first} Nice.. Continue To Hell Way.."
+DEFAULT_WELCOME = "Hi {first}, how are you?"
+DEFAULT_GOODBYE = "{first} has left the game."
 
 
 class Welcome(BASE):
@@ -14,8 +14,8 @@ class Welcome(BASE):
     chat_id = Column(String(14), primary_key=True)
     should_welcome = Column(Boolean, default=True)
     should_goodbye = Column(Boolean, default=True)
-
     custom_content = Column(UnicodeText, default=None)
+
     custom_welcome = Column(UnicodeText, default=DEFAULT_WELCOME)
     welcome_type = Column(Integer, default=Types.TEXT.value)
 
@@ -159,26 +159,11 @@ def get_human_checks(user_id, chat_id):
         SESSION.close()
 
 
-def get_welc_mutes_pref(chat_id):
-    welcomemutes = SESSION.query(WelcomeMute).get(str(chat_id))
-    SESSION.close()
-
-    if welcomemutes:
-        return welcomemutes.welcomemutes
-
-    return False
-
-
 def get_welc_pref(chat_id):
     welc = SESSION.query(Welcome).get(str(chat_id))
     SESSION.close()
     if welc:
-        return (
-            welc.should_welcome,
-            welc.custom_welcome,
-            welc.custom_content,
-            welc.welcome_type,
-        )
+        return welc.should_welcome, welc.custom_welcome, welc.custom_content, welc.welcome_type
 
     else:
         # Welcome by default.
@@ -217,6 +202,16 @@ def get_clean_pref(chat_id):
     return False
 
 
+def get_welc_mutes_pref(chat_id):
+    welcomemutes = SESSION.query(WelcomeMute).get(str(chat_id))
+    SESSION.close()
+
+    if welcomemutes:
+        return welcomemutes.welcomemutes
+
+    return False
+
+
 def set_welc_preference(chat_id, should_welcome):
     with INSERTION_LOCK:
         curr = SESSION.query(Welcome).get(str(chat_id))
@@ -241,9 +236,7 @@ def set_gdbye_preference(chat_id, should_goodbye):
         SESSION.commit()
 
 
-def set_custom_welcome(
-    chat_id, custom_content, custom_welcome, welcome_type, buttons=None
-):
+def set_custom_welcome(chat_id, custom_content, custom_welcome, welcome_type, buttons=None):
     if buttons is None:
         buttons = []
 
