@@ -141,7 +141,7 @@ def speed_convert(size):
 @typing_action
 def gitpull(update, context):
     sent_msg = update.effective_message.reply_text(
-        "Pulling all changes from remote and then attempting to restart.")
+        "Pulling all changes from remote...")
     subprocess.Popen('git pull', stdout=subprocess.PIPE, shell=True)
 
     sent_msg_text = sent_msg.text + "\n\nChanges pulled... I guess..\nContinue to restart with /reboot "
