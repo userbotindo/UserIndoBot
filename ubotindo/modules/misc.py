@@ -1,5 +1,6 @@
 import datetime
 import html
+import os
 import random, re
 import wikipedia
 from covid import Covid
@@ -86,6 +87,7 @@ def get_id(update, context):
 
 
 @run_async
+@typing_action
 def info(update, context):
     args = context.args
     msg = update.effective_message  # type: Optional[Message]
@@ -382,6 +384,7 @@ def src(update, context):
 
 
 @run_async
+@typing_action
 def lyrics(update, context):
     msg = update.effective_message
     args = context.args
@@ -401,12 +404,13 @@ def lyrics(update, context):
             reply = "Song not found!"
         if len(reply) > 4090:
             with open("lyrics.txt", "w") as f:
-                f.write(f"{reply}\n\n\nOwO UwU OmO")
+                f.write(reply)
             with open("lyrics.txt", "rb") as f:
                 msg.reply_document(
                     document=f,
                     caption="Message length exceeded max limit! Sending as a text file.",
                 )
+            os.remove("lyrics.txt")
         else:
             msg.reply_text(reply)
 
