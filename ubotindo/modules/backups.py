@@ -330,9 +330,8 @@ def export_data(update, context):
         },
     }
     baccinfo = json.dumps(backup, indent=4)
-    f = open("Userindo-Bot{}.backup".format(chat_id), "w")
-    f.write(str(baccinfo))
-    f.close()
+    with open("Userindo-Bot{}.backup".format(chat_id), "w") as f:
+        f.write(str(baccinfo))
     context.bot.sendChatAction(current_chat_id, "upload_document")
     tgl = time.strftime("%H:%M:%S - %d/%m/%Y", time.localtime(time.time()))
     try:
