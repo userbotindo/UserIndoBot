@@ -1,0 +1,10 @@
+#!/usr/bin/bash
+
+# Attemp to Terminate and Remove previous session
+if [ -f ubotindo.session ]; then
+    kill $(pgrep -f 'sudo python3 -m ubotindo')
+    rm -f ubotindo.session-journal ubotindo.session
+fi
+
+# start
+sudo python3 -m ubotindo  

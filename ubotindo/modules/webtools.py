@@ -3,6 +3,7 @@ import requests
 import datetime
 import platform
 import time
+import os, subprocess, sys
 
 from pythonping import ping as ping3
 from psutil import cpu_percent, virtual_memory, disk_usage, boot_time
@@ -136,6 +137,26 @@ def speed_convert(size):
     return f"{round(size, 2)} {units[zero]}"
 
 
+@run_async
+@typing_action
+def gitpull(update, context):
+    sent_msg = update.effective_message.reply_text(
+        "Pulling all changes from remote and then attempting to restart.")
+    subprocess.Popen('git pull', stdout=subprocess.PIPE, shell=True)
+
+    sent_msg_text = sent_msg.text + "\n\nChanges pulled... I guess..\nContinue to restart with /reboot "
+    sent_msg.edit_text(sent_msg_text)
+
+
+@run_async
+@typing_action
+def restart(update, context):
+    update.effective_message.reply_text(
+        "Starting a new instance and shutting down this one")
+
+    os.system("bash start")
+
+
 IP_HANDLER = CommandHandler("ip", get_bot_ip, filters=Filters.chat(OWNER_ID))
 PING_HANDLER = CommandHandler("ping", ping, filters=CustomFilters.sudo_filter)
 SPEED_HANDLER = CommandHandler("speedtest", speedtst, filters=CustomFilters.sudo_filter)
@@ -148,9 +169,13 @@ LEAVECHAT_HANDLER = CommandHandler(
     pass_args=True,
     filters=CustomFilters.dev_filter,
 )
+GITPULL_HANDLER = CommandHandler("gitpull", gitpull, filters=CustomFilters.dev_filter)
+RESTART_HANDLER = CommandHandler("reboot", restart, filters=CustomFilters.dev_filter)
 
 dispatcher.add_handler(IP_HANDLER)
 dispatcher.add_handler(SPEED_HANDLER)
 dispatcher.add_handler(PING_HANDLER)
 dispatcher.add_handler(SYS_STATUS_HANDLER)
 dispatcher.add_handler(LEAVECHAT_HANDLER)
+dispatcher.add_handler(GITPULL_HANDLER)
+dispatcher.add_handler(RESTART_HANDLER)

@@ -95,6 +95,8 @@ Here is all the staff's commands. Users above has the command access for all com
 × /ip: Sends the bot's IP address to ssh in if necessary (PM only).
 
 *DEV USERS*
+× /gitpull: Pull latest update.
+× /reboot: Restart the bot.
 × /dbcleanup: Clean my invalid database.
 × /leavemutedchats: Leave all chats where i can't send message.
 × /leave <chatid>: Tell me to leave the given group. (alias /leavechat /leavegroup).
