@@ -40,7 +40,7 @@ jobs:
       # commit changes
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: 'pylint: auto'
+          commit_message: 'pylint: auto formatter fixes'
           commit_options: '--no-verify --signoff'
           repository: .
           commit_user_name: MoveAngel
