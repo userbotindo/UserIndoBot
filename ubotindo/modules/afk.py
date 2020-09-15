@@ -1,9 +1,11 @@
 import random
 from time import sleep
+
 from telegram import MessageEntity
 from telegram.error import BadRequest
 from telegram.ext import Filters, MessageHandler, run_async
 
+import ubotindo.modules.helper_funcs.fun_strings as fun
 from ubotindo import dispatcher
 from ubotindo.modules.disable import (
     DisableAbleCommandHandler,
@@ -11,7 +13,6 @@ from ubotindo.modules.disable import (
 )
 from ubotindo.modules.sql import afk_sql as sql
 from ubotindo.modules.users import get_user_id
-import ubotindo.modules.helper_funcs.fun_strings as fun
 
 AFK_GROUP = 7
 AFK_REPLY_GROUP = 8

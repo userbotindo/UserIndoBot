@@ -4,7 +4,7 @@ import sre_constants
 import telegram
 from telegram.ext import Filters, run_async
 
-from ubotindo import dispatcher, LOGGER
+from ubotindo import LOGGER, dispatcher
 from ubotindo.modules.disable import DisableAbleMessageHandler
 
 DELIMITERS = ("/", ":", "|", "_")
@@ -92,7 +92,7 @@ def sed(update, context):
         try:
 
             # Protects bot from retarded geys -_-
-            if infinite_checker(repl) == True:
+            if infinite_checker(repl):
                 return update.effective_message.reply_text("Nice try -_-")
 
             if "i" in flags and "g" in flags:

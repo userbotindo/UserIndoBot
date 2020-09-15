@@ -2,35 +2,33 @@ import re
 from html import escape
 
 import telegram
-from telegram import ParseMode, InlineKeyboardMarkup
+from telegram import InlineKeyboardMarkup, ParseMode
 from telegram.error import BadRequest
 from telegram.ext import (
     CommandHandler,
-    MessageHandler,
     DispatcherHandlerStop,
-    run_async,
     Filters,
+    MessageHandler,
+    run_async,
 )
-from telegram.utils.helpers import mention_html, escape_markdown
+from telegram.utils.helpers import escape_markdown, mention_html
 
-from ubotindo import dispatcher, LOGGER
+from ubotindo import LOGGER, dispatcher
+from ubotindo.modules.connection import connected
 from ubotindo.modules.disable import DisableAbleCommandHandler
+from ubotindo.modules.helper_funcs.alternate import send_message, typing_action
 from ubotindo.modules.helper_funcs.chat_status import user_admin
 from ubotindo.modules.helper_funcs.extraction import extract_text
 from ubotindo.modules.helper_funcs.filters import CustomFilters
 from ubotindo.modules.helper_funcs.misc import build_keyboard_parser
 from ubotindo.modules.helper_funcs.msg_types import get_filter_type
 from ubotindo.modules.helper_funcs.string_handling import (
-    split_quotes,
     button_markdown_parser,
     escape_invalid_curly_brackets,
     markdown_to_html,
+    split_quotes,
 )
 from ubotindo.modules.sql import cust_filters_sql as sql
-
-from ubotindo.modules.connection import connected
-
-from ubotindo.modules.helper_funcs.alternate import send_message, typing_action
 
 HANDLER_GROUP = 15
 
@@ -136,7 +134,8 @@ def filters(update, context):
         extracted = split_quotes(args[1])
         if len(extracted) < 1:
             return
-        # set trigger -> lower, so as to avoid adding duplicate filters with different cases
+        # set trigger -> lower, so as to avoid adding duplicate filters with
+        # different cases
         keyword = extracted[0].lower()
 
     # Add the filter
@@ -212,7 +211,7 @@ def filters(update, context):
     # This is an old method
     # sql.add_filter(chat_id, keyword, content, is_sticker, is_document, is_image, is_audio, is_voice, is_video, buttons)
 
-    if add == True:
+    if add:
         send_message(
             update.effective_message,
             "Saved filter '{}' in *{}*!".format(keyword, chat_name),
@@ -445,7 +444,8 @@ def reply_filter(update, context):
                             )
 
                 else:
-                    # LEGACY - all new filters will have has_markdown set to True.
+                    # LEGACY - all new filters will have has_markdown set to
+                    # True.
                     try:
                         send_message(update.effective_message, filt.reply)
                     except BadRequest as excp:

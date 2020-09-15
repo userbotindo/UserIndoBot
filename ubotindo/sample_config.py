@@ -23,7 +23,8 @@ class Config(object):
     TELETHON_ID = None
 
     # RECOMMENDED
-    SQLALCHEMY_DATABASE_URI = "sqldbtype://username:pw@hostname:port/db_name"  # needed for any database modules
+    # needed for any database modules
+    SQLALCHEMY_DATABASE_URI = "sqldbtype://username:pw@hostname:port/db_name"
     MESSAGE_DUMP = None  # needed to make sure 'save from' messages persist
     GBAN_LOGS = None
     LOAD = []
@@ -32,18 +33,17 @@ class Config(object):
     URL = None
 
     # OPTIONAL
-    DEV_USERS = (
-        []
-    )  # List of id's (not usernames) for users which have access to dev's command.
-    SUDO_USERS = (
-        []
-    )  # List of id's (not usernames) for users which have sudo access to the bot.
-    SUPPORT_USERS = (
-        []
-    )  # List of id's (not usernames) for users which are allowed to gban, but can also be banned.
-    WHITELIST_USERS = (
-        []
-    )  # List of id's (not usernames) for users which WONT be banned/kicked by the bot.
+    # List of id's (not usernames) for users which have access to dev's
+    # command.
+    DEV_USERS = ([])
+    # List of id's (not usernames) for users which have sudo access to the bot.
+    SUDO_USERS = ([])
+    # List of id's (not usernames) for users which are allowed to gban, but
+    # can also be banned.
+    SUPPORT_USERS = ([])
+    # List of id's (not usernames) for users which WONT be banned/kicked by
+    # the bot.
+    WHITELIST_USERS = ([])
     WHITELIST_CHATS = []
     BLACKLIST_CHATS = []
     DONATION_LINK = None  # EG, paypal
@@ -54,7 +54,9 @@ class Config(object):
     WORKERS = 8  # Number of subthreads to use. This is the recommended amount - see for yourself what works best!
     BAN_STICKER = None  # banhammer marie sticker
     ALLOW_EXCL = False  # DEPRECATED, USE BELOW INSTEAD! Allow ! commands as well as /
-    CUSTOM_CMD = False  # Set to ('/', '!') or whatever to enable it, like ALLOW_EXCL but with more custom handler!
+    # Set to ('/', '!') or whatever to enable it, like ALLOW_EXCL but with
+    # more custom handler!
+    CUSTOM_CMD = False
     API_OPENWEATHER = None  # OpenWeather API
     SPAMWATCH_API = None  # Your SpamWatch token
     WALL_API = None

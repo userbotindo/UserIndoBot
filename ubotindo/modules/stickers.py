@@ -1,11 +1,15 @@
-import os
 import math
+import os
 import urllib.request as urllib
-from PIL import Image
 from html import escape
 
-from telegram import ParseMode, InlineKeyboardMarkup, InlineKeyboardButton
-from telegram import TelegramError
+from PIL import Image
+from telegram import (
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    ParseMode,
+    TelegramError,
+)
 from telegram.ext import run_async
 from telegram.utils.helpers import mention_html
 

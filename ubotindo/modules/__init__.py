@@ -1,12 +1,14 @@
-from ubotindo import LOAD, NO_LOAD, LOGGER
 import sys
+
+from ubotindo import LOAD, LOGGER, NO_LOAD
 
 
 def __list_all_modules():
-    from os.path import dirname, basename, isfile
     import glob
+    from os.path import basename, dirname, isfile
 
-    # This generates a list of modules in this folder for the * in __main__ to work.
+    # This generates a list of modules in this folder for the * in __main__ to
+    # work.
     mod_paths = glob.glob(dirname(__file__) + "/*.py")
     all_modules = [
         basename(f)[:-3]

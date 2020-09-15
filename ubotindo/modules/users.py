@@ -3,11 +3,11 @@ from time import sleep
 
 from telegram import TelegramError
 from telegram.error import BadRequest
-from telegram.ext import MessageHandler, Filters, CommandHandler
+from telegram.ext import CommandHandler, Filters, MessageHandler
 from telegram.ext.dispatcher import run_async
 
 import ubotindo.modules.sql.users_sql as sql
-from ubotindo import dispatcher, OWNER_ID, LOGGER
+from ubotindo import LOGGER, OWNER_ID, dispatcher
 from ubotindo.modules.helper_funcs.filters import CustomFilters
 
 USERS_GROUP = 4

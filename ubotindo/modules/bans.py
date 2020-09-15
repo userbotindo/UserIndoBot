@@ -2,23 +2,23 @@ import html
 
 from telegram import ParseMode
 from telegram.error import BadRequest
-from telegram.ext import run_async, CommandHandler, Filters
+from telegram.ext import CommandHandler, Filters, run_async
 from telegram.utils.helpers import mention_html
 
-from ubotindo import dispatcher, LOGGER
+from ubotindo import LOGGER, dispatcher
 from ubotindo.modules.disable import DisableAbleCommandHandler
+from ubotindo.modules.helper_funcs.admin_rights import user_can_ban
+from ubotindo.modules.helper_funcs.alternate import typing_action
 from ubotindo.modules.helper_funcs.chat_status import (
     bot_admin,
-    user_admin,
-    is_user_ban_protected,
     can_restrict,
     is_user_admin,
+    is_user_ban_protected,
     is_user_in_chat,
+    user_admin,
 )
 from ubotindo.modules.helper_funcs.extraction import extract_user_and_text
 from ubotindo.modules.helper_funcs.string_handling import extract_time
-from ubotindo.modules.helper_funcs.admin_rights import user_can_ban
-from ubotindo.modules.helper_funcs.alternate import typing_action
 from ubotindo.modules.log_channel import loggable
 
 
@@ -77,7 +77,8 @@ def ban(update, context):
 
     try:
         chat.kick_member(user_id)
-        # context.bot.send_sticker(chat.id, BAN_STICKER)  # banhammer marie sticker
+        # context.bot.send_sticker(chat.id, BAN_STICKER)  # banhammer marie
+        # sticker
         context.bot.sendMessage(
             chat.id,
             "let {} walk the plank.".format(
@@ -180,7 +181,8 @@ def temp_ban(update, context):
 
     try:
         chat.kick_member(user_id, until_date=bantime)
-        # context.bot.send_sticker(chat.id, BAN_STICKER)  # banhammer marie sticker
+        # context.bot.send_sticker(chat.id, BAN_STICKER)  # banhammer marie
+        # sticker
         message.reply_text("Banned! User will be banned for {}.".format(time_val))
         return log
 
@@ -245,7 +247,8 @@ def kick(update, context):
 
     res = chat.unban_member(user_id)  # unban on current user = kick
     if res:
-        # context.bot.send_sticker(chat.id, BAN_STICKER)  # banhammer marie sticker
+        # context.bot.send_sticker(chat.id, BAN_STICKER)  # banhammer marie
+        # sticker
         context.bot.sendMessage(
             chat.id,
             "Untill we meet again {}.".format(

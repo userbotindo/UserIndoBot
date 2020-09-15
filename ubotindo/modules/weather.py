@@ -1,10 +1,14 @@
-import time, requests, json
+import json
+import time
+
+import requests
 from pytz import country_names as cname
 from telegram import ParseMode
 from telegram.error import BadRequest
 from telegram.ext import run_async
 
-from ubotindo import dispatcher, API_WEATHER as APPID
+from ubotindo import API_WEATHER as APPID
+from ubotindo import dispatcher
 from ubotindo.modules.disable import DisableAbleCommandHandler
 from ubotindo.modules.helper_funcs.alternate import typing_action
 

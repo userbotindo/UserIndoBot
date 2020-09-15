@@ -1,21 +1,27 @@
 import html
-from typing import Optional, List
+from typing import Optional
 
-from telegram import Message, Chat, User, ParseMode
-from telegram import InlineKeyboardMarkup, InlineKeyboardButton
+from telegram import (
+    Chat,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    Message,
+    ParseMode,
+    User,
+)
 from telegram.error import BadRequest, Unauthorized
 from telegram.ext import (
+    CallbackQueryHandler,
     CommandHandler,
+    Filters,
     MessageHandler,
     run_async,
-    Filters,
-    CallbackQueryHandler,
 )
 from telegram.utils.helpers import mention_html
 
-from ubotindo import dispatcher, LOGGER
-from ubotindo.modules.helper_funcs.chat_status import user_not_admin, user_admin
+from ubotindo import LOGGER, dispatcher
 from ubotindo.modules.helper_funcs.alternate import typing_action
+from ubotindo.modules.helper_funcs.chat_status import user_admin, user_not_admin
 from ubotindo.modules.log_channel import loggable
 from ubotindo.modules.sql import reporting_sql as sql
 
@@ -82,10 +88,11 @@ def report(update, context) -> str:
     user = update.effective_user  # type: Optional[User]
 
     if chat and message.reply_to_message and sql.chat_should_report(chat.id):
-        reported_user = message.reply_to_message.from_user  # type: Optional[User]
+        # type: Optional[User]
+        reported_user = message.reply_to_message.from_user
         chat_name = chat.title or chat.first or chat.username
         admin_list = chat.get_administrators()
-        messages = update.effective_message
+        update.effective_message
 
         isadmeme = chat.get_member(reported_user.id).status
         if isadmeme == "administrator" or isadmeme == "creator":

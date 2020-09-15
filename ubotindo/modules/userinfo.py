@@ -1,16 +1,15 @@
 import html
 from typing import Optional
 
-from telegram import Message, User
-from telegram import ParseMode, MAX_MESSAGE_LENGTH
+from telegram import MAX_MESSAGE_LENGTH, Message, ParseMode, User
 from telegram.ext.dispatcher import run_async
 from telegram.utils.helpers import escape_markdown
 
 import ubotindo.modules.sql.userinfo_sql as sql
-from ubotindo import dispatcher, DEV_USERS
+from ubotindo import DEV_USERS, dispatcher
 from ubotindo.modules.disable import DisableAbleCommandHandler
-from ubotindo.modules.helper_funcs.extraction import extract_user
 from ubotindo.modules.helper_funcs.alternate import typing_action
+from ubotindo.modules.helper_funcs.extraction import extract_user
 
 
 @run_async
@@ -108,9 +107,8 @@ def set_about_bio(update, context):
             return
 
         text = message.text
-        bio = text.split(
-            None, 1
-        )  # use python's maxsplit to only remove the cmd, hence keeping newlines.
+        # use python's maxsplit to only remove the cmd, hence keeping newlines.
+        bio = text.split(None, 1)
         if len(bio) == 2:
             if len(bio[1]) < MAX_MESSAGE_LENGTH // 4:
                 sql.set_user_bio(user_id, bio[1])

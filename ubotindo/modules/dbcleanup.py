@@ -1,13 +1,13 @@
 from time import sleep
 
-from telegram import Bot, Update, InlineKeyboardMarkup, InlineKeyboardButton
+from telegram import Bot, InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.error import BadRequest, Unauthorized
-from telegram.ext import CommandHandler, CallbackQueryHandler, run_async, Filters
+from telegram.ext import CallbackQueryHandler, CommandHandler, run_async
 
-from ubotindo.modules.helper_funcs.filters import CustomFilters
 import ubotindo.modules.sql.global_bans_sql as gban_sql
 import ubotindo.modules.sql.users_sql as user_sql
-from ubotindo import dispatcher, DEV_USERS
+from ubotindo import DEV_USERS, dispatcher
+from ubotindo.modules.helper_funcs.filters import CustomFilters
 
 
 def get_invalid_chats(bot: Bot, update: Update, remove: bool = False):
@@ -26,7 +26,7 @@ def get_invalid_chats(bot: Bot, update: Update, remove: bool = False):
                     bot.editMessageText(
                         progress_bar, chat_id, progress_message.message_id
                     )
-                except:
+                except BaseException:
                     pass
             else:
                 progress_message = bot.sendMessage(chat_id, progress_bar)
@@ -39,12 +39,12 @@ def get_invalid_chats(bot: Bot, update: Update, remove: bool = False):
         except (BadRequest, Unauthorized):
             kicked_chats += 1
             chat_list.append(cid)
-        except:
+        except BaseException:
             pass
 
     try:
         progress_message.delete()
-    except:
+    except BaseException:
         pass
 
     if not remove:
@@ -69,7 +69,7 @@ def get_invalid_gban(bot: Bot, update: Update, remove: bool = False):
         except BadRequest:
             ungbanned_users += 1
             ungban_list.append(user_id)
-        except:
+        except BaseException:
             pass
 
     if not remove:
@@ -117,7 +117,7 @@ def get_muted_chats(bot: Bot, update: Update, leave: bool = False):
                     bot.editMessageText(
                         progress_bar, chat_id, progress_message.message_id
                     )
-                except:
+                except BaseException:
                     pass
             else:
                 progress_message = bot.sendMessage(chat_id, progress_bar)
@@ -131,12 +131,12 @@ def get_muted_chats(bot: Bot, update: Update, leave: bool = False):
         except (BadRequest, Unauthorized):
             muted_chats += +1
             chat_list.append(cid)
-        except:
+        except BaseException:
             pass
 
     try:
         progress_message.delete()
-    except:
+    except BaseException:
         pass
 
     if not leave:
@@ -146,7 +146,7 @@ def get_muted_chats(bot: Bot, update: Update, leave: bool = False):
             sleep(0.1)
             try:
                 bot.leaveChat(muted_chat, timeout=120)
-            except:
+            except BaseException:
                 pass
             user_sql.rem_chat(muted_chat)
         return muted_chats

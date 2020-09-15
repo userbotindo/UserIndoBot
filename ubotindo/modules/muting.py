@@ -1,24 +1,23 @@
 import html
 from typing import Optional
 
-from telegram import Message, Chat, User
-from telegram import ChatPermissions
+from telegram import Chat, ChatPermissions, Message, User
 from telegram.error import BadRequest
 from telegram.ext import CommandHandler, Filters
 from telegram.ext.dispatcher import run_async
 from telegram.utils.helpers import mention_html
 
-from ubotindo import dispatcher, LOGGER
+from ubotindo import LOGGER, dispatcher
+from ubotindo.modules.helper_funcs.admin_rights import user_can_ban
+from ubotindo.modules.helper_funcs.alternate import typing_action
 from ubotindo.modules.helper_funcs.chat_status import (
     bot_admin,
-    user_admin,
-    is_user_admin,
     can_restrict,
+    is_user_admin,
+    user_admin,
 )
 from ubotindo.modules.helper_funcs.extraction import extract_user, extract_user_and_text
 from ubotindo.modules.helper_funcs.string_handling import extract_time
-from ubotindo.modules.helper_funcs.admin_rights import user_can_ban
-from ubotindo.modules.helper_funcs.alternate import typing_action
 from ubotindo.modules.log_channel import loggable
 
 
@@ -260,7 +259,7 @@ This module allows you to do that easily, by exposing some common actions, so ev
 *Admin only:*
  × /mute <userhandle>: Silences a user. Can also be used as a reply, muting the replied to user.
  × /tmute <userhandle> x(m/h/d): Mutes a user for x time. (via handle, or reply). m = minutes, h = hours, d = days.
- × /unmute <userhandle>: Unmutes a user. Can also be used as a reply, muting the replied to user. 
+ × /unmute <userhandle>: Unmutes a user. Can also be used as a reply, muting the replied to user.
 An example of temporarily mute someone:
 `/tmute @username 2h`; This mutes a user for 2 hours.
 """

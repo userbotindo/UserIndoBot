@@ -1,16 +1,21 @@
 from typing import Optional
 
-from telegram import Message, User
-from telegram import ParseMode, InlineKeyboardMarkup, InlineKeyboardButton
+from telegram import (
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    Message,
+    ParseMode,
+    User,
+)
 from telegram.error import BadRequest
-from telegram.ext import CommandHandler, run_async, Filters
+from telegram.ext import CommandHandler, Filters, run_async
 from telegram.utils.helpers import escape_markdown
 
 import ubotindo.modules.sql.rules_sql as sql
 from ubotindo import dispatcher
+from ubotindo.modules.helper_funcs.alternate import typing_action
 from ubotindo.modules.helper_funcs.chat_status import user_admin
 from ubotindo.modules.helper_funcs.string_handling import markdown_parser
-from ubotindo.modules.helper_funcs.alternate import typing_action
 
 
 @run_async
@@ -76,10 +81,12 @@ def set_rules(update, context):
     chat_id = update.effective_chat.id
     msg = update.effective_message  # type: Optional[Message]
     raw_text = msg.text
-    args = raw_text.split(None, 1)  # use python's maxsplit to separate cmd and args
+    # use python's maxsplit to separate cmd and args
+    args = raw_text.split(None, 1)
     if len(args) == 2:
         txt = args[1]
-        offset = len(txt) - len(raw_text)  # set correct offset relative to command
+        # set correct offset relative to command
+        offset = len(txt) - len(raw_text)
         markdown_rules = markdown_parser(
             txt, entities=msg.parse_entities(), offset=offset
         )

@@ -135,7 +135,8 @@ def set_welcome_mutes(chat_id, welcomemutes):
 
 def set_human_checks(user_id, chat_id):
     with INSERTION_LOCK:
-        human_check = SESSION.query(WelcomeMuteUsers).get((user_id, str(chat_id)))
+        human_check = SESSION.query(
+            WelcomeMuteUsers).get((user_id, str(chat_id)))
         if not human_check:
             human_check = WelcomeMuteUsers(user_id, str(chat_id), True)
 
@@ -150,7 +151,8 @@ def set_human_checks(user_id, chat_id):
 
 def get_human_checks(user_id, chat_id):
     try:
-        human_check = SESSION.query(WelcomeMuteUsers).get((user_id, str(chat_id)))
+        human_check = SESSION.query(
+            WelcomeMuteUsers).get((user_id, str(chat_id)))
         if not human_check:
             return None
         human_check = human_check.human_check
@@ -236,7 +238,12 @@ def set_gdbye_preference(chat_id, should_goodbye):
         SESSION.commit()
 
 
-def set_custom_welcome(chat_id, custom_content, custom_welcome, welcome_type, buttons=None):
+def set_custom_welcome(
+        chat_id,
+        custom_content,
+        custom_welcome,
+        welcome_type,
+        buttons=None):
     if buttons is None:
         buttons = []
 

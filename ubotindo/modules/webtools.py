@@ -1,21 +1,22 @@
-import speedtest
-import requests
 import datetime
-import platform
-import time
 import html
-import os, subprocess, sys
-
-from psutil import cpu_percent, virtual_memory, disk_usage, boot_time
+import os
+import platform
+import subprocess
+import time
 from platform import python_version
-from telegram import __version__
+
+import requests
+import speedtest
+from psutil import boot_time, cpu_percent, disk_usage, virtual_memory
 from spamwatch import __version__ as __sw__
-from telegram import ParseMode
-from telegram.ext import CommandHandler, run_async, Filters
+from telegram import ParseMode, __version__
 from telegram.error import BadRequest
-from ubotindo import dispatcher, OWNER_ID, MESSAGE_DUMP
-from ubotindo.modules.helper_funcs.filters import CustomFilters
+from telegram.ext import CommandHandler, Filters, run_async
+
+from ubotindo import MESSAGE_DUMP, OWNER_ID, dispatcher
 from ubotindo.modules.helper_funcs.alternate import typing_action
+from ubotindo.modules.helper_funcs.filters import CustomFilters
 
 
 @run_async
@@ -136,11 +137,13 @@ def speed_convert(size):
 @run_async
 @typing_action
 def gitpull(update, context):
-    sent_msg = update.effective_message.reply_text(
-        "Pulling all changes from remote...")
-    subprocess.Popen('git pull', stdout=subprocess.PIPE, shell=True)
+    sent_msg = update.effective_message.reply_text("Pulling all changes from remote...")
+    subprocess.Popen("git pull", stdout=subprocess.PIPE, shell=True)
 
-    sent_msg_text = sent_msg.text + "\n\nChanges pulled... I guess..\nContinue to restart with /reboot "
+    sent_msg_text = (
+        sent_msg.text
+        + "\n\nChanges pulled... I guess..\nContinue to restart with /reboot "
+    )
     sent_msg.edit_text(sent_msg_text)
 
 
@@ -150,10 +153,13 @@ def restart(update, context):
     user = update.effective_message.from_user
 
     update.effective_message.reply_text(
-        "Starting a new instance and shutting down this one")
-        
+        "Starting a new instance and shutting down this one"
+    )
+
     if MESSAGE_DUMP:
-        message = "<b>Bot restarted by</b>\n\n<code>{}</code>".format(html.escape(user.first_name))
+        message = "<b>Bot restarted by</b>\n\n<code>{}</code>".format(
+            html.escape(user.first_name)
+        )
         context.bot.send_message(
             chat_id=MESSAGE_DUMP, text=message, parse_mode=ParseMode.HTML
         )

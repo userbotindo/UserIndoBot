@@ -9,7 +9,10 @@ def can_delete(chat: Chat, bot_id: int) -> bool:
     return chat.get_member(bot_id).can_delete_messages
 
 
-def is_user_ban_protected(chat: Chat, user_id: int, member: ChatMember = None) -> bool:
+def is_user_ban_protected(
+        chat: Chat,
+        user_id: int,
+        member: ChatMember = None) -> bool:
     if (
         chat.type == "private"
         or user_id in DEV_USERS
@@ -40,7 +43,10 @@ def is_user_admin(chat: Chat, user_id: int, member: ChatMember = None) -> bool:
     return member.status in ("administrator", "creator")
 
 
-def is_bot_admin(chat: Chat, bot_id: int, bot_member: ChatMember = None) -> bool:
+def is_bot_admin(
+        chat: Chat,
+        bot_id: int,
+        bot_member: ChatMember = None) -> bool:
     if chat.type == "private" or chat.all_members_are_administrators:
         return True
 
@@ -85,7 +91,8 @@ def can_pin(func):
 def can_promote(func):
     @wraps(func)
     def promote_rights(update, context, *args, **kwargs):
-        if update.effective_chat.get_member(context.bot.id).can_promote_members:
+        if update.effective_chat.get_member(
+                context.bot.id).can_promote_members:
             return func(update, context, *args, **kwargs)
         else:
             update.effective_message.reply_text(
@@ -99,7 +106,8 @@ def can_promote(func):
 def can_restrict(func):
     @wraps(func)
     def promote_rights(update, context, *args, **kwargs):
-        if update.effective_chat.get_member(context.bot.id).can_restrict_members:
+        if update.effective_chat.get_member(
+                context.bot.id).can_restrict_members:
             return func(update, context, *args, **kwargs)
         else:
             update.effective_message.reply_text(

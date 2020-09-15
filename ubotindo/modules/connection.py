@@ -1,12 +1,12 @@
-import time
 import re
+import time
 
-from telegram import ParseMode, InlineKeyboardMarkup, InlineKeyboardButton
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
 from telegram.error import BadRequest, Unauthorized
-from telegram.ext import CommandHandler, CallbackQueryHandler, run_async
+from telegram.ext import CallbackQueryHandler, CommandHandler, run_async
 
 import ubotindo.modules.sql.connection_sql as sql
-from ubotindo import dispatcher, SUDO_USERS, DEV_USERS
+from ubotindo import DEV_USERS, SUDO_USERS, dispatcher
 from ubotindo.modules.helper_funcs import chat_status
 from ubotindo.modules.helper_funcs.alternate import send_message, typing_action
 
@@ -291,7 +291,7 @@ def connected(bot, update, chat, user_id, need_admin=True):
             or (user.id in SUDO_USERS)
             or (user.id in DEV_USERS)
         ):
-            if need_admin == True:
+            if need_admin:
                 if (
                     getstatusadmin.status in ("administrator", "creator")
                     or user_id in SUDO_USERS

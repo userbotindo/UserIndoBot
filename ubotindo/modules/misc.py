@@ -1,47 +1,46 @@
 import datetime
 import html
 import os
-import random, re
-import wikipedia
-from covid import Covid
-from typing import Optional
-from requests import get
-from tswift import Song
-
+import random
+import re
 from io import BytesIO
 from random import randint
-import requests as r
+from typing import Optional
 
+import requests as r
+import wikipedia
+from covid import Covid
+from requests import get
 from telegram import (
-    Message,
     Chat,
-    MessageEntity,
-    InlineKeyboardMarkup,
-    InlineKeyboardButton,
-    ParseMode,
     ChatAction,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    Message,
+    MessageEntity,
+    ParseMode,
     TelegramError,
 )
-
-from telegram.ext import CommandHandler, run_async, Filters
-from telegram.utils.helpers import escape_markdown, mention_html
 from telegram.error import BadRequest
+from telegram.ext import CommandHandler, Filters, run_async
+from telegram.utils.helpers import escape_markdown, mention_html
+from tswift import Song
 
 from ubotindo import (
-    dispatcher,
-    OWNER_ID,
     DEV_USERS,
+    OWNER_ID,
     SUDO_USERS,
     SUPPORT_USERS,
-    WHITELIST_USERS,
     WALL_API,
+    WHITELIST_USERS,
+    dispatcher,
     spamwtc,
 )
-from ubotindo.__main__ import STATS, USER_INFO, GDPR
+from ubotindo.__main__ import GDPR, STATS, USER_INFO
 from ubotindo.modules.disable import DisableAbleCommandHandler
+from ubotindo.modules.helper_funcs.alternate import send_action, typing_action
 from ubotindo.modules.helper_funcs.extraction import extract_user
 from ubotindo.modules.helper_funcs.filters import CustomFilters
-from ubotindo.modules.helper_funcs.alternate import typing_action, send_action
 from ubotindo.modules.sql.afk_sql import is_afk
 
 
@@ -168,7 +167,7 @@ def info(update, context):
             text += "\nAppeal at @SpamWatchSupport"
         else:
             pass
-    except:
+    except BaseException:
         pass  # don't crash if api is down somehow...
 
     if user.id == OWNER_ID:
@@ -640,7 +639,7 @@ An "odds and ends" module for small, simple commands which don't really fit anyw
  × /wiki : Search wikipedia articles.
  × /rmeme: Sends random meme scraped from reddit.
  × /ud <query> : Search stuffs in urban dictionary.
- × /wall <query> : Get random wallpapers directly from bot! 
+ × /wall <query> : Get random wallpapers directly from bot!
  × /reverse : Reverse searches image or stickers on google.
  × /lyrics <query> : You can either enter just the song name or both the artist and song name.
  × /covid <country name>: Give stats about COVID-19.

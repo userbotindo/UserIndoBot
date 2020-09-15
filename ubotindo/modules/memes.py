@@ -1,22 +1,22 @@
-import random, re
-import requests as r
+import random
+import re
 import time
 
-from telegram import ParseMode, TelegramError, MAX_MESSAGE_LENGTH
-from telegram.ext import Filters, CommandHandler, run_async
+import requests as r
+from telegram import MAX_MESSAGE_LENGTH, ParseMode, TelegramError
 from telegram.error import BadRequest
+from telegram.ext import CommandHandler, Filters, run_async
 from telegram.utils.helpers import escape_markdown
 
-from ubotindo.modules.helper_funcs.extraction import extract_user
-from ubotindo.modules.helper_funcs.filters import CustomFilters
-from ubotindo.modules.helper_funcs.alternate import typing_action
-from ubotindo import dispatcher, DEV_USERS, SUDO_USERS, SUPPORT_USERS, LOGGER
+import ubotindo.modules.helper_funcs.fun_strings as fun
+from ubotindo import DEV_USERS, LOGGER, SUDO_USERS, SUPPORT_USERS, dispatcher
 from ubotindo.modules.disable import (
     DisableAbleCommandHandler,
     DisableAbleMessageHandler,
 )
-
-import ubotindo.modules.helper_funcs.fun_strings as fun
+from ubotindo.modules.helper_funcs.alternate import typing_action
+from ubotindo.modules.helper_funcs.extraction import extract_user
+from ubotindo.modules.helper_funcs.filters import CustomFilters
 
 
 @run_async
@@ -338,9 +338,8 @@ def copypasta(update, context):
             "🚰",
         ]
         reply_text = random.choice(emojis)
-        b_char = random.choice(
-            message.reply_to_message.text
-        ).lower()  # choose a random character in the message to be substituted with 🅱️
+        # choose a random character in the message to be substituted with 🅱️
+        b_char = random.choice(message.reply_to_message.text).lower()
         for c in message.reply_to_message.text:
             if c == " ":
                 reply_text += random.choice(emojis)
@@ -385,7 +384,7 @@ def owo(update, context):
             "UwU",
             ">w<",
             "^w^",
-            "\(^o\) (/o^)/",
+            r"\(^o\) (/o^)/",
             "( ^ _ ^)∠☆",
             "(ô_ô)",
             "~:o",

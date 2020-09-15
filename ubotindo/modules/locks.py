@@ -1,28 +1,25 @@
 import html
 
-from telegram import ParseMode, MessageEntity
-from telegram import TelegramError, ChatPermissions
+from alphabet_detector import AlphabetDetector
+from telegram import ChatPermissions, MessageEntity, ParseMode, TelegramError
 from telegram.error import BadRequest
-from telegram.ext import CommandHandler, MessageHandler, Filters
+from telegram.ext import CommandHandler, Filters, MessageHandler
 from telegram.ext.dispatcher import run_async
 from telegram.utils.helpers import mention_html
 
-from alphabet_detector import AlphabetDetector
-
 import ubotindo.modules.sql.locks_sql as sql
-from ubotindo import dispatcher, SUDO_USERS, DEV_USERS, LOGGER
+from ubotindo import DEV_USERS, LOGGER, SUDO_USERS, dispatcher
+from ubotindo.modules.connection import connected
 from ubotindo.modules.disable import DisableAbleCommandHandler
+from ubotindo.modules.helper_funcs.alternate import send_message, typing_action
 from ubotindo.modules.helper_funcs.chat_status import (
     can_delete,
-    is_user_admin,
-    user_not_admin,
     is_bot_admin,
+    is_user_admin,
     user_admin,
+    user_not_admin,
 )
 from ubotindo.modules.log_channel import loggable
-from ubotindo.modules.connection import connected
-
-from ubotindo.modules.helper_funcs.alternate import send_message, typing_action
 
 ad = AlphabetDetector()
 
@@ -566,7 +563,7 @@ telegram world; the bot will automatically delete them!
  × /lock <type>: Lock items of a certain type (not available in private)
  × /unlock <type>: Unlock items of a certain type (not available in private)
  × /locks: The current list of locks in this chat.
- 
+
 Locks can be used to restrict a group's users.
 eg:
 Locking urls will auto-delete all messages with urls, locking stickers will restrict all \
@@ -581,11 +578,13 @@ Note:
 __mod_name__ = "Locks"
 
 LOCKTYPES_HANDLER = DisableAbleCommandHandler("locktypes", locktypes)
-LOCK_HANDLER = CommandHandler("lock", lock, pass_args=True)  # , filters=Filters.group)
+# , filters=Filters.group)
+LOCK_HANDLER = CommandHandler("lock", lock, pass_args=True)
 UNLOCK_HANDLER = CommandHandler(
     "unlock", unlock, pass_args=True
 )  # , filters=Filters.group)
-LOCKED_HANDLER = CommandHandler("locks", list_locks)  # , filters=Filters.group)
+# , filters=Filters.group)
+LOCKED_HANDLER = CommandHandler("locks", list_locks)
 
 dispatcher.add_handler(LOCK_HANDLER)
 dispatcher.add_handler(UNLOCK_HANDLER)

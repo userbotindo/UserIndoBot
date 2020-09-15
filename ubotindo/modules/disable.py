@@ -1,23 +1,23 @@
 from typing import Union
 
 from future.utils import string_types
-from telegram import ParseMode, Update, Chat
+from telegram import Chat, ParseMode, Update
 from telegram.ext import CommandHandler, MessageHandler
 from telegram.utils.helpers import escape_markdown
 
 from ubotindo import dispatcher
+from ubotindo.modules.connection import connected
+from ubotindo.modules.helper_funcs.alternate import send_message, typing_action
 from ubotindo.modules.helper_funcs.handlers import CMD_STARTERS
 from ubotindo.modules.helper_funcs.misc import is_module_loaded
-from ubotindo.modules.helper_funcs.alternate import send_message, typing_action
-from ubotindo.modules.connection import connected
 
 FILENAME = __name__.rsplit(".", 1)[-1]
 
 # If module is due to be loaded, then setup all the magical handlers
 if is_module_loaded(FILENAME):
-    from ubotindo.modules.helper_funcs.chat_status import user_admin, is_user_admin
     from telegram.ext.dispatcher import run_async
 
+    from ubotindo.modules.helper_funcs.chat_status import is_user_admin, user_admin
     from ubotindo.modules.sql import disable_sql as sql
 
     DISABLE_CMDS = []
@@ -264,7 +264,8 @@ It'll also allow you to autodelete them, stopping people from bluetexting.
     COMMANDS_HANDLER = CommandHandler(
         ["cmds", "disabled"], commands
     )  # , filters=Filters.group)
-    TOGGLE_HANDLER = CommandHandler("listcmds", list_cmds)  # , filters=Filters.group)
+    # , filters=Filters.group)
+    TOGGLE_HANDLER = CommandHandler("listcmds", list_cmds)
 
     dispatcher.add_handler(DISABLE_HANDLER)
     dispatcher.add_handler(ENABLE_HANDLER)

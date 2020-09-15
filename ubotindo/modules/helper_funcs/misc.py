@@ -32,13 +32,18 @@ def split_message(msg: str) -> List[str]:
                 result.append(small_msg)
                 small_msg = line
         else:
-            # Else statement at the end of the for loop, so append the leftover string.
+            # Else statement at the end of the for loop, so append the leftover
+            # string.
             result.append(small_msg)
 
         return result
 
 
-def paginate_modules(page_n: int, module_dict: Dict, prefix, chat=None) -> List:
+def paginate_modules(
+        page_n: int,
+        module_dict: Dict,
+        prefix,
+        chat=None) -> List:
     if not chat:
         modules = sorted(
             [
@@ -64,7 +69,8 @@ def paginate_modules(page_n: int, module_dict: Dict, prefix, chat=None) -> List:
             ]
         )
 
-    pairs = [modules[i * 3 : (i + 1) * 3] for i in range((len(modules) + 3 - 1) // 3)]
+    pairs = [modules[i * 3: (i + 1) * 3]
+             for i in range((len(modules) + 3 - 1) // 3)]
     round_num = len(modules) / 3
     calc = len(modules) - round(round_num)
     if calc == 1:
@@ -76,7 +82,8 @@ def paginate_modules(page_n: int, module_dict: Dict, prefix, chat=None) -> List:
     #    if len(pairs) > 7:
     #        pairs = pairs[modulo_page * 7:7 * (modulo_page + 1)] + [
     #            (EqInlineKeyboardButton("<<<", callback_data="{}_prev({})".format(prefix, modulo_page)),
-    #             EqInlineKeyboardButton(">>>", callback_data="{}_next({})".format(prefix, modulo_page)))]
+    # EqInlineKeyboardButton(">>>", callback_data="{}_next({})".format(prefix,
+    # modulo_page)))]
 
     return pairs
 
@@ -89,7 +96,8 @@ def send_to_list(
     for user_id in set(send_to):
         try:
             if markdown:
-                bot.send_message(user_id, message, parse_mode=ParseMode.MARKDOWN)
+                bot.send_message(
+                    user_id, message, parse_mode=ParseMode.MARKDOWN)
             elif html:
                 bot.send_message(user_id, message, parse_mode=ParseMode.HTML)
             else:

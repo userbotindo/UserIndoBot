@@ -1,11 +1,14 @@
-from ubotindo import client, SUDO_USERS, DEV_USERS
-
 import asyncio
+
 from telethon import events
-from telethon.tl.types import ChannelParticipantsAdmins
 from telethon.errors.rpcerrorlist import MessageDeleteForbiddenError
+from telethon.tl.types import ChannelParticipantsAdmins
+
+from ubotindo import DEV_USERS, SUDO_USERS, client
 
 # Check if user has admin rights
+
+
 async def is_administrator(user_id: int, message):
     admin = False
     async for user in client.iter_participants(

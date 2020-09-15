@@ -60,7 +60,8 @@ class WarnSettings(BASE):
         self.soft_warn = soft_warn
 
     def __repr__(self):
-        return "<{} has {} possible warns.>".format(self.chat_id, self.warn_limit)
+        return "<{} has {} possible warns.>".format(
+            self.chat_id, self.warn_limit)
 
 
 Warns.__table__.create(checkfirst=True)
@@ -89,9 +90,10 @@ def warn_user(user_id, chat_id, reason=None):
             if warned_user.reasons is None:
                 warned_user.reasons = [reason]
             else:
-                warned_user.reasons = warned_user.reasons + [
-                    reason
-                ]  # TODO:: double check this Daan: Not really wizardry, it adds a new entry to a list/array which can be done this way, basically append equivalent
+                # TODO:: double check this Daan: Not really wizardry, it adds a
+                # new entry to a list/array which can be done this way,
+                # basically append equivalent
+                warned_user.reasons = warned_user.reasons + [reason]
 
         reasons = warned_user.reasons
         num = warned_user.num_warns
@@ -112,7 +114,7 @@ def remove_warn(user_id, chat_id):
             warned_user.num_warns -= 1
 
             if warned_user and warned_user.reasons is not None:
-                pos = len(warned_user.reasons)
+                len(warned_user.reasons)
                 for reason in warned_user.reasons:
                     temp_reason.append(reason)
                 del temp_reason[-1]
@@ -184,9 +186,8 @@ def get_chat_warn_triggers(chat_id):
 
 def get_chat_warn_filters(chat_id):
     try:
-        return (
-            SESSION.query(WarnFilters).filter(WarnFilters.chat_id == str(chat_id)).all()
-        )
+        return (SESSION.query(WarnFilters).filter(
+            WarnFilters.chat_id == str(chat_id)).all())
     finally:
         SESSION.close()
 
@@ -268,7 +269,10 @@ def num_warn_chat_filters(chat_id):
 
 def num_warn_filter_chats():
     try:
-        return SESSION.query(func.count(distinct(WarnFilters.chat_id))).scalar()
+        return SESSION.query(
+            func.count(
+                distinct(
+                    WarnFilters.chat_id))).scalar()
     finally:
         SESSION.close()
 
@@ -295,9 +299,8 @@ def __load_chat_warn_filters():
 
 def migrate_chat(old_chat_id, new_chat_id):
     with WARN_INSERTION_LOCK:
-        chat_notes = (
-            SESSION.query(Warns).filter(Warns.chat_id == str(old_chat_id)).all()
-        )
+        chat_notes = (SESSION.query(Warns).filter(
+            Warns.chat_id == str(old_chat_id)).all())
         for note in chat_notes:
             note.chat_id = str(new_chat_id)
         SESSION.commit()

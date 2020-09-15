@@ -1,15 +1,14 @@
 # Last.fm module by @TheRealPhoenix - https://github.com/rsktg
 
-import requests, time
+import time
 
-from telegram import ParseMode
-from telegram import error
-from telegram.ext import run_async, CommandHandler
-
-from ubotindo import dispatcher, LASTFM_API_KEY
-from ubotindo.modules.disable import DisableAbleCommandHandler
+import requests
+from telegram import ParseMode, error
+from telegram.ext import CommandHandler, run_async
 
 import ubotindo.modules.sql.last_fm_sql as sql
+from ubotindo import LASTFM_API_KEY, dispatcher
+from ubotindo.modules.disable import DisableAbleCommandHandler
 
 
 @run_async

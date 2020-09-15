@@ -3,7 +3,7 @@ from telegram import Update
 
 try:
     from ubotindo import CUSTOM_CMD
-except:
+except BaseException:
     CUSTOM_CMD = False
 
 if CUSTOM_CMD:
