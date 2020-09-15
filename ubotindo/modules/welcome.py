@@ -152,7 +152,7 @@ def new_member(update, context):
     msg = update.effective_message
     chat_name = chat.title or chat.first or chat.username
     should_welc, cust_welcome, cust_content, welc_type = sql.get_welc_pref(chat.id)
-   # cust_welcome = markdown_to_html(cust_welcome)
+    cust_welcome = markdown_to_html(cust_welcome)
     welc_mutes = sql.welcome_mutes(chat.id)
     user_id = user.id
     human_checks = sql.get_human_checks(user_id, chat.id)

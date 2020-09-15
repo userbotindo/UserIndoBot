@@ -57,7 +57,7 @@ buttons = [
         InlineKeyboardButton(
             text="Add to Group 👥", url="t.me/userbotindobot?startgroup=true"
         ),
-        InlineKeyboardButton(text="Gban Logs 🚫", url="https://t.me/UserIndoBotLog"),
+        InlineKeyboardButton(text="Gban Logs 🚫", url="https://t.me/UserIndoBotBannedLog"),
     ]
 ]
 
@@ -256,11 +256,10 @@ def error_handler(update, context):
     # Build the message with some markup and additional information about what happened.
     message = (
         "An exception was raised while handling an update\n"
-        "<pre>update = {}</pre>\n\n"
-        "<pre>{}</pre>"
-    ).format(
-        html.escape(json.dumps(update.to_dict(), indent=2, ensure_ascii=False)),
-        html.escape(tb),
+        "<pre>{}</pre>".format(
+            html.escape(json.dumps(update.to_dict(),indent=2, ensure_ascii=False)),
+            html.escape(tb)
+        )
     )
 
     if len(message) >= 4096:
@@ -665,6 +664,7 @@ def main():
     else:
         LOGGER.info("Using long polling.")
         updater.start_polling(timeout=15, read_latency=4)
+        updater.bot.send_message(chat_id=MESSAGE_DUMP, text="Bot Started...")
         client.run_until_disconnected()
 
     updater.idle()
