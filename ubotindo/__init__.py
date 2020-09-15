@@ -1,4 +1,3 @@
-from ubotindo.modules.helper_funcs.handlers import CustomCommandHandler
 import logging
 import os
 import sys
@@ -195,6 +194,7 @@ WHITELIST_USERS = list(WHITELIST_USERS)
 SUPPORT_USERS = list(SUPPORT_USERS)
 
 # Load at end to ensure all prev variables have been set
+from ubotindo.modules.helper_funcs.handlers import CustomCommandHandler  # noqa
 
 if CUSTOM_CMD and len(CUSTOM_CMD) >= 1:
     tg.CommandHandler = CustomCommandHandler
