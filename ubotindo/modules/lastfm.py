@@ -9,8 +9,10 @@ from telegram.ext import CommandHandler, run_async
 import ubotindo.modules.sql.last_fm_sql as sql
 from ubotindo import LASTFM_API_KEY, dispatcher
 from ubotindo.modules.disable import DisableAbleCommandHandler
+from ubotindo.modules.helper_funcs.alternate import typing_action
 
 
+@typing_action
 @run_async
 def set_user(update, context):
     msg = update.effective_message
@@ -33,6 +35,7 @@ def set_user(update, context):
 
 
 @run_async
+@typing_action
 def clear_user(update, context):
     user = update.effective_user.id
     sql.set_user(user, "")
@@ -44,6 +47,7 @@ def clear_user(update, context):
 
 
 @run_async
+@typing_action
 def last_fm(update, context):
     msg = update.effective_message
     user = update.effective_user.first_name

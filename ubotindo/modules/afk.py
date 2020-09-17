@@ -6,6 +6,7 @@ from telegram.error import BadRequest
 from telegram.ext import Filters, MessageHandler, run_async
 
 import ubotindo.modules.helper_funcs.fun_strings as fun
+from ubotindo.modules.helper_funcs.alternate import typing_action
 from ubotindo import dispatcher
 from ubotindo.modules.disable import (
     DisableAbleCommandHandler,
@@ -18,6 +19,7 @@ AFK_GROUP = 7
 AFK_REPLY_GROUP = 8
 
 
+@typing_action
 @run_async
 def afk(update, context):
     args = update.effective_message.text.split(None, 1)
@@ -38,6 +40,7 @@ def afk(update, context):
     afksend.delete()
 
 
+@typing_action
 @run_async
 def no_longer_afk(update, context):
     user = update.effective_user
