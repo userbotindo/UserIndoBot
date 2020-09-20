@@ -1,3 +1,5 @@
+#!/usr/bin/bash
+#
 # UserindoBot
 # Copyright (C) 2020  UserindoBot Team, <https://github.com/MoveAngel/UserIndoBot.git>
 #
@@ -13,8 +15,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-#!/usr/bin/bash
 
 # Attemp to Terminate and Remove previous session
 if [ -f ubotindo.session ]; then
