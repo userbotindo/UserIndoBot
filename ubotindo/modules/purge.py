@@ -55,8 +55,8 @@ async def purge(event):
     try:
         msg_id = msg.id
         count = 0
-        end= time.perf_counter_ns()
-        time_taken = (end - start) / (10**9)
+        end = time.perf_counter_ns()
+        time_taken = (end - start) / (10 ** 9)
         to_delete = event.message.id - 1
         await event.client.delete_messages(chat, event.message.id)
         msgs.append(event.reply_to_msg_id)
