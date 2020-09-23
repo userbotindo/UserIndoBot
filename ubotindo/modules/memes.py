@@ -491,7 +491,7 @@ Some dank memes for fun or whatever!
 `/decide` can be also used with regex like: `ubotindo What? <question>: randomly answer "Yes, No" etc.`
 
 Some other regex filters are:
-`me too` | `goodmorning` | `goodnight`.
+`me too` | `good morning` | `good night`.
 
 Userbotindobot will reply random strings accordingly when these words are used!
 All regex filters can be disabled incase u don't want... like: `/disable metoo`.
@@ -527,10 +527,10 @@ RECITE_HANDLER = DisableAbleCommandHandler("recite", recite)
 DICE_HANDLER = DisableAbleCommandHandler("roll", dice)
 YESNOWTF_HANDLER = DisableAbleCommandHandler("decide", yesnowtf)
 GDMORNING_HANDLER = DisableAbleMessageHandler(
-    Filters.regex(r"(?i)(goodmorning)"), goodmorning, friendly="goodmorning"
+    Filters.regex(r"(?i)(good morning)"), goodmorning, friendly="goodmorning"
 )
 GDNIGHT_HANDLER = DisableAbleMessageHandler(
-    Filters.regex(r"(?i)(goodnight)"), goodnight, friendly="goodnight"
+    Filters.regex(r"(?i)(good night)"), goodnight, friendly="goodnight"
 )
 
 dispatcher.add_handler(POLICE_HANDLER)
