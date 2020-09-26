@@ -24,5 +24,8 @@ COPY requirements.txt .
 # Install requirements
 RUN pip3 install -U -r requirements.txt
 
+# Copy All 
+COPY . .
+
 # Starting Worker
 CMD ["python3","-m","ubotindo"]
