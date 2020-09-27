@@ -1,31 +1,13 @@
-FROM python:3.8
+FROM userindobot/docker:latest
 
-# Set Working Directory
-WORKDIR /app/
-#
-# Installing Packages
-#
-RUN apt update && apt upgrade -y && \
-    apt install --no-install-recommends -y \
-    bash \
-    git \
-    libffi-dev \
-    libjpeg-dev \
-    libxslt1-dev \
-    gcc \
-    && rm -rf /var/lib/apt/lists /var/cache/apt/archives /tmp
+# Clone Repo 
+RUN git clone https://github.com/MoveAngel/UserIndoBot.git -b master /app/userindo
 
-# Pypi package Repo upgrade
-RUN pip3 install --upgrade pip setuptools
+# Wokrking Dir
+WORKDIR /app/userindo/
 
-# Copy Requirements To Working Dir
-COPY requirements.txt .
+# Copy Config To Working Dir
+COPY ./config.py /app/userindo/ubotindo
 
-# Install requirements
-RUN pip3 install -U -r requirements.txt
-
-# Copy All 
-COPY . .
-
-# Starting Worker
-CMD ["python3","-m","ubotindo"]
+# Run
+CMD ["python3", "-m", "ubotindo"]
