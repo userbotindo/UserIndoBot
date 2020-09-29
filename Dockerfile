@@ -10,4 +10,4 @@ WORKDIR /app/userindo/
 COPY ./config.py /app/userindo/ubotindo
 
 # Run
-CMD ["python3", "-m", "ubotindo"]
+CMD ["bash", "start"]
