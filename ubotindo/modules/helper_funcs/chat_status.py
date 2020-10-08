@@ -38,12 +38,12 @@ def is_user_ban_protected(
         return True
 
     if not member:
-        member = chat.get_member(user_id)
+        member=chat.get_member(user_id)
     return member.status in ("administrator", "creator")
 
 
-@MWT(timeout=60 * 5)  # Cache admin status for 5 mins to avoid extra requests.
-def is_user_admin(chat: Chat, user_id: int, member: ChatMember = None) -> bool:
+@ MWT(timeout=60 * 5)  # Cache admin status for 5 mins to avoid extra requests.
+def is_user_admin(chat: Chat, user_id: int, member: ChatMember=None) -> bool:
     if (
         chat.type == "private"
         or user_id in DEV_USERS
@@ -54,29 +54,29 @@ def is_user_admin(chat: Chat, user_id: int, member: ChatMember = None) -> bool:
         return True
 
     if not member:
-        member = chat.get_member(user_id)
+        member=chat.get_member(user_id)
     return member.status in ("administrator", "creator")
 
 
 def is_bot_admin(
         chat: Chat,
         bot_id: int,
-        bot_member: ChatMember = None) -> bool:
+        bot_member: ChatMember=None) -> bool:
     if chat.type == "private" or chat.all_members_are_administrators:
         return True
 
     if not bot_member:
-        bot_member = chat.get_member(bot_id)
+        bot_member=chat.get_member(bot_id)
     return bot_member.status in ("administrator", "creator")
 
 
 def is_user_in_chat(chat: Chat, user_id: int) -> bool:
-    member = chat.get_member(user_id)
+    member=chat.get_member(user_id)
     return member.status not in ("left", "kicked")
 
 
 def bot_can_delete(func):
-    @wraps(func)
+    @ wraps(func)
     def delete_rights(update, context, *args, **kwargs):
         if can_delete(update.effective_chat, context.bot.id):
             return func(update, context, *args, **kwargs)
@@ -90,7 +90,7 @@ def bot_can_delete(func):
 
 
 def can_pin(func):
-    @wraps(func)
+    @ wraps(func)
     def pin_rights(update, context, *args, **kwargs):
         if update.effective_chat.get_member(context.bot.id).can_pin_messages:
             return func(update, context, *args, **kwargs)
@@ -104,7 +104,7 @@ def can_pin(func):
 
 
 def can_promote(func):
-    @wraps(func)
+    @ wraps(func)
     def promote_rights(update, context, *args, **kwargs):
         if update.effective_chat.get_member(
                 context.bot.id).can_promote_members:
@@ -119,7 +119,7 @@ def can_promote(func):
 
 
 def can_restrict(func):
-    @wraps(func)
+    @ wraps(func)
     def promote_rights(update, context, *args, **kwargs):
         if update.effective_chat.get_member(
                 context.bot.id).can_restrict_members:
@@ -134,7 +134,7 @@ def can_restrict(func):
 
 
 def bot_admin(func):
-    @wraps(func)
+    @ wraps(func)
     def is_admin(update, context, *args, **kwargs):
         if is_bot_admin(update.effective_chat, context.bot.id):
             return func(update, context, *args, **kwargs)
@@ -145,9 +145,9 @@ def bot_admin(func):
 
 
 def user_admin(func):
-    @wraps(func)
+    @ wraps(func)
     def is_admin(update, context, *args, **kwargs):
-        user = update.effective_user  # type: Optional[User]
+        user=update.effective_user  # type: Optional[User]
         if user and is_user_admin(update.effective_chat, user.id):
             return func(update, context, *args, **kwargs)
 
@@ -166,9 +166,9 @@ def user_admin(func):
 
 
 def user_admin_no_reply(func):
-    @wraps(func)
+    @ wraps(func)
     def is_admin(update, context, *args, **kwargs):
-        user = update.effective_user  # type: Optional[User]
+        user=update.effective_user  # type: Optional[User]
         if user and is_user_admin(update.effective_chat, user.id):
             return func(update, context, *args, **kwargs)
 
@@ -182,9 +182,9 @@ def user_admin_no_reply(func):
 
 
 def user_not_admin(func):
-    @wraps(func)
+    @ wraps(func)
     def is_not_admin(update, context, *args, **kwargs):
-        user = update.effective_user  # type: Optional[User]
+        user=update.effective_user  # type: Optional[User]
         if user and not is_user_admin(update.effective_chat, user.id):
             return func(update, context, *args, **kwargs)
 

@@ -327,7 +327,9 @@ def new_member(update, context):
 
                     if (
                         is_user_ban_protected(
-                            chat, new_mem.id, chat.get_member(new_mem.id) or new_mem.is_bot
+                            chat,
+                            new_mem.id,
+                            chat.get_member(new_mem.id) or new_mem.is_bot,
                         )
                         or human_checks
                     ):
