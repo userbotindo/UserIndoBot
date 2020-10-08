@@ -34,8 +34,7 @@ def is_user_ban_protected(
         or user_id in DEV_USERS
         or user_id in SUDO_USERS
         or user_id in WHITELIST_USERS
-        or chat.all_members_are_administrators
-    ):
+        or chat.all_members_are_administrators or user_id in (777000, 1087968824):
         return True
 
     if not member:
@@ -49,7 +48,7 @@ def is_user_admin(chat: Chat, user_id: int, member: ChatMember = None) -> bool:
         chat.type == "private"
         or user_id in DEV_USERS
         or user_id in SUDO_USERS
-        or user_id == int(777000)
+        or user_id == in(777000, 1087968824)
         or chat.all_members_are_administrators
     ):
         return True
