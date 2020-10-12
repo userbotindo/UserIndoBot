@@ -43,6 +43,6 @@ jobs:
           commit_message: 'pylint: auto formatter fixes'
           commit_options: '--no-verify --signoff'
           repository: .
-          commit_user_name: MoveAngel
-          commit_user_email: moveangel@minaproject.tech
-          commit_author: MoveAngel <moveangel@minaproject.tech>
+          commit_user_name: KeselekPermen69
+          commit_user_email: KeselekPermen@mrmiss.wtf
+          commit_author: KeselekPermen69 <KeselekPermen@mrmiss.wtf>
