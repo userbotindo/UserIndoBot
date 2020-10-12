@@ -42,3 +42,4 @@ git+https://github.com/TomyPrs/python-markdown2.git
 alphabet_detector
 tswift
 covid
+hurry.filesize
