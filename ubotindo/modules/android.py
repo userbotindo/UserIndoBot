@@ -16,9 +16,10 @@
 
 import time
 
+from hurry.filesize import size as sizee
 from bs4 import BeautifulSoup
 from requests import get
-from telegram import ParseMode
+from telegram import ParseMode, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.error import BadRequest
 from telegram.ext import run_async
 
@@ -188,6 +189,52 @@ def twrp(update, context):
         )
 
 
+@typing_action
+@run_async
+def los(update, context) -> str:
+    message = update.effective_message
+    chat = update.effective_chat
+    args = context.args
+    try:
+        device = args[0]
+    except Exception:
+        device = ''
+
+    if device == '':
+        reply_text = f"*Please Type Your Device Codename**\nExample : `/los lavender`"
+        message.reply_text(reply_text,
+                           parse_mode=ParseMode.MARKDOWN,
+                           disable_web_page_preview=True)
+        return
+
+    fetch = get(f'https://download.lineageos.org/api/v1/{device}/nightly/*')
+    if fetch.status_code == 200 and len(fetch.json()['response']) != 0:
+        usr = fetch.json()
+        response = usr['response'][0]
+        filename = response['filename']
+        url = response['url']
+        buildsize_a = response['size']
+        buildsize_b = sizee(int(buildsize_a))
+        version = response['version']
+
+        reply_text = f"*Download :* [{filename}]({url})\n"
+        reply_text += f"*Build Size :* `{buildsize_b}`\n"
+        reply_text += f"*Version :* `{version}`\n"
+
+        keyboard = [[
+            InlineKeyboardButton(text="Click Here To Downloads", url=f"{url}")
+        ]]
+        message.reply_text(reply_text,
+                           reply_markup=InlineKeyboardMarkup(keyboard),
+                           parse_mode=ParseMode.MARKDOWN,
+                           disable_web_page_preview=True)
+        return
+
+    else:
+        message.reply_text("`Couldn't find any results matching your query.`", parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+
+
+
 __help__ = """
 Get Latest magisk relese, Twrp for your device or info about some device using its codename, Directly from Bot!
 
@@ -196,6 +243,7 @@ Get Latest magisk relese, Twrp for your device or info about some device using i
  × /magisk - Gets the latest magisk release for Stable/Beta/Canary.
  × /device <codename> - Gets android device basic info from its codename.
  × /twrp <codename> -  Gets latest twrp for the android device using the codename.
+ × /los <codename> - Gets Latest los build.
 """
 
 __mod_name__ = "Android"
@@ -203,7 +251,9 @@ __mod_name__ = "Android"
 MAGISK_HANDLER = DisableAbleCommandHandler("magisk", magisk)
 DEVICE_HANDLER = DisableAbleCommandHandler("device", device, pass_args=True)
 TWRP_HANDLER = DisableAbleCommandHandler("twrp", twrp, pass_args=True)
+LOS_HANDLER = DisableAbleCommandHandler("los", los, pass_args=True)
 
 dispatcher.add_handler(MAGISK_HANDLER)
 dispatcher.add_handler(DEVICE_HANDLER)
 dispatcher.add_handler(TWRP_HANDLER)
+dispatcher.add_handler(LOS_HANDLER)
