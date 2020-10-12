@@ -34,18 +34,18 @@ def is_user_ban_protected(
         or user_id in DEV_USERS
         or user_id in SUDO_USERS
         or user_id in WHITELIST_USERS
-        or chat.all_members_are_administrators 
+        or chat.all_members_are_administrators
         or user_id in (777000, 1087968824)
     ):
         return True
 
     if not member:
-        member=chat.get_member(user_id)
+        member = chat.get_member(user_id)
     return member.status in ("administrator", "creator")
 
 
 @ MWT(timeout=60 * 5)  # Cache admin status for 5 mins to avoid extra requests.
-def is_user_admin(chat: Chat, user_id: int, member: ChatMember=None) -> bool:
+def is_user_admin(chat: Chat, user_id: int, member: ChatMember = None) -> bool:
     if (
         chat.type == "private"
         or user_id in DEV_USERS
@@ -56,24 +56,24 @@ def is_user_admin(chat: Chat, user_id: int, member: ChatMember=None) -> bool:
         return True
 
     if not member:
-        member=chat.get_member(user_id)
+        member = chat.get_member(user_id)
     return member.status in ("administrator", "creator")
 
 
 def is_bot_admin(
         chat: Chat,
         bot_id: int,
-        bot_member: ChatMember=None) -> bool:
+        bot_member: ChatMember = None) -> bool:
     if chat.type == "private" or chat.all_members_are_administrators:
         return True
 
     if not bot_member:
-        bot_member=chat.get_member(bot_id)
+        bot_member = chat.get_member(bot_id)
     return bot_member.status in ("administrator", "creator")
 
 
 def is_user_in_chat(chat: Chat, user_id: int) -> bool:
-    member=chat.get_member(user_id)
+    member = chat.get_member(user_id)
     return member.status not in ("left", "kicked")
 
 
@@ -149,7 +149,7 @@ def bot_admin(func):
 def user_admin(func):
     @ wraps(func)
     def is_admin(update, context, *args, **kwargs):
-        user=update.effective_user  # type: Optional[User]
+        user = update.effective_user  # type: Optional[User]
         if user and is_user_admin(update.effective_chat, user.id):
             return func(update, context, *args, **kwargs)
 
@@ -170,7 +170,7 @@ def user_admin(func):
 def user_admin_no_reply(func):
     @ wraps(func)
     def is_admin(update, context, *args, **kwargs):
-        user=update.effective_user  # type: Optional[User]
+        user = update.effective_user  # type: Optional[User]
         if user and is_user_admin(update.effective_chat, user.id):
             return func(update, context, *args, **kwargs)
 
@@ -186,7 +186,7 @@ def user_admin_no_reply(func):
 def user_not_admin(func):
     @ wraps(func)
     def is_not_admin(update, context, *args, **kwargs):
-        user=update.effective_user  # type: Optional[User]
+        user = update.effective_user  # type: Optional[User]
         if user and not is_user_admin(update.effective_chat, user.id):
             return func(update, context, *args, **kwargs)
 

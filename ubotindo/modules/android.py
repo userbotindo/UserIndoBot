@@ -16,10 +16,10 @@
 
 import time
 
-from hurry.filesize import size as sizee
 from bs4 import BeautifulSoup
+from hurry.filesize import size as sizee
 from requests import get
-from telegram import ParseMode, InlineKeyboardMarkup, InlineKeyboardButton
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
 from telegram.error import BadRequest
 from telegram.ext import run_async
 
@@ -193,46 +193,51 @@ def twrp(update, context):
 @run_async
 def los(update, context) -> str:
     message = update.effective_message
-    chat = update.effective_chat
+    update.effective_chat
     args = context.args
     try:
         device = args[0]
     except Exception:
-        device = ''
+        device = ""
 
-    if device == '':
+    if device == "":
         reply_text = f"*Please Type Your Device Codename**\nExample : `/los lavender`"
-        message.reply_text(reply_text,
-                           parse_mode=ParseMode.MARKDOWN,
-                           disable_web_page_preview=True)
+        message.reply_text(
+            reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
+        )
         return
 
-    fetch = get(f'https://download.lineageos.org/api/v1/{device}/nightly/*')
-    if fetch.status_code == 200 and len(fetch.json()['response']) != 0:
+    fetch = get(f"https://download.lineageos.org/api/v1/{device}/nightly/*")
+    if fetch.status_code == 200 and len(fetch.json()["response"]) != 0:
         usr = fetch.json()
-        response = usr['response'][0]
-        filename = response['filename']
-        url = response['url']
-        buildsize_a = response['size']
+        response = usr["response"][0]
+        filename = response["filename"]
+        url = response["url"]
+        buildsize_a = response["size"]
         buildsize_b = sizee(int(buildsize_a))
-        version = response['version']
+        version = response["version"]
 
         reply_text = f"*Download :* [{filename}]({url})\n"
         reply_text += f"*Build Size :* `{buildsize_b}`\n"
         reply_text += f"*Version :* `{version}`\n"
 
-        keyboard = [[
-            InlineKeyboardButton(text="Click Here To Downloads", url=f"{url}")
-        ]]
-        message.reply_text(reply_text,
-                           reply_markup=InlineKeyboardMarkup(keyboard),
-                           parse_mode=ParseMode.MARKDOWN,
-                           disable_web_page_preview=True)
+        keyboard = [
+            [InlineKeyboardButton(text="Click Here To Downloads", url=f"{url}")]
+        ]
+        message.reply_text(
+            reply_text,
+            reply_markup=InlineKeyboardMarkup(keyboard),
+            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=True,
+        )
         return
 
     else:
-        message.reply_text("`Couldn't find any results matching your query.`", parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
-
+        message.reply_text(
+            "`Couldn't find any results matching your query.`",
+            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=True,
+        )
 
 
 __help__ = """
