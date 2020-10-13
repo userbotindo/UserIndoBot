@@ -49,7 +49,7 @@ def get_invalid_chats(bot: Bot, update: Update, remove: bool = False):
             progress += 5
 
         cid = chat.chat_id
-        sleep(0.1)
+        sleep(0.5)
         try:
             bot.get_chat(cid, timeout=120)
         except (BadRequest, Unauthorized):
@@ -67,7 +67,7 @@ def get_invalid_chats(bot: Bot, update: Update, remove: bool = False):
         return kicked_chats
     else:
         for muted_chat in chat_list:
-            sleep(0.1)
+            sleep(0.5)
             user_sql.rem_chat(muted_chat)
         return kicked_chats
 
@@ -79,7 +79,7 @@ def get_invalid_gban(bot: Bot, update: Update, remove: bool = False):
 
     for user in banned:
         user_id = user["user_id"]
-        sleep(0.1)
+        sleep(0.5)
         try:
             bot.get_chat(user_id)
         except BadRequest:
@@ -92,7 +92,7 @@ def get_invalid_gban(bot: Bot, update: Update, remove: bool = False):
         return ungbanned_users
     else:
         for user_id in ungban_list:
-            sleep(0.1)
+            sleep(0.5)
             gban_sql.ungban_user(user_id)
         return ungbanned_users
 
@@ -140,7 +140,7 @@ def get_muted_chats(bot: Bot, update: Update, leave: bool = False):
             progress += 5
 
         cid = chat.chat_id
-        sleep(0.1)
+        sleep(0.5)
 
         try:
             bot.send_chat_action(cid, "TYPING", timeout=120)
@@ -159,7 +159,7 @@ def get_muted_chats(bot: Bot, update: Update, leave: bool = False):
         return muted_chats
     else:
         for muted_chat in chat_list:
-            sleep(0.1)
+            sleep(0.5)
             try:
                 bot.leaveChat(muted_chat, timeout=120)
             except BaseException:
