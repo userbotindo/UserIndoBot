@@ -64,7 +64,9 @@ def set_about_me(update, context):
     message = update.effective_message  # type: Optional[Message]
     user_id = message.from_user.id
     if user_id == 1087968824:
-        message.reply_text("You cannot set your own bio when you're in anonymous admin mode!")
+        message.reply_text(
+            "You cannot set your own bio when you're in anonymous admin mode!"
+        )
         return
 
     text = message.text

@@ -214,9 +214,7 @@ def info(update, context):
         )
 
     elif user.id == int(1087968824):
-        text+= (
-            "\n\nThis is anonymous admin in this group. "
-        )
+        text += "\n\nThis is anonymous admin in this group. "
 
     try:
         memstatus = chat.get_member(user.id).status
