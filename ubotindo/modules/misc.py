@@ -213,6 +213,11 @@ def info(update, context):
             "That means I'm not allowed to ban/kick them."
         )
 
+    elif user.id == int(1087968824):
+        text+= (
+            "\n\nThis is anonymous admin in this group. "
+        )
+
     try:
         memstatus = chat.get_member(user.id).status
         if memstatus == "administrator" or memstatus == "creator":
