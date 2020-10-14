@@ -204,10 +204,15 @@ updater = tg.Updater(TOKEN, workers=WORKERS, use_context=True)
 
 dispatcher = updater.dispatcher
 
+# Declare user rank
 DEV_USERS = list(DEV_USERS)
 SUDO_USERS = list(SUDO_USERS)
-WHITELIST_USERS = list(WHITELIST_USERS)
 SUPPORT_USERS = list(SUPPORT_USERS)
+
+STAFF = DEV_USERS + SUDO_USERS + SUPPORT_USERS
+STAFF_USERS = list(STAFF)
+
+WHITELIST_USERS = list(WHITELIST_USERS)
 
 # Load at end to ensure all prev variables have been set
 from ubotindo.modules.helper_funcs.handlers import CustomCommandHandler  # noqa
