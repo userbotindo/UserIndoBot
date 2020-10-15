@@ -54,6 +54,7 @@ from ubotindo import (
 )
 from ubotindo.__main__ import GDPR, STATS, USER_INFO
 from ubotindo.modules.disable import DisableAbleCommandHandler
+from ubotindo.modules.global_bans import check_cas
 from ubotindo.modules.helper_funcs.alternate import send_action, typing_action
 from ubotindo.modules.helper_funcs.extraction import extract_user
 from ubotindo.modules.helper_funcs.filters import CustomFilters
@@ -185,6 +186,14 @@ def info(update, context):
             pass
     except BaseException:
         pass  # don't crash if api is down somehow...
+
+    try:
+        cas_banned = check_cas(user.id)
+        if cas_banned:
+            text += "\n\n<b>This Person is CAS Banned!</b>"
+            text += f"\n<b>Reason: </b><code>Recorded spam messages </code><a href='https://cas.chat/query?u={user.id}'>Here</a>"
+    except BaseException:
+        pass
 
     if user.id == OWNER_ID:
         text += "\n\nAye this guy is my owner.\nI would never do anything against him!"

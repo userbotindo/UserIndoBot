@@ -326,32 +326,35 @@ def gbanlist(update, context):
         )
 
 
-def check_and_ban(update, user_id, should_message=True):
+def check_cas(user_id):
+    cas_url = "https://api.cas.chat/check?user_id={}".format(user_id)
+    try:
+        r = get(cas_url, timeout=3)
+        data = r.json()
+    except BaseException:
+        LOGGER.warning("CAS check failed")
+        data = None
+    return bool(data and data['ok'])
 
+
+def check_and_ban(update, user_id, should_message=True):
     try:
         spmban = spamwtc.get_ban(int(user_id))
-        cas_url="https://api.cas.chat/check?user_id={}".format(user_id)
-        try:
-            r = get(cas_url, timeout=3)
-            data = r.json()
-        except BaseException:
-            LOGGER.warning("CAS check failed")
-            data = None
-        cas_banned = bool(data and data['ok'])
+        cas_banned = check_cas(user_id)
 
         if spmban or cas_banned:
             update.effective_chat.kick_member(user_id)
             if should_message:
                 if cas_banned:
                     banner = "Combot Anti Spam"
-                    reason = '× <a href="https://cas.chat/query?u={}">CAS Banned</a>'.format(user_id)
+                    reason = '<a href="https://cas.chat/query?u={}">CAS Banned</a>'.format(user_id)
                 elif spmban:
                     banner = "@Spamwatch"
-                    reason = f"× <code>{spmban.reason}</code>"
+                    reason = f"<code>{spmban.reason}</code>"
 
                 if cas_banned and spmban:
                     banner = "Combot Anti Spam and @Spamwatch"
-                    reason = '× <code>{}</code>\n\n× <a href="https://cas.chat/query?u={}">CAS Banned</a>'.format(spmban.reason, user_id)
+                    reason = '<code>{}</code>\n\nand <a href="https://cas.chat/query?u={}">CAS Banned</a>'.format(spmban.reason, user_id)
 
                 update.effective_message.reply_text(
                     f"#SPAM_SHIELD\n\nThis person has been detected as spambot by {banner} and has been removed!\nReason: {reason}",
