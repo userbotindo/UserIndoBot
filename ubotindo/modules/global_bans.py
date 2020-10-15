@@ -411,13 +411,13 @@ def gbanstat(update, context):
         if args[0].lower() in ["on", "yes"]:
             sql.enable_gbans(update.effective_chat.id)
             update.effective_message.reply_text(
-                "I've enabled Spam Sheild in this group. This will help protect you "
+                "I've enabled Spam Shield in this group. This will help protect you "
                 "from spammers, unsavoury characters, and the biggest trolls."
             )
         elif args[0].lower() in ["off", "no"]:
             sql.disable_gbans(update.effective_chat.id)
             update.effective_message.reply_text(
-                "I've disabled Spam sheild in this group. GBans wont affect your users "
+                "I've disabled Spam shield in this group. SpamShield wont affect your users "
                 "anymore. You'll be less protected from any trolls and spammers "
                 "though!"
             )
@@ -425,7 +425,7 @@ def gbanstat(update, context):
         update.effective_message.reply_text(
             "Give me some arguments to choose a setting! on/off, yes/no!\n\n"
             "Your current setting is: {}\n"
-            "When True, any gbans that happen will also happen in your group. "
+            "When True, Any Spam Shield that happen will also happen in your group. "
             "When False, they won't, leaving you at the possible mercy of "
             "spammers.".format(sql.does_chat_gban(update.effective_chat.id))
         )
