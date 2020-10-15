@@ -37,7 +37,7 @@ def gtrans(update, context):
     lang = " ".join(args)
     if not lang:
         lang = "en"
-    translate_text = msg.reply_to_message.text
+    translate_text = msg.reply_to_message.text or msg.reply_to_message.caption
     ignore_text = UNICODE_EMOJI.keys()
     for emoji in ignore_text:
         if emoji in translate_text:
@@ -115,11 +115,11 @@ def spellcheck(update, context):
 
 __help__ = """
 × /tr or /tl: - To translate to your language, by default language is set to english, use `/tr <lang code>` for some other language!
-× /splcheck: - As a reply to get grammar corrected text of gibberish message.
+× /spell: - As a reply to get grammar corrected text of gibberish message.
 × /tts: - To some message to convert it into audio format!
 """
 __mod_name__ = "Translate"
 
 dispatcher.add_handler(DisableAbleCommandHandler(["tr", "tl"], gtrans, pass_args=True))
 dispatcher.add_handler(DisableAbleCommandHandler("tts", gtts, pass_args=True))
-dispatcher.add_handler(DisableAbleCommandHandler("splcheck", spellcheck))
+dispatcher.add_handler(DisableAbleCommandHandler("spell", spellcheck))
