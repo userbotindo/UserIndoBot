@@ -616,14 +616,6 @@ def set_welcome(update, context) -> str:
     user = update.effective_user
     msg = update.effective_message
 
-    if not msg.reply_to_message:
-        if len(msg.text.split()) == 1:
-            msg.reply_text(
-                "Reply To Message Or media. Or using /welcomehelp If You don't Know what to do..",
-                parse_mode="markdown",
-            )
-        return ""
-
     text, data_type, content, buttons = get_welcome_type(msg)
 
     if data_type is None:
@@ -672,15 +664,7 @@ def set_goodbye(update, context) -> str:
     chat = update.effective_chat
     user = update.effective_user
     msg = update.effective_message
-
-    if not msg.reply_to_message:
-        if len(msg.text.split()) == 1:
-            msg.reply_text(
-                "Reply To Message Or media. Or using /welcomehelp If You don't Know what to do..",
-                parse_mode="markdown",
-            )
-            return ""
-
+    
     text, data_type, content, buttons = get_welcome_type(msg)
 
     if data_type is None:
