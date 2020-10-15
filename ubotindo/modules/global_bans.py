@@ -16,6 +16,7 @@
 
 import html
 from io import BytesIO
+from requests import get
 
 from telegram import ChatAction, ParseMode
 from telegram.error import BadRequest, TelegramError
@@ -24,6 +25,7 @@ from telegram.utils.helpers import mention_html
 
 import ubotindo.modules.sql.global_bans_sql as sql
 from ubotindo import (
+    LOGGER,
     DEV_USERS,
     GBAN_LOGS,
     OWNER_ID,
@@ -328,16 +330,35 @@ def check_and_ban(update, user_id, should_message=True):
 
     try:
         spmban = spamwtc.get_ban(int(user_id))
-        if spmban:
+        cas_url="https://api.cas.chat/check?user_id={}".format(user_id)
+        try:
+            r = get(cas_url, timeout=3)
+            data = r.json()
+        except BaseException:
+            LOGGER.warning("CAS check failed")
+            data = None
+        cas_banned = bool(data and data['ok'])
+
+        if spmban or cas_banned:
             update.effective_chat.kick_member(user_id)
             if should_message:
+                if cas_banned:
+                    banner = "Combot Anti Spam"
+                    reason = '× <a href="https://cas.chat/query?u={}">CAS Banned</a>'.format(user_id)
+                elif spmban:
+                    banner = "@Spamwatch"
+                    reason = f"× <code>{spmban.reason}</code>"
+
+                if cas_banned and spmban:
+                    banner = "Combot Anti Spam and @Spamwatch"
+                    reason = '× <code>{}</code>\n\n× <a href="https://cas.chat/query?u={}">CAS Banned</a>'.format(spmban.reason, user_id)
+
                 update.effective_message.reply_text(
-                    f"This person has been detected as spambot by @SpamWatch and has been removed!\nReason: <code>{spmban.reason}</code>",
+                    f"#SPAM_SHIELD\n\nThis person has been detected as spambot by {banner} and has been removed!\nReason: {reason}",
                     parse_mode=ParseMode.HTML,
                 )
                 return
-            else:
-                return
+
     except Exception:
         pass
 
@@ -444,7 +465,7 @@ __help__ = """
 *Admin only:*
  × /spamshield <on/off/yes/no>: Will disable or enable the effect of Spam protection in your group.
 
-Spam shield uses @Spamwatch API and Global bans to remove Spammers as much as possible from your chatroom!
+Spam shield uses Combot Anti Spam, @Spamwatch API and Global bans to remove Spammers as much as possible from your chatroom!
 
 *What is SpamWatch?*
 
