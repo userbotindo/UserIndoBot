@@ -49,8 +49,8 @@ Once you've set up your database and your configuration (see below) is complete,
 
 ## Setting up the bot Read this before trying to use!
 
-Please make sure to use python3.6, as I cannot guarantee everything will work as expected on older Python versions!
-This is because markdown parsing is done by iterating through a dict, which is ordered by default in 3.6.
+Please make sure to use python3.8, as I cannot guarantee everything will work as expected on older Python versions!
+This is because markdown parsing is done by iterating through a dict, which is ordered by default in 3.8.
 
 ### Configuration
 
