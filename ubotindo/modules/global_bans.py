@@ -16,8 +16,8 @@
 
 import html
 from io import BytesIO
-from requests import get
 
+from requests import get
 from telegram import ChatAction, ParseMode
 from telegram.error import BadRequest, TelegramError
 from telegram.ext import CommandHandler, Filters, MessageHandler, run_async
@@ -25,9 +25,9 @@ from telegram.utils.helpers import mention_html
 
 import ubotindo.modules.sql.global_bans_sql as sql
 from ubotindo import (
-    LOGGER,
     DEV_USERS,
     GBAN_LOGS,
+    LOGGER,
     OWNER_ID,
     STRICT_GBAN,
     SUDO_USERS,
@@ -334,7 +334,7 @@ def check_cas(user_id):
     except BaseException:
         LOGGER.warning("CAS check failed")
         data = None
-    return bool(data and data['ok'])
+    return bool(data and data["ok"])
 
 
 def check_and_ban(update, user_id, should_message=True):
@@ -347,14 +347,20 @@ def check_and_ban(update, user_id, should_message=True):
             if should_message:
                 if cas_banned:
                     banner = "Combot Anti Spam"
-                    reason = '<a href="https://cas.chat/query?u={}">CAS Banned</a>'.format(user_id)
+                    reason = (
+                        '<a href="https://cas.chat/query?u={}">CAS Banned</a>'.format(
+                            user_id
+                        )
+                    )
                 elif spmban:
                     banner = "@Spamwatch"
                     reason = f"<code>{spmban.reason}</code>"
 
                 if cas_banned and spmban:
                     banner = "Combot Anti Spam and @Spamwatch"
-                    reason = '<code>{}</code>\n\nand <a href="https://cas.chat/query?u={}">CAS Banned</a>'.format(spmban.reason, user_id)
+                    reason = '<code>{}</code>\n\nand <a href="https://cas.chat/query?u={}">CAS Banned</a>'.format(
+                        spmban.reason, user_id
+                    )
 
                 update.effective_message.reply_text(
                     f"#SPAM_SHIELD\n\nThis person has been detected as spambot by {banner} and has been removed!\nReason: {reason}",

@@ -664,7 +664,7 @@ def set_goodbye(update, context) -> str:
     chat = update.effective_chat
     user = update.effective_user
     msg = update.effective_message
-    
+
     text, data_type, content, buttons = get_welcome_type(msg)
 
     if data_type is None:

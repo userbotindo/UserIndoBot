@@ -36,13 +36,13 @@ if sys.version_info[0] < 3 or sys.version_info[1] < 8:
         "You MUST have a python version of at least 3.6! Multiple features depend on this. Bot quitting."
     )
     sys.exit(1)
-    
+
 # Check if system is reboot or not
 try:
-	os.remove("reboot")
-except:
-	pass
-	
+    os.remove("reboot")
+except BaseException:
+    pass
+
 ENV = bool(os.environ.get("ENV", False))
 
 if ENV:
