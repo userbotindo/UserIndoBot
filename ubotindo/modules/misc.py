@@ -191,7 +191,7 @@ def info(update, context):
         cas_banned = check_cas(user.id)
         if cas_banned:
             text += "\n\n<b>This Person is CAS Banned!</b>"
-            text += f"\n<b>Reason: </b><code>Recorded spam messages </code><a href='https://cas.chat/query?u={user.id}'>Here</a>"
+            text += f"\n<b>Reason: </b><code>Recorded spam messages </code><a href='https://cas.chat/query?u={user.id}'>Here</a>\nAppeal at @cas_discussion"
     except BaseException:
         pass
 
