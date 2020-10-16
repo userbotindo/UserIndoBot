@@ -14,4 +14,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# Notes below is how the application works, don't activate all
+# Choose one which you think is better
+
+# Turn on this if you not using Webhook
 worker: python3 -m ubotindo
+
+# Turn on this if you using Webhook
+web: python3 -m ubotindo
