@@ -201,7 +201,7 @@ def los(update, context) -> str:
         device = ""
 
     if device == "":
-        reply_text = f"*Please Type Your Device Codename**\nExample : `/los lavender`"
+        reply_text = f"*Please Type Your Device Codename*\nExample : `/los lavender`"
         message.reply_text(
             reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
         )
@@ -210,7 +210,8 @@ def los(update, context) -> str:
     fetch = get(f"https://download.lineageos.org/api/v1/{device}/nightly/*")
     if fetch.status_code == 200 and len(fetch.json()["response"]) != 0:
         usr = fetch.json()
-        response = usr["response"][0]
+        data = len(usr["response"]) - 1  # the latest rom are below
+        response = usr["response"][data]
         filename = response["filename"]
         url = response["url"]
         buildsize_a = response["size"]
