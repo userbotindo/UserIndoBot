@@ -37,7 +37,11 @@ def gtrans(update, context):
     lang = " ".join(args)
     if not lang:
         lang = "en"
-    translate_text = msg.reply_to_message.text or msg.reply_to_message.caption
+    try:
+        translate_text = msg.reply_to_message.text or msg.reply_to_message.caption
+    except AttributeError:
+        return msg.reply_text("Give me the text to translate!")
+
     ignore_text = UNICODE_EMOJI.keys()
     for emoji in ignore_text:
         if emoji in translate_text:
