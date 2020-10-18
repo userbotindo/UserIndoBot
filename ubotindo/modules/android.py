@@ -39,9 +39,13 @@ def magisk(update, context):
     for type, branch in {
         "Stable": ["master/stable", "master"],
         "Beta": ["master/beta", "master"],
-        "Canary (debug)": ["canary/debug", "canary"],
+        "Canary": ["canary/canary", "canary"],
     }.items():
         data = get(url + branch[0] + ".json").json()
+        if str(type) == "Canary":
+            data["magisk"]["link"] = "https://github.com/topjohnwu/magisk_files/raw/canary/" + data["magisk"]["link"]
+            data["app"]["link"] = "https://github.com/topjohnwu/magisk_files/raw/canary/" + data["app"]["link"]
+            data["uninstaller"]["link"] = "https://github.com/topjohnwu/magisk_files/raw/canary/" + data["uninstaller"]["link"]
         releases += (
             f"*{type}*: \n"
             f"• [Changelog](https://github.com/topjohnwu/magisk_files/blob/{branch[1]}/notes.md)\n"
