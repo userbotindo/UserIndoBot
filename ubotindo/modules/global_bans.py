@@ -332,9 +332,12 @@ def check_cas(user_id):
         r = get(cas_url, timeout=3)
         data = r.json()
     except BaseException:
-        LOGGER.warning("CAS check failed")
-        data = None
-    return bool(data and data["ok"])
+        LOGGER.info(f"CAS check failed for {user_id}")
+        return False
+    if data and data["ok"]:
+        return "https://cas.chat/query?u={}".format(user_id)
+    else:
+        return False
 
 
 def check_and_ban(update, user_id, should_message=True):
@@ -345,22 +348,15 @@ def check_and_ban(update, user_id, should_message=True):
         if spmban or cas_banned:
             update.effective_chat.kick_member(user_id)
             if should_message:
-                if cas_banned:
+                if spmban and cas_banned:
+                    banner = "@Spamwatch and Combot Anti Spam"
+                    reason = f"\n<code>{spmban.reason}</code>\n\nand <a href='{cas_banned}'>CAS Banned</a>"
+                elif cas_banned:
                     banner = "Combot Anti Spam"
-                    reason = (
-                        '<a href="https://cas.chat/query?u={}">CAS Banned</a>'.format(
-                            user_id
-                        )
-                    )
+                    reason = f"<a href='{cas_banned}''>CAS Banned</a>"
                 elif spmban:
                     banner = "@Spamwatch"
                     reason = f"<code>{spmban.reason}</code>"
-
-                if cas_banned and spmban:
-                    banner = "Combot Anti Spam and @Spamwatch"
-                    reason = '<code>{}</code>\n\nand <a href="https://cas.chat/query?u={}">CAS Banned</a>'.format(
-                        spmban.reason, user_id
-                    )
 
                 update.effective_message.reply_text(
                     f"#SPAM_SHIELD\n\nThis person has been detected as spambot by {banner} and has been removed!\nReason: {reason}",

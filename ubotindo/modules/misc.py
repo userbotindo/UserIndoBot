@@ -187,13 +187,11 @@ def info(update, context):
     except BaseException:
         pass  # don't crash if api is down somehow...
 
-    try:
-        cas_banned = check_cas(user.id)
-        if cas_banned:
-            text += "\n\n<b>This Person is CAS Banned!</b>"
-            text += f"\n<b>Reason: </b><code>Recorded spam messages </code><a href='https://cas.chat/query?u={user.id}'>Here</a>\nAppeal at @cas_discussion"
-    except BaseException:
-        pass
+    cas_banned = check_cas(user.id)
+    if cas_banned:
+        text += "\n\n<b>This Person is CAS Banned!</b>"
+        text += f"\n<b>Reason: </b> <a href='{cas_banned}'>CAS Banned</a>"
+        text += "\nAppeal at @cas_discussion"
 
     if user.id == OWNER_ID:
         text += "\n\nAye this guy is my owner.\nI would never do anything against him!"
