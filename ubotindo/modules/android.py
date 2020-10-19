@@ -254,6 +254,107 @@ def los(update, context) -> str:
         )
 
 
+@typing_action
+@run_async
+def gsi(update, context):
+    message = update.effective_message
+    update.effective_chat
+
+    usr = get(
+        f"https://api.github.com/repos/phhusson/treble_experimentations/releases/latest"
+    ).json()
+    reply_text = "*Gsi'S Latest release*\n"
+    for i in range(len(usr)):
+        try:
+            name = usr["assets"][i]["name"]
+            url = usr["assets"][i]["browser_download_url"]
+            reply_text += f"[{name}]({url})\n"
+        except IndexError:
+            continue
+    message.reply_text(reply_text, parse_mode=ParseMode.MARKDOWN)
+
+
+@typing_action
+@run_async
+def bootleg(update, context) -> str:
+    message = update.effective_message
+    update.effective_chat
+    args = context.args
+    try:
+        codename = args[0]
+    except Exception:
+        codename = ""
+
+    if codename == "":
+        message.reply_text(
+            "*Please Type Your Device Codename*\nExample : `/bootleg lavender`",
+            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=True,
+        )
+        return
+
+    fetch = get("https://bootleggersrom-devices.github.io/api/devices.json")
+    if fetch.status_code == 200:
+        data = fetch.json()
+
+        if codename.lower() == "x00t":
+            device = "X00T"
+        elif codename.lower() == "rmx1971":
+            device = "RMX1971"
+        else:
+            device = codename.lower()
+
+        try:
+            fullname = data[device]["fullname"]
+            filename = data[device]["filename"]
+            buildate = data[device]["buildate"]
+            buildsize = data[device]["buildsize"]
+            buildsize = sizee(int(buildsize))
+            downloadlink = data[device]["download"]
+            if data[device]["mirrorlink"] != "":
+                mirrorlink = data[device]["mirrorlink"]
+            else:
+                mirrorlink = None
+        except KeyError:
+            message.reply_text(
+                "`Couldn't find any results matching your query.`",
+                parse_mode=ParseMode.MARKDOWN,
+                disable_web_page_preview=True,
+            )
+            return
+
+        reply_text = f"*BootlegersROM for {fullname}*\n"
+        reply_text += f"*Download :* [{filename}]({downloadlink})\n"
+        reply_text += f"*Size :* `{buildsize}`\n"
+        reply_text += f"*Build Date :* `{buildate}`\n"
+        if mirrorlink is not None:
+            reply_text += f"[Mirror link]({mirrorlink})"
+
+        keyboard = [
+            [
+                InlineKeyboardButton(
+                    text="Click Here To Downloads", url=f"{downloadlink}"
+                )
+            ]
+        ]
+
+        message.reply_text(
+            reply_text,
+            reply_markup=InlineKeyboardMarkup(keyboard),
+            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=True,
+        )
+        return
+
+    elif fetch.status_code == 404:
+        message.reply_text(
+            "`Couldn't reach api`",
+            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=True,
+        )
+        return
+
+
 __help__ = """
 Get Latest magisk relese, Twrp for your device or info about some device using its codename, Directly from Bot!
 
@@ -271,8 +372,13 @@ MAGISK_HANDLER = DisableAbleCommandHandler("magisk", magisk)
 DEVICE_HANDLER = DisableAbleCommandHandler("device", device, pass_args=True)
 TWRP_HANDLER = DisableAbleCommandHandler("twrp", twrp, pass_args=True)
 LOS_HANDLER = DisableAbleCommandHandler("los", los, pass_args=True)
+BOOTLEG_HANDLER = DisableAbleCommandHandler("bootleg", bootleg, pass_args=True)
+GSI_HANDLER = DisableAbleCommandHandler("gsi", gsi, pass_args=True)
+
 
 dispatcher.add_handler(MAGISK_HANDLER)
 dispatcher.add_handler(DEVICE_HANDLER)
 dispatcher.add_handler(TWRP_HANDLER)
 dispatcher.add_handler(LOS_HANDLER)
+dispatcher.add_handler(GSI_HANDLER)
+dispatcher.add_handler(BOOTLEG_HANDLER)
