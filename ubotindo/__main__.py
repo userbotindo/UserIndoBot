@@ -24,7 +24,7 @@ from typing import Optional
 from telegram import Message, Chat, User
 from telegram import ParseMode, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import CommandHandler, Filters, MessageHandler, CallbackQueryHandler
-from telegram.ext.dispatcher import run_async, DispatcherHandlerStop
+from telegram.ext.dispatcher import DispatcherHandlerStop
 from telegram.utils.helpers import escape_markdown
 
 from ubotindo import (
@@ -199,7 +199,6 @@ def send_help(chat_id, text, keyboard=None):
         reply_markup=keyboard)
 
 
-@run_async
 def test(update, context):
     try:
         print(update)
@@ -212,7 +211,6 @@ def test(update, context):
     print(update.effective_message)
 
 
-@run_async
 @typing_action
 def start(update, context):
     if update.effective_chat.type == "private":
@@ -300,7 +298,6 @@ def error_handler(update, context):
     )
 
 
-@run_async
 def help_button(update, context):
     query = update.callback_query
     user = update.effective_user
@@ -364,7 +361,6 @@ def help_button(update, context):
             LOGGER.exception("Exception in help buttons. %s", str(query.data))
 
 
-@run_async
 @typing_action
 def staff_help(update, context):
     chat = update.effective_chat
@@ -388,7 +384,6 @@ def staff_help(update, context):
         update.effective_message.reply_text("You can't access this command")
 
 
-@run_async
 @typing_action
 def get_help(update, context):
     chat = update.effective_chat  # type: Optional[Chat]
@@ -480,7 +475,6 @@ def send_settings(chat_id, user_id, user=False):
             )
 
 
-@run_async
 def settings_button(update, context):
     query = update.callback_query
     user = update.effective_user
@@ -561,7 +555,6 @@ def settings_button(update, context):
                     query.data))
 
 
-@run_async
 @typing_action
 def get_settings(update, context):
     chat = update.effective_chat  # type: Optional[Chat]
@@ -651,17 +644,17 @@ def is_chat_allowed(update, context):
 
 def main():
     # test_handler = CommandHandler("test", test)
-    start_handler = CommandHandler("start", start, pass_args=True)
+    start_handler = CommandHandler("start", start, pass_args=True, run_async=True)
 
     help_handler = CommandHandler("help", get_help)
-    help_callback_handler = CallbackQueryHandler(help_button, pattern=r"help_")
+    help_callback_handler = CallbackQueryHandler(help_button, pattern=r"help_", run_async=True)
     help_staff_handler = CommandHandler(
-        "staffhelp", staff_help, filters=CustomFilters.support_filter
+        "staffhelp", staff_help, filters=CustomFilters.support_filter, run_async=True
     )
 
-    settings_handler = CommandHandler("settings", get_settings)
+    settings_handler = CommandHandler("settings", get_settings, run_async=True)
     settings_callback_handler = CallbackQueryHandler(
-        settings_button, pattern=r"stngs_")
+        settings_button, pattern=r"stngs_", run_async=True)
 
     migrate_handler = MessageHandler(
         Filters.status_update.migrate, migrate_chats)
