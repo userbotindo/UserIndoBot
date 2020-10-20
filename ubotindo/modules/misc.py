@@ -38,7 +38,7 @@ from telegram import (
     TelegramError,
 )
 from telegram.error import BadRequest
-from telegram.ext import CommandHandler, Filters, run_async
+from telegram.ext import CommandHandler, Filters
 from telegram.utils.helpers import escape_markdown, mention_html
 from tswift import Song
 
@@ -61,7 +61,6 @@ from ubotindo.modules.helper_funcs.filters import CustomFilters
 from ubotindo.modules.sql.afk_sql import is_afk
 
 
-@run_async
 @typing_action
 def get_id(update, context):
     args = context.args
@@ -102,7 +101,6 @@ def get_id(update, context):
             )
 
 
-@run_async
 @typing_action
 def info(update, context):
     args = context.args
@@ -257,7 +255,6 @@ def info(update, context):
         del_msg.delete()
 
 
-@run_async
 @typing_action
 def echo(update, context):
     args = update.effective_message.text.split(None, 1)
@@ -269,7 +266,6 @@ def echo(update, context):
     message.delete()
 
 
-@run_async
 @typing_action
 def gdpr(update, context):
     update.effective_message.reply_text("Deleting identifiable data...")
@@ -317,7 +313,6 @@ Keep in mind that your message <b>MUST</b> contain some text other than just a b
 )
 
 
-@run_async
 @typing_action
 def markdown_help(update, context):
     update.effective_message.reply_text(MARKDOWN_HELP, parse_mode=ParseMode.HTML)
@@ -331,7 +326,6 @@ def markdown_help(update, context):
     )
 
 
-@run_async
 @typing_action
 def wiki(update, context):
     kueri = re.split(pattern="wiki", string=update.effective_message.text)
@@ -366,7 +360,6 @@ def wiki(update, context):
             )
 
 
-@run_async
 @typing_action
 def ud(update, context):
     msg = update.effective_message
@@ -398,7 +391,6 @@ def ud(update, context):
         msg.reply_text(f"Error! {err.message}")
 
 
-@run_async
 @typing_action
 def src(update, context):
     update.effective_message.reply_text(
@@ -408,7 +400,6 @@ def src(update, context):
     )
 
 
-@run_async
 @typing_action
 def lyrics(update, context):
     msg = update.effective_message
@@ -440,7 +431,6 @@ def lyrics(update, context):
             msg.reply_text(reply)
 
 
-@run_async
 @send_action(ChatAction.UPLOAD_PHOTO)
 def wall(update, context):
     chat_id = update.effective_chat.id
@@ -487,7 +477,6 @@ def wall(update, context):
                 )
 
 
-@run_async
 @typing_action
 def getlink(update, context):
     args = context.args
@@ -516,7 +505,6 @@ def getlink(update, context):
     message.reply_text(links)
 
 
-@run_async
 @send_action(ChatAction.UPLOAD_PHOTO)
 def rmemes(update, context):
     msg = update.effective_message
@@ -568,7 +556,6 @@ def rmemes(update, context):
         return msg.reply_text(f"Error! {excp.message}")
 
 
-@run_async
 def staff_ids(update, context):
     sfile = "List of SUDO & SUPPORT users:\n"
     sfile += f"× DEV USER IDs; {DEV_USERS}\n"
@@ -583,14 +570,12 @@ def staff_ids(update, context):
         )
 
 
-@run_async
 def stats(update, context):
     update.effective_message.reply_text(
         "Current stats:\n" + "\n".join([mod.__stats__() for mod in STATS])
     )
 
 
-@run_async
 @typing_action
 def covid(update, context):
     message = update.effective_message
@@ -679,25 +664,25 @@ An "odds and ends" module for small, simple commands which don't really fit anyw
 
 __mod_name__ = "Miscs"
 
-ID_HANDLER = DisableAbleCommandHandler("id", get_id, pass_args=True)
-INFO_HANDLER = DisableAbleCommandHandler("info", info, pass_args=True)
-ECHO_HANDLER = CommandHandler("echo", echo, filters=CustomFilters.sudo_filter)
-MD_HELP_HANDLER = CommandHandler("markdownhelp", markdown_help, filters=Filters.private)
-STATS_HANDLER = CommandHandler("stats", stats, filters=CustomFilters.dev_filter)
-GDPR_HANDLER = CommandHandler("gdpr", gdpr, filters=Filters.private)
-WIKI_HANDLER = DisableAbleCommandHandler("wiki", wiki)
-WALLPAPER_HANDLER = DisableAbleCommandHandler("wall", wall, pass_args=True)
-UD_HANDLER = DisableAbleCommandHandler("ud", ud)
-LYRICS_HANDLER = DisableAbleCommandHandler("lyrics", lyrics, pass_args=True)
+ID_HANDLER = DisableAbleCommandHandler("id", get_id, pass_args=True, run_async=True)
+INFO_HANDLER = DisableAbleCommandHandler("info", info, pass_args=True, run_async=True)
+ECHO_HANDLER = CommandHandler("echo", echo, filters=CustomFilters.sudo_filter, run_async=True)
+MD_HELP_HANDLER = CommandHandler("markdownhelp", markdown_help, filters=Filters.private, run_async=True)
+STATS_HANDLER = CommandHandler("stats", stats, filters=CustomFilters.dev_filter, run_async=True)
+GDPR_HANDLER = CommandHandler("gdpr", gdpr, filters=Filters.private, run_async=True)
+WIKI_HANDLER = DisableAbleCommandHandler("wiki", wiki, run_async=True)
+WALLPAPER_HANDLER = DisableAbleCommandHandler("wall", wall, pass_args=True, run_async=True)
+UD_HANDLER = DisableAbleCommandHandler("ud", ud, run_async=True)
+LYRICS_HANDLER = DisableAbleCommandHandler("lyrics", lyrics, pass_args=True, run_async=True)
 GETLINK_HANDLER = CommandHandler(
-    "getlink", getlink, pass_args=True, filters=CustomFilters.dev_filter
+    "getlink", getlink, pass_args=True, filters=CustomFilters.dev_filter, run_async=True
 )
 STAFFLIST_HANDLER = CommandHandler(
-    "staffids", staff_ids, filters=Filters.user(OWNER_ID)
+    "staffids", staff_ids, filters=Filters.user(OWNER_ID), run_async=True
 )
-REDDIT_MEMES_HANDLER = DisableAbleCommandHandler("rmeme", rmemes)
+REDDIT_MEMES_HANDLER = DisableAbleCommandHandler("rmeme", rmemes, run_async=True)
 # SRC_HANDLER = CommandHandler("source", src, filters=Filters.private)
-COVID_HANDLER = CommandHandler("covid", covid)
+COVID_HANDLER = CommandHandler("covid", covid, run_async=True)
 
 dispatcher.add_handler(WALLPAPER_HANDLER)
 dispatcher.add_handler(UD_HANDLER)

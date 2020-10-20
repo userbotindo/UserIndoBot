@@ -19,7 +19,7 @@ from time import sleep
 
 from telegram import MessageEntity
 from telegram.error import BadRequest
-from telegram.ext import Filters, MessageHandler, run_async
+from telegram.ext import Filters, MessageHandler
 
 import ubotindo.modules.helper_funcs.fun_strings as fun
 from ubotindo import dispatcher
@@ -34,7 +34,6 @@ AFK_GROUP = 7
 AFK_REPLY_GROUP = 8
 
 
-@run_async
 def afk(update, context):
     args = update.effective_message.text.split(None, 1)
     notice = ""
@@ -54,7 +53,6 @@ def afk(update, context):
     afksend.delete()
 
 
-@run_async
 def no_longer_afk(update, context):
     user = update.effective_user
     message = update.effective_message
@@ -86,7 +84,6 @@ def no_longer_afk(update, context):
             return
 
 
-@run_async
 def reply_afk(update, context):
     bot = context.bot
     message = update.effective_message
@@ -177,13 +174,13 @@ When marked as AFK, any mentions will be replied to with a message to say you're
 """
 
 
-AFK_HANDLER = DisableAbleCommandHandler("afk", afk)
+AFK_HANDLER = DisableAbleCommandHandler("afk", afk, run_async=True)
 AFK_REGEX_HANDLER = DisableAbleMessageHandler(
-    Filters.regex("(?i)brb"), afk, friendly="afk"
+    Filters.regex("(?i)brb"), afk, friendly="afk", run_async=True
 )
-NO_AFK_HANDLER = MessageHandler(Filters.all & Filters.group, no_longer_afk)
+NO_AFK_HANDLER = MessageHandler(Filters.all & Filters.group, no_longer_afk, run_async=True)
 AFK_REPLY_HANDLER = MessageHandler(
-    Filters.all & Filters.group & ~Filters.update.edited_message, reply_afk
+    Filters.all & Filters.group & ~Filters.update.edited_message, reply_afk, run_async=True
 )
 
 

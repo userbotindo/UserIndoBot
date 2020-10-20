@@ -21,7 +21,7 @@ import time
 import requests as r
 from telegram import MAX_MESSAGE_LENGTH, ParseMode, TelegramError
 from telegram.error import BadRequest
-from telegram.ext import CommandHandler, Filters, run_async
+from telegram.ext import CommandHandler, Filters
 from telegram.utils.helpers import escape_markdown
 
 import ubotindo.modules.helper_funcs.fun_strings as fun
@@ -35,13 +35,11 @@ from ubotindo.modules.helper_funcs.extraction import extract_user
 from ubotindo.modules.helper_funcs.filters import CustomFilters
 
 
-@run_async
 @typing_action
 def runs(update, context):
     update.effective_message.reply_text(random.choice(fun.RUN_STRINGS))
 
 
-@run_async
 @typing_action
 def slap(update, context):
     args = context.args
@@ -86,7 +84,6 @@ def slap(update, context):
     reply_text(repl, parse_mode=ParseMode.MARKDOWN)
 
 
-@run_async
 @typing_action
 def punch(update, context):
     args = context.args
@@ -130,7 +127,6 @@ def punch(update, context):
     reply_text(repl, parse_mode=ParseMode.MARKDOWN)
 
 
-@run_async
 @typing_action
 def police(update, context):
     message = update.effective_message.reply_text("Wuanjayy...")
@@ -139,7 +135,6 @@ def police(update, context):
         time.sleep(0.5)
 
 
-@run_async
 @typing_action
 def hug(update, context):
     args = context.args
@@ -184,7 +179,6 @@ def hug(update, context):
     reply_text(repl, parse_mode=ParseMode.MARKDOWN)
 
 
-@run_async
 @typing_action
 def abuse(update, context):
     # reply to correct message
@@ -196,13 +190,11 @@ def abuse(update, context):
     reply_text(random.choice(fun.ABUSE_STRINGS))
 
 
-@run_async
 @typing_action
 def dice(update, context):
     context.bot.sendDice(update.effective_chat.id)
 
 
-@run_async
 @typing_action
 def shrug(update, context):
     # reply to correct message
@@ -214,7 +206,6 @@ def shrug(update, context):
     reply_text(random.choice(fun.SHGS))
 
 
-@run_async
 def decide(update, context):
     args = update.effective_message.text.split(None, 1)
     if len(args) >= 2:  # Don't reply if no args
@@ -226,7 +217,6 @@ def decide(update, context):
         reply_text(random.choice(fun.DECIDE))
 
 
-@run_async
 def yesnowtf(update, context):
     msg = update.effective_message
     chat = update.effective_chat
@@ -243,7 +233,6 @@ def yesnowtf(update, context):
         return
 
 
-@run_async
 @typing_action
 def table(update, context):
     reply_text = (
@@ -254,7 +243,6 @@ def table(update, context):
     reply_text(random.choice(fun.TABLE))
 
 
-@run_async
 @typing_action
 def cri(update, context):
     reply_text = (
@@ -265,7 +253,6 @@ def cri(update, context):
     reply_text(random.choice(fun.CRI))
 
 
-@run_async
 @typing_action
 def recite(update, context):
     reply_text = (
@@ -276,7 +263,6 @@ def recite(update, context):
     reply_text(random.choice(fun.BEING_LOGICAL))
 
 
-@run_async
 @typing_action
 def gbun(update, context):
     user = update.effective_user
@@ -292,7 +278,6 @@ def gbun(update, context):
         context.bot.sendMessage(chat.id, (random.choice(fun.GBUN)))
 
 
-@run_async
 @typing_action
 def snipe(update, context):
     args = context.args
@@ -316,7 +301,6 @@ def snipe(update, context):
         )
 
 
-@run_async
 @typing_action
 def copypasta(update, context):
     message = update.effective_message
@@ -373,7 +357,6 @@ def copypasta(update, context):
         message.reply_to_message.reply_text(reply_text)
 
 
-@run_async
 @typing_action
 def clapmoji(update, context):
     message = update.effective_message
@@ -386,7 +369,6 @@ def clapmoji(update, context):
         message.reply_to_message.reply_text(reply_text)
 
 
-@run_async
 @typing_action
 def owo(update, context):
     message = update.effective_message
@@ -427,7 +409,6 @@ def owo(update, context):
         message.reply_to_message.reply_text(reply_text)
 
 
-@run_async
 @typing_action
 def stretch(update, context):
     message = update.effective_message
@@ -446,21 +427,18 @@ def stretch(update, context):
         message.reply_to_message.reply_text(reply_text)
 
 
-@run_async
 def me_too(update, context):
     message = update.effective_message
     reply = random.choice(["Me too thanks", "Haha yes, me too", "Same lol", "Me irl"])
     message.reply_text(reply)
 
 
-@run_async
 def goodnight(update, context):
     message = update.effective_message
     reply = random.choice(fun.GDNIGHT)
     message.reply_text(reply, parse_mode=ParseMode.MARKDOWN)
 
 
-@run_async
 def goodmorning(update, context):
     message = update.effective_message
     reply = random.choice(fun.GDMORNING)
@@ -500,37 +478,37 @@ All regex filters can be disabled incase u don't want... like: `/disable metoo`.
 
 __mod_name__ = "Memes"
 
-SHRUG_HANDLER = DisableAbleCommandHandler("shrug", shrug)
+SHRUG_HANDLER = DisableAbleCommandHandler("shrug", shrug, run_async=True)
 DECIDE_HANDLER = DisableAbleMessageHandler(
-    Filters.regex(r"(?i)(ubotindo)"), decide, friendly="decide"
+    Filters.regex(r"(?i)(ubotindo)"), decide, friendly="decide", run_async=True
 )
 SNIPE_HANDLER = CommandHandler(
-    "snipe", snipe, pass_args=True, filters=CustomFilters.sudo_filter
+    "snipe", snipe, pass_args=True, filters=CustomFilters.sudo_filter, run_async=True
 )
-ABUSE_HANDLER = DisableAbleCommandHandler("abuse", abuse)
-POLICE_HANDLER = DisableAbleCommandHandler("police", police)
-RUNS_HANDLER = DisableAbleCommandHandler("runs", runs)
-SLAP_HANDLER = DisableAbleCommandHandler("slap", slap, pass_args=True)
-PUNCH_HANDLER = DisableAbleCommandHandler("punch", punch, pass_args=True)
-HUG_HANDLER = DisableAbleCommandHandler("warm", hug, pass_args=True)
-GBUN_HANDLER = CommandHandler("gbun", gbun)
-TABLE_HANDLER = DisableAbleCommandHandler("table", table)
-CRI_HANDLER = DisableAbleCommandHandler("cri", cri)
-PASTA_HANDLER = DisableAbleCommandHandler("pasta", copypasta)
-CLAP_HANDLER = DisableAbleCommandHandler("clap", clapmoji)
-OWO_HANDLER = DisableAbleCommandHandler("owo", owo)
-STRECH_HANDLER = DisableAbleCommandHandler("stretch", stretch)
+ABUSE_HANDLER = DisableAbleCommandHandler("abuse", abuse, run_async=True)
+POLICE_HANDLER = DisableAbleCommandHandler("police", police, run_async=True)
+RUNS_HANDLER = DisableAbleCommandHandler("runs", runs, run_async=True)
+SLAP_HANDLER = DisableAbleCommandHandler("slap", slap, pass_args=True, run_async=True)
+PUNCH_HANDLER = DisableAbleCommandHandler("punch", punch, pass_args=True, run_async=True)
+HUG_HANDLER = DisableAbleCommandHandler("warm", hug, pass_args=True, run_async=True)
+GBUN_HANDLER = CommandHandler("gbun", gbun, run_async=True)
+TABLE_HANDLER = DisableAbleCommandHandler("table", table, run_async=True)
+CRI_HANDLER = DisableAbleCommandHandler("cri", cri, run_async=True)
+PASTA_HANDLER = DisableAbleCommandHandler("pasta", copypasta, run_async=True)
+CLAP_HANDLER = DisableAbleCommandHandler("clap", clapmoji, run_async=True)
+OWO_HANDLER = DisableAbleCommandHandler("owo", owo, run_async=True)
+STRECH_HANDLER = DisableAbleCommandHandler("stretch", stretch, run_async=True)
 MEETOO_HANDLER = DisableAbleMessageHandler(
-    Filters.regex(r"(?i)(me too)"), me_too, friendly="metoo"
+    Filters.regex(r"(?i)(me too)"), me_too, friendly="metoo", run_async=True
 )
-RECITE_HANDLER = DisableAbleCommandHandler("recite", recite)
-DICE_HANDLER = DisableAbleCommandHandler("roll", dice)
-YESNOWTF_HANDLER = DisableAbleCommandHandler("decide", yesnowtf)
+RECITE_HANDLER = DisableAbleCommandHandler("recite", recite, run_async=True)
+DICE_HANDLER = DisableAbleCommandHandler("roll", dice, run_async=True)
+YESNOWTF_HANDLER = DisableAbleCommandHandler("decide", yesnowtf, run_async=True)
 GDMORNING_HANDLER = DisableAbleMessageHandler(
-    Filters.regex(r"(?i)(good morning)"), goodmorning, friendly="goodmorning"
+    Filters.regex(r"(?i)(good morning)"), goodmorning, friendly="goodmorning", run_async=True
 )
 GDNIGHT_HANDLER = DisableAbleMessageHandler(
-    Filters.regex(r"(?i)(good night)"), goodnight, friendly="goodnight"
+    Filters.regex(r"(?i)(good night)"), goodnight, friendly="goodnight", run_async=True
 )
 
 dispatcher.add_handler(POLICE_HANDLER)

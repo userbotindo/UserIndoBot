@@ -18,7 +18,7 @@ import html
 
 from telegram import ParseMode
 from telegram.error import BadRequest
-from telegram.ext import CommandHandler, Filters, run_async
+from telegram.ext import CommandHandler, Filters
 from telegram.utils.helpers import mention_html
 
 from ubotindo import LOGGER, dispatcher
@@ -38,7 +38,6 @@ from ubotindo.modules.helper_funcs.string_handling import extract_time
 from ubotindo.modules.log_channel import loggable
 
 
-@run_async
 @bot_admin
 @can_restrict
 @user_admin
@@ -123,7 +122,6 @@ def ban(update, context):
     return ""
 
 
-@run_async
 @bot_admin
 @can_restrict
 @user_admin
@@ -223,7 +221,6 @@ def temp_ban(update, context):
     return ""
 
 
-@run_async
 @bot_admin
 @can_restrict
 @user_admin
@@ -294,7 +291,6 @@ def kick(update, context):
     return ""
 
 
-@run_async
 @bot_admin
 @can_restrict
 @loggable
@@ -324,7 +320,6 @@ def banme(update, context):
         update.effective_message.reply_text("Huh? I can't :/")
 
 
-@run_async
 @bot_admin
 @can_restrict
 @typing_action
@@ -341,7 +336,6 @@ def kickme(update, context):
         update.effective_message.reply_text("Huh? I can't :/")
 
 
-@run_async
 @bot_admin
 @can_restrict
 @user_admin
@@ -420,14 +414,14 @@ An example of temporarily banning someone:
 
 __mod_name__ = "Bans"
 
-BAN_HANDLER = CommandHandler("ban", ban, pass_args=True, filters=Filters.group)
+BAN_HANDLER = CommandHandler("ban", ban, pass_args=True, filters=Filters.group, run_async=True)
 TEMPBAN_HANDLER = CommandHandler(
-    ["tban", "tempban"], temp_ban, pass_args=True, filters=Filters.group
+    ["tban", "tempban"], temp_ban, pass_args=True, filters=Filters.group, run_async=True
 )
-KICK_HANDLER = CommandHandler("kick", kick, pass_args=True, filters=Filters.group)
-UNBAN_HANDLER = CommandHandler("unban", unban, pass_args=True, filters=Filters.group)
-KICKME_HANDLER = DisableAbleCommandHandler("kickme", kickme, filters=Filters.group)
-BANME_HANDLER = DisableAbleCommandHandler("banme", banme, filters=Filters.group)
+KICK_HANDLER = CommandHandler("kick", kick, pass_args=True, filters=Filters.group, run_async=True)
+UNBAN_HANDLER = CommandHandler("unban", unban, pass_args=True, filters=Filters.group, run_async=True)
+KICKME_HANDLER = DisableAbleCommandHandler("kickme", kickme, filters=Filters.group, run_async=True)
+BANME_HANDLER = DisableAbleCommandHandler("banme", banme, filters=Filters.group, run_async=True)
 
 dispatcher.add_handler(BAN_HANDLER)
 dispatcher.add_handler(TEMPBAN_HANDLER)

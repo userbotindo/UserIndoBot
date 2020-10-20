@@ -21,7 +21,6 @@ from hurry.filesize import size as sizee
 from requests import get
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
 from telegram.error import BadRequest
-from telegram.ext import run_async
 
 from ubotindo import dispatcher
 from ubotindo.modules.disable import DisableAbleCommandHandler
@@ -31,7 +30,6 @@ GITHUB = "https://github.com"
 DEVICES_DATA = "https://raw.githubusercontent.com/androidtrackers/certified-android-devices/master/by_device.json"
 
 
-@run_async
 @typing_action
 def magisk(update, context):
     url = "https://raw.githubusercontent.com/topjohnwu/magisk_files/"
@@ -79,7 +77,6 @@ def magisk(update, context):
             return
 
 
-@run_async
 @typing_action
 def device(update, context):
     args = context.args
@@ -134,7 +131,6 @@ def device(update, context):
     )
 
 
-@run_async
 @typing_action
 def twrp(update, context):
     args = context.args
@@ -203,7 +199,6 @@ def twrp(update, context):
 
 
 @typing_action
-@run_async
 def los(update, context) -> str:
     message = update.effective_message
     update.effective_chat
@@ -255,7 +250,6 @@ def los(update, context) -> str:
 
 
 @typing_action
-@run_async
 def gsi(update, context):
     message = update.effective_message
     update.effective_chat
@@ -275,7 +269,6 @@ def gsi(update, context):
 
 
 @typing_action
-@run_async
 def bootleg(update, context) -> str:
     message = update.effective_message
     update.effective_chat
@@ -368,12 +361,12 @@ Get Latest magisk relese, Twrp for your device or info about some device using i
 
 __mod_name__ = "Android"
 
-MAGISK_HANDLER = DisableAbleCommandHandler("magisk", magisk)
-DEVICE_HANDLER = DisableAbleCommandHandler("device", device, pass_args=True)
-TWRP_HANDLER = DisableAbleCommandHandler("twrp", twrp, pass_args=True)
-LOS_HANDLER = DisableAbleCommandHandler("los", los, pass_args=True)
-BOOTLEG_HANDLER = DisableAbleCommandHandler("bootleg", bootleg, pass_args=True)
-GSI_HANDLER = DisableAbleCommandHandler("gsi", gsi, pass_args=True)
+MAGISK_HANDLER = DisableAbleCommandHandler("magisk", magisk, run_async=True)
+DEVICE_HANDLER = DisableAbleCommandHandler("device", device, pass_args=True, run_async=True)
+TWRP_HANDLER = DisableAbleCommandHandler("twrp", twrp, pass_args=True, run_async=True)
+LOS_HANDLER = DisableAbleCommandHandler("los", los, pass_args=True, run_async=True)
+BOOTLEG_HANDLER = DisableAbleCommandHandler("bootleg", bootleg, pass_args=True, run_async=True)
+GSI_HANDLER = DisableAbleCommandHandler("gsi", gsi, pass_args=True, run_async=True)
 
 
 dispatcher.add_handler(MAGISK_HANDLER)

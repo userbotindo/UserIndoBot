@@ -20,7 +20,6 @@ import os
 from telegram import ParseMode
 from telegram.error import BadRequest
 from telegram.ext import CommandHandler, Filters, MessageHandler
-from telegram.ext.dispatcher import run_async
 from telegram.utils.helpers import mention_html
 
 from ubotindo import dispatcher
@@ -43,7 +42,6 @@ from ubotindo.modules.log_channel import loggable
 from ubotindo.modules.sql import admin_sql as sql
 
 
-@run_async
 @bot_admin
 @can_promote
 @user_admin
@@ -102,7 +100,6 @@ def promote(update, context):
     )
 
 
-@run_async
 @bot_admin
 @can_promote
 @user_admin
@@ -170,7 +167,6 @@ def demote(update, context):
         return ""
 
 
-@run_async
 @bot_admin
 @can_pin
 @user_admin
@@ -221,7 +217,6 @@ def pin(update, context):
 
 @can_pin
 @user_admin
-@run_async
 def permanent_pin_set(update, context) -> str:
     user = update.effective_user
     chat = update.effective_chat
@@ -303,7 +298,6 @@ def permanent_pin_set(update, context) -> str:
     return ""
 
 
-@run_async
 def permanent_pin(update, context):
     user = update.effective_user
     chat = update.effective_chat
@@ -337,7 +331,6 @@ def permanent_pin(update, context):
                 print("Permanent pin error: cannot delete pin msg")
 
 
-@run_async
 @bot_admin
 @can_pin
 @user_admin
@@ -369,7 +362,6 @@ def unpin(update, context):
     )
 
 
-@run_async
 @bot_admin
 @user_admin
 @typing_action
@@ -405,7 +397,6 @@ def invite(update, context):
         )
 
 
-@run_async
 @typing_action
 def adminlist(update, context):
     administrators = update.effective_chat.get_administrators()
@@ -426,7 +417,6 @@ def adminlist(update, context):
     update.effective_message.reply_text(text, parse_mode=ParseMode.HTML)
 
 
-@run_async
 @bot_admin
 @can_promote
 @user_admin
@@ -486,7 +476,6 @@ def set_title(update, context):
         message.reply_text("I can't set custom title for admins that I didn't promote!")
 
 
-@run_async
 @bot_admin
 @user_admin
 @typing_action
@@ -524,7 +513,6 @@ def setchatpic(update, context):
         msg.reply_text("Reply to some photo or file to set new chat pic!")
 
 
-@run_async
 @bot_admin
 @user_admin
 @typing_action
@@ -544,7 +532,6 @@ def rmchatpic(update, context):
         return
 
 
-@run_async
 @bot_admin
 @user_admin
 @typing_action
@@ -574,7 +561,6 @@ def setchat_title(update, context):
         return
 
 
-@run_async
 @bot_admin
 @user_admin
 @typing_action
@@ -605,7 +591,6 @@ def set_sticker(update, context):
         msg.reply_text("You need to reply to some sticker to set chat sticker set!")
 
 
-@run_async
 @bot_admin
 @user_admin
 @typing_action
@@ -667,33 +652,33 @@ An example of promoting someone to admins:
 
 __mod_name__ = "Admin"
 
-PIN_HANDLER = CommandHandler("pin", pin, pass_args=True, filters=Filters.group)
-UNPIN_HANDLER = CommandHandler("unpin", unpin, filters=Filters.group)
+PIN_HANDLER = CommandHandler("pin", pin, pass_args=True, filters=Filters.group, run_async=True)
+UNPIN_HANDLER = CommandHandler("unpin", unpin, filters=Filters.group, run_async=True)
 
 PERMANENT_PIN_SET_HANDLER = CommandHandler(
-    "permanentpin", permanent_pin_set, pass_args=True, filters=Filters.group
+    "permanentpin", permanent_pin_set, pass_args=True, filters=Filters.group, run_async=True
 )
 PERMANENT_PIN_HANDLER = MessageHandler(
-    Filters.status_update.pinned_message | Filters.user(777000), permanent_pin
+    Filters.status_update.pinned_message | Filters.user(777000), permanent_pin, run_async=True
 )
 
-INVITE_HANDLER = CommandHandler("invitelink", invite)
-CHAT_PIC_HANDLER = CommandHandler("setgpic", setchatpic, filters=Filters.group)
-DEL_CHAT_PIC_HANDLER = CommandHandler("delgpic", rmchatpic, filters=Filters.group)
+INVITE_HANDLER = CommandHandler("invitelink", invite, run_async=True)
+CHAT_PIC_HANDLER = CommandHandler("setgpic", setchatpic, filters=Filters.group, run_async=True)
+DEL_CHAT_PIC_HANDLER = CommandHandler("delgpic", rmchatpic, filters=Filters.group, run_async=True)
 SETCHAT_TITLE_HANDLER = CommandHandler(
-    "setgtitle", setchat_title, filters=Filters.group
+    "setgtitle", setchat_title, filters=Filters.group, run_async=True
 )
-SETSTICKET_HANDLER = CommandHandler("setsticker", set_sticker, filters=Filters.group)
-SETDESC_HANDLER = CommandHandler("setdescription", set_desc, filters=Filters.group)
+SETSTICKET_HANDLER = CommandHandler("setsticker", set_sticker, filters=Filters.group, run_async=True)
+SETDESC_HANDLER = CommandHandler("setdescription", set_desc, filters=Filters.group, run_async=True)
 
 PROMOTE_HANDLER = CommandHandler(
-    "promote", promote, pass_args=True, filters=Filters.group
+    "promote", promote, pass_args=True, filters=Filters.group, run_async=True
 )
-DEMOTE_HANDLER = CommandHandler("demote", demote, pass_args=True, filters=Filters.group)
+DEMOTE_HANDLER = CommandHandler("demote", demote, pass_args=True, filters=Filters.group, run_async=True)
 
-SET_TITLE_HANDLER = DisableAbleCommandHandler("settitle", set_title, pass_args=True)
+SET_TITLE_HANDLER = DisableAbleCommandHandler("settitle", set_title, pass_args=True, run_async=True)
 ADMINLIST_HANDLER = DisableAbleCommandHandler(
-    "adminlist", adminlist, filters=Filters.group
+    "adminlist", adminlist, filters=Filters.group, run_async=True
 )
 
 dispatcher.add_handler(PIN_HANDLER)

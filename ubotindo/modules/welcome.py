@@ -30,7 +30,6 @@ from telegram.ext import (
     CommandHandler,
     Filters,
     MessageHandler,
-    run_async,
 )
 from telegram.utils.helpers import mention_html
 
@@ -161,7 +160,6 @@ def send(update, message, keyboard, backup_message):
     return msg
 
 
-@run_async
 def new_member(update, context):
     chat = update.effective_chat
     user = update.effective_user
@@ -400,7 +398,6 @@ def new_member(update, context):
                 sql.set_clean_welcome(chat.id, sent.message_id)
 
 
-@run_async
 def left_member(update, context):
     chat = update.effective_chat
     should_goodbye, cust_goodbye, goodbye_type = sql.get_gdbye_pref(chat.id)
@@ -487,7 +484,6 @@ def left_member(update, context):
             send(update, res, keyboard, sql.DEFAULT_GOODBYE)
 
 
-@run_async
 @user_admin
 @typing_action
 def welcome(update, context):
@@ -554,7 +550,6 @@ def welcome(update, context):
             )
 
 
-@run_async
 @user_admin
 @typing_action
 def goodbye(update, context):
@@ -607,7 +602,6 @@ def goodbye(update, context):
             )
 
 
-@run_async
 @user_admin
 @loggable
 @typing_action
@@ -635,7 +629,6 @@ def set_welcome(update, context) -> str:
     )
 
 
-@run_async
 @user_admin
 @loggable
 @typing_action
@@ -656,7 +649,6 @@ def reset_welcome(update, context) -> str:
     )
 
 
-@run_async
 @user_admin
 @loggable
 @typing_action
@@ -683,7 +675,6 @@ def set_goodbye(update, context) -> str:
     )
 
 
-@run_async
 @user_admin
 @loggable
 @typing_action
@@ -704,7 +695,6 @@ def reset_goodbye(update, context) -> str:
     )
 
 
-@run_async
 @user_admin
 @loggable
 @typing_action
@@ -766,7 +756,6 @@ def welcomemute(update, context) -> str:
         return ""
 
 
-@run_async
 @user_admin
 @loggable
 @typing_action
@@ -815,7 +804,6 @@ def clean_welcome(update, context) -> str:
         return ""
 
 
-@run_async
 @user_admin
 @typing_action
 def cleanservice(update, context):
@@ -854,7 +842,6 @@ def cleanservice(update, context):
             )
 
 
-@run_async
 def user_button(update, context):
     chat = update.effective_chat
     user = update.effective_user
@@ -915,7 +902,6 @@ WELC_HELP_TXT = (
 )
 
 
-@run_async
 @user_admin
 @typing_action
 def welcome_help(update, context):
@@ -993,29 +979,29 @@ Tip: Buttons must be placed at the end of welcome messages.
 
 __mod_name__ = "Greetings"
 
-NEW_MEM_HANDLER = MessageHandler(Filters.status_update.new_chat_members, new_member)
-LEFT_MEM_HANDLER = MessageHandler(Filters.status_update.left_chat_member, left_member)
+NEW_MEM_HANDLER = MessageHandler(Filters.status_update.new_chat_members, new_member, run_async=True)
+LEFT_MEM_HANDLER = MessageHandler(Filters.status_update.left_chat_member, left_member, run_async=True)
 WELC_PREF_HANDLER = CommandHandler(
-    "welcome", welcome, pass_args=True, filters=Filters.group
+    "welcome", welcome, pass_args=True, filters=Filters.group, run_async=True
 )
 GOODBYE_PREF_HANDLER = CommandHandler(
-    "goodbye", goodbye, pass_args=True, filters=Filters.group
+    "goodbye", goodbye, pass_args=True, filters=Filters.group, run_async=True
 )
-SET_WELCOME = CommandHandler("setwelcome", set_welcome, filters=Filters.group)
-SET_GOODBYE = CommandHandler("setgoodbye", set_goodbye, filters=Filters.group)
-RESET_WELCOME = CommandHandler("resetwelcome", reset_welcome, filters=Filters.group)
-RESET_GOODBYE = CommandHandler("resetgoodbye", reset_goodbye, filters=Filters.group)
+SET_WELCOME = CommandHandler("setwelcome", set_welcome, filters=Filters.group, run_async=True)
+SET_GOODBYE = CommandHandler("setgoodbye", set_goodbye, filters=Filters.group, run_async=True)
+RESET_WELCOME = CommandHandler("resetwelcome", reset_welcome, filters=Filters.group, run_async=True)
+RESET_GOODBYE = CommandHandler("resetgoodbye", reset_goodbye, filters=Filters.group, run_async=True)
 CLEAN_WELCOME = CommandHandler(
-    "cleanwelcome", clean_welcome, pass_args=True, filters=Filters.group
+    "cleanwelcome", clean_welcome, pass_args=True, filters=Filters.group, run_async=True
 )
 WELCOMEMUTE_HANDLER = CommandHandler(
-    "welcomemute", welcomemute, pass_args=True, filters=Filters.group
+    "welcomemute", welcomemute, pass_args=True, filters=Filters.group, run_async=True
 )
 CLEAN_SERVICE_HANDLER = CommandHandler(
-    "cleanservice", cleanservice, pass_args=True, filters=Filters.group
+    "cleanservice", cleanservice, pass_args=True, filters=Filters.group, run_async=True
 )
-WELCOME_HELP = CommandHandler("welcomehelp", welcome_help)
-BUTTON_VERIFY_HANDLER = CallbackQueryHandler(user_button, pattern=r"user_join_")
+WELCOME_HELP = CommandHandler("welcomehelp", welcome_help, run_async=True)
+BUTTON_VERIFY_HANDLER = CallbackQueryHandler(user_button, pattern=r"user_join_", run_async=True)
 
 dispatcher.add_handler(NEW_MEM_HANDLER)
 dispatcher.add_handler(LEFT_MEM_HANDLER)
