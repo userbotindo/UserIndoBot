@@ -644,13 +644,17 @@ def is_chat_allowed(update, context):
 
 def main():
     # test_handler = CommandHandler("test", test)
-    start_handler = CommandHandler("start", start, pass_args=True, run_async=True)
+    start_handler = CommandHandler(
+        "start", start, pass_args=True, run_async=True)
 
     help_handler = CommandHandler("help", get_help)
-    help_callback_handler = CallbackQueryHandler(help_button, pattern=r"help_", run_async=True)
+    help_callback_handler = CallbackQueryHandler(
+        help_button, pattern=r"help_", run_async=True)
     help_staff_handler = CommandHandler(
-        "staffhelp", staff_help, filters=CustomFilters.support_filter, run_async=True
-    )
+        "staffhelp",
+        staff_help,
+        filters=CustomFilters.support_filter,
+        run_async=True)
 
     settings_handler = CommandHandler("settings", get_settings, run_async=True)
     settings_callback_handler = CallbackQueryHandler(

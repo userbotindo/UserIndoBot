@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from telegram import Message
-from telegram.ext import BaseFilter, MessageFilter
+from telegram.ext import MessageFilter
 
 from ubotindo import SUPPORT_USERS, SUDO_USERS, DEV_USERS
 
