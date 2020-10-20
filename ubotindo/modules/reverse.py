@@ -148,7 +148,6 @@ def reverse(update, context):
                 f"[{guess}]({fetchUrl})\n[Visually similar images]({imgspage})"
                 "\nCouldn't fetch any images.",
                 parse_mode="Markdown",
-                disable_web_page_preview=True,
             )
             return
 
