@@ -589,8 +589,12 @@ HASH_GET_HANDLER = MessageHandler(Filters.regex(r"^#[^\s]+"), hash_get, run_asyn
 SAVE_HANDLER = CommandHandler("save", save, run_async=True)
 DELETE_HANDLER = CommandHandler("clear", clear, pass_args=True, run_async=True)
 
-LIST_HANDLER = DisableAbleCommandHandler(["notes", "saved"], list_notes, admin_ok=True, run_async=True)
-CLEARALLNOTES_HANDLER = CommandHandler("rmallnotes", clear_notes, filters=Filters.group, run_async=True)
+LIST_HANDLER = DisableAbleCommandHandler(
+    ["notes", "saved"], list_notes, admin_ok=True, run_async=True
+)
+CLEARALLNOTES_HANDLER = CommandHandler(
+    "rmallnotes", clear_notes, filters=Filters.group, run_async=True
+)
 
 RMBTN_HANDLER = CallbackQueryHandler(rmbutton, pattern=r"rmnotes_", run_async=True)
 

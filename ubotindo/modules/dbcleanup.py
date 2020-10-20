@@ -214,7 +214,10 @@ DB_CLEANUP_HANDLER = CommandHandler(
     "dbcleanup", dbcleanup, filters=CustomFilters.dev_filter, run_async=True
 )
 LEAVE_MUTED_CHATS_HANDLER = CommandHandler(
-    "leavemutedchats", leave_muted_chats, filters=CustomFilters.dev_filter, run_async=True
+    "leavemutedchats",
+    leave_muted_chats,
+    filters=CustomFilters.dev_filter,
+    run_async=True,
 )
 BUTTON_HANDLER = CallbackQueryHandler(callback_button, pattern="db_.*", run_async=True)
 

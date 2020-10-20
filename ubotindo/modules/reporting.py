@@ -26,12 +26,7 @@ from telegram import (
     User,
 )
 from telegram.error import BadRequest, Unauthorized
-from telegram.ext import (
-    CallbackQueryHandler,
-    CommandHandler,
-    Filters,
-    MessageHandler,
-)
+from telegram.ext import CallbackQueryHandler, CommandHandler, Filters, MessageHandler
 from telegram.utils.helpers import mention_html
 
 from ubotindo import LOGGER, dispatcher
@@ -276,8 +271,12 @@ Note that the report commands do not work when admins use them; or when used to 
 admins don't need to report, or be reported!
 """
 REPORT_HANDLER = CommandHandler("report", report, filters=Filters.group, run_async=True)
-SETTING_HANDLER = CommandHandler("reports", report_setting, pass_args=True, run_async=True)
-ADMIN_REPORT_HANDLER = MessageHandler(Filters.regex("(?i)@admin(s)?"), report, run_async=True)
+SETTING_HANDLER = CommandHandler(
+    "reports", report_setting, pass_args=True, run_async=True
+)
+ADMIN_REPORT_HANDLER = MessageHandler(
+    Filters.regex("(?i)@admin(s)?"), report, run_async=True
+)
 REPORT_BUTTON_HANDLER = CallbackQueryHandler(report_buttons, pattern=r"report_")
 
 dispatcher.add_handler(REPORT_HANDLER, REPORT_GROUP)

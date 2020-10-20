@@ -25,12 +25,7 @@ from telegram import (
     ParseMode,
 )
 from telegram.error import BadRequest
-from telegram.ext import (
-    CallbackQueryHandler,
-    CommandHandler,
-    Filters,
-    MessageHandler,
-)
+from telegram.ext import CallbackQueryHandler, CommandHandler, Filters, MessageHandler
 from telegram.utils.helpers import mention_html
 
 import ubotindo.modules.sql.welcome_sql as sql
@@ -979,18 +974,30 @@ Tip: Buttons must be placed at the end of welcome messages.
 
 __mod_name__ = "Greetings"
 
-NEW_MEM_HANDLER = MessageHandler(Filters.status_update.new_chat_members, new_member, run_async=True)
-LEFT_MEM_HANDLER = MessageHandler(Filters.status_update.left_chat_member, left_member, run_async=True)
+NEW_MEM_HANDLER = MessageHandler(
+    Filters.status_update.new_chat_members, new_member, run_async=True
+)
+LEFT_MEM_HANDLER = MessageHandler(
+    Filters.status_update.left_chat_member, left_member, run_async=True
+)
 WELC_PREF_HANDLER = CommandHandler(
     "welcome", welcome, pass_args=True, filters=Filters.group, run_async=True
 )
 GOODBYE_PREF_HANDLER = CommandHandler(
     "goodbye", goodbye, pass_args=True, filters=Filters.group, run_async=True
 )
-SET_WELCOME = CommandHandler("setwelcome", set_welcome, filters=Filters.group, run_async=True)
-SET_GOODBYE = CommandHandler("setgoodbye", set_goodbye, filters=Filters.group, run_async=True)
-RESET_WELCOME = CommandHandler("resetwelcome", reset_welcome, filters=Filters.group, run_async=True)
-RESET_GOODBYE = CommandHandler("resetgoodbye", reset_goodbye, filters=Filters.group, run_async=True)
+SET_WELCOME = CommandHandler(
+    "setwelcome", set_welcome, filters=Filters.group, run_async=True
+)
+SET_GOODBYE = CommandHandler(
+    "setgoodbye", set_goodbye, filters=Filters.group, run_async=True
+)
+RESET_WELCOME = CommandHandler(
+    "resetwelcome", reset_welcome, filters=Filters.group, run_async=True
+)
+RESET_GOODBYE = CommandHandler(
+    "resetgoodbye", reset_goodbye, filters=Filters.group, run_async=True
+)
 CLEAN_WELCOME = CommandHandler(
     "cleanwelcome", clean_welcome, pass_args=True, filters=Filters.group, run_async=True
 )
@@ -1001,7 +1008,9 @@ CLEAN_SERVICE_HANDLER = CommandHandler(
     "cleanservice", cleanservice, pass_args=True, filters=Filters.group, run_async=True
 )
 WELCOME_HELP = CommandHandler("welcomehelp", welcome_help, run_async=True)
-BUTTON_VERIFY_HANDLER = CallbackQueryHandler(user_button, pattern=r"user_join_", run_async=True)
+BUTTON_VERIFY_HANDLER = CallbackQueryHandler(
+    user_button, pattern=r"user_join_", run_async=True
+)
 
 dispatcher.add_handler(NEW_MEM_HANDLER)
 dispatcher.add_handler(LEFT_MEM_HANDLER)

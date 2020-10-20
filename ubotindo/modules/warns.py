@@ -664,25 +664,43 @@ be a sentence, encompass it with quotes, as such: `/addwarn "very angry" This is
 
 __mod_name__ = "Warnings"
 
-WARN_HANDLER = CommandHandler("warn", warn_user, pass_args=True, filters=Filters.group, run_async=True)
+WARN_HANDLER = CommandHandler(
+    "warn", warn_user, pass_args=True, filters=Filters.group, run_async=True
+)
 RESET_WARN_HANDLER = CommandHandler(
-    ["resetwarn", "resetwarns"], reset_warns, pass_args=True, filters=Filters.group, run_async=True
+    ["resetwarn", "resetwarns"],
+    reset_warns,
+    pass_args=True,
+    filters=Filters.group,
+    run_async=True,
 )
 REMOVE_WARNS_HANDLER = CommandHandler(
-    ["rmwarn", "unwarn"], remove_warns, pass_args=True, filters=Filters.group, run_async=True
+    ["rmwarn", "unwarn"],
+    remove_warns,
+    pass_args=True,
+    filters=Filters.group,
+    run_async=True,
 )
 CALLBACK_QUERY_HANDLER = CallbackQueryHandler(button, pattern=r"rm_warn")
-MYWARNS_HANDLER = DisableAbleCommandHandler("warns", warns, pass_args=True, run_async=True)
+MYWARNS_HANDLER = DisableAbleCommandHandler(
+    "warns", warns, pass_args=True, run_async=True
+)
 ADD_WARN_HANDLER = CommandHandler("addwarn", add_warn_filter, run_async=True)
-RM_WARN_HANDLER = CommandHandler(["nowarn", "stopwarn"], remove_warn_filter, run_async=True)
+RM_WARN_HANDLER = CommandHandler(
+    ["nowarn", "stopwarn"], remove_warn_filter, run_async=True
+)
 LIST_WARN_HANDLER = DisableAbleCommandHandler(
     ["warnlist", "warnfilters"], list_warn_filters, admin_ok=True, run_async=True
 )
 WARN_FILTER_HANDLER = MessageHandler(
     CustomFilters.has_text & Filters.group, reply_filter, run_async=True
 )
-WARN_LIMIT_HANDLER = CommandHandler("warnlimit", set_warn_limit, pass_args=True, run_async=True)
-WARN_STRENGTH_HANDLER = CommandHandler("strongwarn", set_warn_strength, pass_args=True, run_async=True)
+WARN_LIMIT_HANDLER = CommandHandler(
+    "warnlimit", set_warn_limit, pass_args=True, run_async=True
+)
+WARN_STRENGTH_HANDLER = CommandHandler(
+    "strongwarn", set_warn_strength, pass_args=True, run_async=True
+)
 
 dispatcher.add_handler(WARN_HANDLER)
 dispatcher.add_handler(CALLBACK_QUERY_HANDLER)

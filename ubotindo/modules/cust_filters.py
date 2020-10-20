@@ -20,12 +20,7 @@ from html import escape
 import telegram
 from telegram import InlineKeyboardMarkup, ParseMode
 from telegram.error import BadRequest
-from telegram.ext import (
-    CommandHandler,
-    DispatcherHandlerStop,
-    Filters,
-    MessageHandler,
-)
+from telegram.ext import CommandHandler, DispatcherHandlerStop, Filters, MessageHandler
 from telegram.utils.helpers import escape_markdown, mention_html
 
 from ubotindo import LOGGER, dispatcher
@@ -569,9 +564,13 @@ STOP_HANDLER = CommandHandler("stop", stop_filter, run_async=True)
 RMALLFILTER_HANDLER = CommandHandler(
     "rmallfilter", rmall_filters, filters=Filters.group, run_async=True
 )
-LIST_HANDLER = DisableAbleCommandHandler("filters", list_handlers, admin_ok=True, run_async=True)
+LIST_HANDLER = DisableAbleCommandHandler(
+    "filters", list_handlers, admin_ok=True, run_async=True
+)
 CUST_FILTER_HANDLER = MessageHandler(
-    CustomFilters.has_text & ~Filters.update.edited_message, reply_filter, run_async=True
+    CustomFilters.has_text & ~Filters.update.edited_message,
+    reply_filter,
+    run_async=True,
 )
 
 dispatcher.add_handler(FILTER_HANDLER)

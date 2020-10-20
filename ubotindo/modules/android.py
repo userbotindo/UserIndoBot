@@ -362,10 +362,14 @@ Get Latest magisk relese, Twrp for your device or info about some device using i
 __mod_name__ = "Android"
 
 MAGISK_HANDLER = DisableAbleCommandHandler("magisk", magisk, run_async=True)
-DEVICE_HANDLER = DisableAbleCommandHandler("device", device, pass_args=True, run_async=True)
+DEVICE_HANDLER = DisableAbleCommandHandler(
+    "device", device, pass_args=True, run_async=True
+)
 TWRP_HANDLER = DisableAbleCommandHandler("twrp", twrp, pass_args=True, run_async=True)
 LOS_HANDLER = DisableAbleCommandHandler("los", los, pass_args=True, run_async=True)
-BOOTLEG_HANDLER = DisableAbleCommandHandler("bootleg", bootleg, pass_args=True, run_async=True)
+BOOTLEG_HANDLER = DisableAbleCommandHandler(
+    "bootleg", bootleg, pass_args=True, run_async=True
+)
 GSI_HANDLER = DisableAbleCommandHandler("gsi", gsi, pass_args=True, run_async=True)
 
 

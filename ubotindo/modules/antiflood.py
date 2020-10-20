@@ -408,7 +408,8 @@ SET_FLOOD_HANDLER = CommandHandler(
 SET_FLOOD_MODE_HANDLER = CommandHandler(
     "setfloodmode", set_flood_mode, pass_args=True, run_async=True
 )  # , filters=Filters.group)
-FLOOD_HANDLER = CommandHandler("flood", flood, run_async=True)  # , filters=Filters.group)
+# , filters=Filters.group)
+FLOOD_HANDLER = CommandHandler("flood", flood, run_async=True)
 
 dispatcher.add_handler(FLOOD_BAN_HANDLER, FLOOD_GROUP)
 dispatcher.add_handler(SET_FLOOD_HANDLER)

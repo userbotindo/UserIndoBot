@@ -489,7 +489,9 @@ ABUSE_HANDLER = DisableAbleCommandHandler("abuse", abuse, run_async=True)
 POLICE_HANDLER = DisableAbleCommandHandler("police", police, run_async=True)
 RUNS_HANDLER = DisableAbleCommandHandler("runs", runs, run_async=True)
 SLAP_HANDLER = DisableAbleCommandHandler("slap", slap, pass_args=True, run_async=True)
-PUNCH_HANDLER = DisableAbleCommandHandler("punch", punch, pass_args=True, run_async=True)
+PUNCH_HANDLER = DisableAbleCommandHandler(
+    "punch", punch, pass_args=True, run_async=True
+)
 HUG_HANDLER = DisableAbleCommandHandler("warm", hug, pass_args=True, run_async=True)
 GBUN_HANDLER = CommandHandler("gbun", gbun, run_async=True)
 TABLE_HANDLER = DisableAbleCommandHandler("table", table, run_async=True)
@@ -505,7 +507,10 @@ RECITE_HANDLER = DisableAbleCommandHandler("recite", recite, run_async=True)
 DICE_HANDLER = DisableAbleCommandHandler("roll", dice, run_async=True)
 YESNOWTF_HANDLER = DisableAbleCommandHandler("decide", yesnowtf, run_async=True)
 GDMORNING_HANDLER = DisableAbleMessageHandler(
-    Filters.regex(r"(?i)(good morning)"), goodmorning, friendly="goodmorning", run_async=True
+    Filters.regex(r"(?i)(good morning)"),
+    goodmorning,
+    friendly="goodmorning",
+    run_async=True,
 )
 GDNIGHT_HANDLER = DisableAbleMessageHandler(
     Filters.regex(r"(?i)(good night)"), goodnight, friendly="goodnight", run_async=True

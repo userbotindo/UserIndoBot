@@ -178,9 +178,13 @@ AFK_HANDLER = DisableAbleCommandHandler("afk", afk, run_async=True)
 AFK_REGEX_HANDLER = DisableAbleMessageHandler(
     Filters.regex("(?i)brb"), afk, friendly="afk", run_async=True
 )
-NO_AFK_HANDLER = MessageHandler(Filters.all & Filters.group, no_longer_afk, run_async=True)
+NO_AFK_HANDLER = MessageHandler(
+    Filters.all & Filters.group, no_longer_afk, run_async=True
+)
 AFK_REPLY_HANDLER = MessageHandler(
-    Filters.all & Filters.group & ~Filters.update.edited_message, reply_afk, run_async=True
+    Filters.all & Filters.group & ~Filters.update.edited_message,
+    reply_afk,
+    run_async=True,
 )
 
 

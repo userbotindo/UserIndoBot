@@ -183,9 +183,15 @@ def restart(update, context):
     os.system("bash start")
 
 
-IP_HANDLER = CommandHandler("ip", get_bot_ip, filters=Filters.chat(OWNER_ID), run_async=True)
-PING_HANDLER = CommandHandler("ping", ping, filters=CustomFilters.sudo_filter, run_async=True)
-SPEED_HANDLER = CommandHandler("speedtest", speedtst, filters=CustomFilters.sudo_filter, run_async=True)
+IP_HANDLER = CommandHandler(
+    "ip", get_bot_ip, filters=Filters.chat(OWNER_ID), run_async=True
+)
+PING_HANDLER = CommandHandler(
+    "ping", ping, filters=CustomFilters.sudo_filter, run_async=True
+)
+SPEED_HANDLER = CommandHandler(
+    "speedtest", speedtst, filters=CustomFilters.sudo_filter, run_async=True
+)
 SYS_STATUS_HANDLER = CommandHandler(
     "sysinfo", system_status, filters=CustomFilters.dev_filter, run_async=True
 )
@@ -194,10 +200,14 @@ LEAVECHAT_HANDLER = CommandHandler(
     leavechat,
     pass_args=True,
     filters=CustomFilters.dev_filter,
-    run_async=True
+    run_async=True,
 )
-GITPULL_HANDLER = CommandHandler("gitpull", gitpull, filters=CustomFilters.dev_filter, run_async=True)
-RESTART_HANDLER = CommandHandler("reboot", restart, filters=CustomFilters.dev_filter, run_async=True)
+GITPULL_HANDLER = CommandHandler(
+    "gitpull", gitpull, filters=CustomFilters.dev_filter, run_async=True
+)
+RESTART_HANDLER = CommandHandler(
+    "reboot", restart, filters=CustomFilters.dev_filter, run_async=True
+)
 
 dispatcher.add_handler(IP_HANDLER)
 dispatcher.add_handler(SPEED_HANDLER)

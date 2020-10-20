@@ -147,6 +147,8 @@ Weather module:
 
 __mod_name__ = "Weather"
 
-WEATHER_HANDLER = DisableAbleCommandHandler("weather", weather, pass_args=True, run_async=True)
+WEATHER_HANDLER = DisableAbleCommandHandler(
+    "weather", weather, pass_args=True, run_async=True
+)
 
 dispatcher.add_handler(WEATHER_HANDLER)

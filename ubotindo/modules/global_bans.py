@@ -476,31 +476,26 @@ Userbotindobot will constantly help banning spammers off from your group automat
 __mod_name__ = "Spam Shield"
 
 GBAN_HANDLER = CommandHandler(
-    "gban",
-    gban,
-    pass_args=True,
-    filters=CustomFilters.support_filter,
-    run_async=True
+    "gban", gban, pass_args=True, filters=CustomFilters.support_filter, run_async=True
 )
 UNGBAN_HANDLER = CommandHandler(
     "ungban",
     ungban,
     pass_args=True,
     filters=CustomFilters.support_filter,
-    run_async=True
+    run_async=True,
 )
 GBAN_LIST = CommandHandler(
-    "gbanlist",
-    gbanlist,
-    filters=CustomFilters.support_filter,
-    run_async=True
+    "gbanlist", gbanlist, filters=CustomFilters.support_filter, run_async=True
 )
 
 GBAN_STATUS = CommandHandler(
     "spamshield", gbanstat, pass_args=True, filters=Filters.group, run_async=True
 )
 
-GBAN_ENFORCER = MessageHandler(Filters.all & Filters.group, enforce_gban, run_async=True)
+GBAN_ENFORCER = MessageHandler(
+    Filters.all & Filters.group, enforce_gban, run_async=True
+)
 
 dispatcher.add_handler(GBAN_HANDLER)
 dispatcher.add_handler(UNGBAN_HANDLER)

@@ -102,7 +102,6 @@ if is_module_loaded(FILENAME):
                     chat.id, self.friendly
                 )
 
-
     @user_admin
     @typing_action
     def disable(update, context):
@@ -145,7 +144,6 @@ if is_module_loaded(FILENAME):
 
         else:
             send_message(update.effective_message, "What should I disable?")
-
 
     @user_admin
     @typing_action
@@ -190,7 +188,6 @@ if is_module_loaded(FILENAME):
         else:
             send_message(update.effective_message, "What should I enable?")
 
-
     @user_admin
     # @typing_action
     def list_cmds(update, context):
@@ -215,7 +212,6 @@ if is_module_loaded(FILENAME):
         for cmd in disabled:
             result += " - `{}`\n".format(escape_markdown(cmd))
         return "The following commands are currently restricted:\n{}".format(result)
-
 
     @typing_action
     def commands(update, context):

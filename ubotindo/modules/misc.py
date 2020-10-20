@@ -666,14 +666,24 @@ __mod_name__ = "Miscs"
 
 ID_HANDLER = DisableAbleCommandHandler("id", get_id, pass_args=True, run_async=True)
 INFO_HANDLER = DisableAbleCommandHandler("info", info, pass_args=True, run_async=True)
-ECHO_HANDLER = CommandHandler("echo", echo, filters=CustomFilters.sudo_filter, run_async=True)
-MD_HELP_HANDLER = CommandHandler("markdownhelp", markdown_help, filters=Filters.private, run_async=True)
-STATS_HANDLER = CommandHandler("stats", stats, filters=CustomFilters.dev_filter, run_async=True)
+ECHO_HANDLER = CommandHandler(
+    "echo", echo, filters=CustomFilters.sudo_filter, run_async=True
+)
+MD_HELP_HANDLER = CommandHandler(
+    "markdownhelp", markdown_help, filters=Filters.private, run_async=True
+)
+STATS_HANDLER = CommandHandler(
+    "stats", stats, filters=CustomFilters.dev_filter, run_async=True
+)
 GDPR_HANDLER = CommandHandler("gdpr", gdpr, filters=Filters.private, run_async=True)
 WIKI_HANDLER = DisableAbleCommandHandler("wiki", wiki, run_async=True)
-WALLPAPER_HANDLER = DisableAbleCommandHandler("wall", wall, pass_args=True, run_async=True)
+WALLPAPER_HANDLER = DisableAbleCommandHandler(
+    "wall", wall, pass_args=True, run_async=True
+)
 UD_HANDLER = DisableAbleCommandHandler("ud", ud, run_async=True)
-LYRICS_HANDLER = DisableAbleCommandHandler("lyrics", lyrics, pass_args=True, run_async=True)
+LYRICS_HANDLER = DisableAbleCommandHandler(
+    "lyrics", lyrics, pass_args=True, run_async=True
+)
 GETLINK_HANDLER = CommandHandler(
     "getlink", getlink, pass_args=True, filters=CustomFilters.dev_filter, run_async=True
 )
