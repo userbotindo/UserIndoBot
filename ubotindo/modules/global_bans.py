@@ -329,7 +329,7 @@ def check_cas(user_id):
         r = get(cas_url, timeout=3)
         data = r.json()
     except BaseException:
-        LOGGER.info(f"CAS check failed for {user_id}")
+        # LOGGER.info(f"CAS check failed for {user_id}")
         return False
     if data and data["ok"]:
         return "https://cas.chat/query?u={}".format(user_id)
