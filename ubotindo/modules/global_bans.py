@@ -27,7 +27,7 @@ import ubotindo.modules.sql.global_bans_sql as sql
 from ubotindo import (
     DEV_USERS,
     GBAN_LOGS,
-    LOGGER,
+#    LOGGER,
     OWNER_ID,
     STRICT_GBAN,
     SUDO_USERS,
@@ -437,17 +437,20 @@ def __stats__():
 
 def __user_info__(user_id):
     is_gbanned = sql.is_user_gbanned(user_id)
+    spmban = spamwtc.get_ban(int(user_id))
+    cas_banned = check_cas(user_id)
 
     text = "<b>Globally banned</b>: {}"
 
     if int(user_id) in DEV_USERS + SUDO_USERS + SUPPORT_USERS:
         return ""
-    if is_gbanned:
+    if is_gbanned or spmban or cas_banned:
         text = text.format("Yes")
-        user = sql.get_gbanned_user(user_id)
-        if user.reason:
-            text += "\n<b>Reason:</b> {}".format(html.escape(user.reason))
-            text += "\nAppeal at @userbotspamgroup if you think it's invalid."
+        if is_gbanned:
+            user = sql.get_gbanned_user(user_id)
+            if user.reason:
+                text += "\n<b>Reason:</b> {}".format(html.escape(user.reason))
+                text += "\nAppeal at @userbotspamgroup if you think it's invalid."
     else:
         text = text.format("No")
     return text
