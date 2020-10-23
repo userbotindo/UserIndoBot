@@ -24,11 +24,11 @@ from telegram.ext import CommandHandler, Filters, MessageHandler
 from telegram.utils.helpers import mention_html
 
 import ubotindo.modules.sql.global_bans_sql as sql
+from ubotindo import STRICT_GBAN  # LOGGER,
 from ubotindo import (
     DEV_USERS,
     GBAN_LOGS,
     OWNER_ID,
-    STRICT_GBAN,  # LOGGER,
     SUDO_USERS,
     SUPPORT_USERS,
     dispatcher,
