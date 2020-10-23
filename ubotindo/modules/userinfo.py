@@ -18,7 +18,6 @@ import html
 from typing import Optional
 
 from telegram import MAX_MESSAGE_LENGTH, Message, ParseMode, User
-from telegram.ext.dispatcher import run_async
 from telegram.utils.helpers import escape_markdown
 
 import ubotindo.modules.sql.userinfo_sql as sql
@@ -28,7 +27,6 @@ from ubotindo.modules.helper_funcs.alternate import typing_action
 from ubotindo.modules.helper_funcs.extraction import extract_user
 
 
-@run_async
 @typing_action
 def about_me(update, context):
     message = update.effective_message  # type: Optional[Message]
@@ -58,7 +56,6 @@ def about_me(update, context):
         )
 
 
-@run_async
 @typing_action
 def set_about_me(update, context):
     message = update.effective_message  # type: Optional[Message]
@@ -85,7 +82,6 @@ def set_about_me(update, context):
             )
 
 
-@run_async
 @typing_action
 def about_bio(update, context):
     message = update.effective_message  # type: Optional[Message]
@@ -113,7 +109,6 @@ def about_bio(update, context):
         update.effective_message.reply_text(" Your bio  about you has been saved !")
 
 
-@run_async
 @typing_action
 def set_about_bio(update, context):
     message = update.effective_message  # type: Optional[Message]
@@ -189,11 +184,15 @@ Reply to user's message: `/setbio He is such cool person`.
 
 __mod_name__ = "Bios/Abouts"
 
-SET_BIO_HANDLER = DisableAbleCommandHandler("setbio", set_about_bio)
-GET_BIO_HANDLER = DisableAbleCommandHandler("bio", about_bio, pass_args=True)
+SET_BIO_HANDLER = DisableAbleCommandHandler("setbio", set_about_bio, run_async=True)
+GET_BIO_HANDLER = DisableAbleCommandHandler(
+    "bio", about_bio, pass_args=True, run_async=True
+)
 
-SET_ABOUT_HANDLER = DisableAbleCommandHandler("setme", set_about_me)
-GET_ABOUT_HANDLER = DisableAbleCommandHandler("me", about_me, pass_args=True)
+SET_ABOUT_HANDLER = DisableAbleCommandHandler("setme", set_about_me, run_async=True)
+GET_ABOUT_HANDLER = DisableAbleCommandHandler(
+    "me", about_me, pass_args=True, run_async=True
+)
 
 dispatcher.add_handler(SET_BIO_HANDLER)
 dispatcher.add_handler(GET_BIO_HANDLER)

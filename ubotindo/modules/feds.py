@@ -30,7 +30,7 @@ from telegram import (
     ParseMode,
 )
 from telegram.error import BadRequest, TelegramError, Unauthorized
-from telegram.ext import CallbackQueryHandler, CommandHandler, run_async
+from telegram.ext import CallbackQueryHandler, CommandHandler
 from telegram.utils.helpers import mention_html, mention_markdown
 
 import ubotindo.modules.sql.feds_sql as sql
@@ -100,7 +100,6 @@ UNFBAN_ERRORS = {
 }
 
 
-@run_async
 @typing_action
 def new_fed(update, context):
     chat = update.effective_chat
@@ -153,7 +152,6 @@ def new_fed(update, context):
         )
 
 
-@run_async
 @typing_action
 def del_fed(update, context):
     chat = update.effective_chat
@@ -201,7 +199,6 @@ def del_fed(update, context):
     )
 
 
-@run_async
 @typing_action
 def fed_chat(update, context):
     chat = update.effective_chat
@@ -227,7 +224,6 @@ def fed_chat(update, context):
     update.effective_message.reply_text(text, parse_mode=ParseMode.HTML)
 
 
-@run_async
 @typing_action
 def join_fed(update, context):
     chat = update.effective_chat
@@ -289,7 +285,6 @@ def join_fed(update, context):
         )
 
 
-@run_async
 @typing_action
 def leave_fed(update, context):
     chat = update.effective_chat
@@ -331,7 +326,6 @@ def leave_fed(update, context):
         update.effective_message.reply_text("Only group creators can use this command!")
 
 
-@run_async
 @typing_action
 def user_join_fed(update, context):
     chat = update.effective_chat
@@ -400,7 +394,6 @@ def user_join_fed(update, context):
         update.effective_message.reply_text("Only federation owners can do this!")
 
 
-@run_async
 @typing_action
 def user_demote_fed(update, context):
     chat = update.effective_chat
@@ -461,7 +454,6 @@ def user_demote_fed(update, context):
         return
 
 
-@run_async
 @typing_action
 def fed_info(update, context):
     chat = update.effective_chat
@@ -511,7 +503,6 @@ def fed_info(update, context):
     update.effective_message.reply_text(text, parse_mode=ParseMode.HTML)
 
 
-@run_async
 @typing_action
 def fed_admin(update, context):
 
@@ -561,7 +552,6 @@ def fed_admin(update, context):
     update.effective_message.reply_text(text, parse_mode=ParseMode.HTML)
 
 
-@run_async
 @typing_action
 def fed_ban(update, context):
 
@@ -970,7 +960,6 @@ def fed_ban(update, context):
         )
 
 
-@run_async
 @typing_action
 def unfban(update, context):
     chat = update.effective_chat
@@ -1189,7 +1178,6 @@ def unfban(update, context):
 	"""
 
 
-@run_async
 @typing_action
 def set_frules(update, context):
 
@@ -1250,7 +1238,6 @@ def set_frules(update, context):
         update.effective_message.reply_text("Please write rules to set it up!")
 
 
-@run_async
 @typing_action
 def get_frules(update, context):
     chat = update.effective_chat
@@ -1274,7 +1261,6 @@ def get_frules(update, context):
     update.effective_message.reply_text(text, parse_mode=ParseMode.MARKDOWN)
 
 
-@run_async
 @typing_action
 def fed_broadcast(update, context):
     msg = update.effective_message
@@ -1336,7 +1322,6 @@ def fed_broadcast(update, context):
         update.effective_message.reply_text(send_text)
 
 
-@run_async
 @send_action(ChatAction.UPLOAD_DOCUMENT)
 def fed_ban_list(update, context):
     chat = update.effective_chat
@@ -1519,7 +1504,6 @@ def fed_ban_list(update, context):
             )
 
 
-@run_async
 @typing_action
 def fed_notif(update, context):
     chat = update.effective_chat
@@ -1555,7 +1539,6 @@ def fed_notif(update, context):
         )
 
 
-@run_async
 @typing_action
 def fed_chats(update, context):
     chat = update.effective_chat
@@ -1620,7 +1603,6 @@ def fed_chats(update, context):
             )
 
 
-@run_async
 @typing_action
 def fed_import_bans(update, context):
     chat = update.effective_chat
@@ -1849,7 +1831,6 @@ def fed_import_bans(update, context):
         send_message(update.effective_message, text)
 
 
-@run_async
 def del_fed_button(update, context):
     query = update.callback_query
     fed_id = query.data.split("_")[1]
@@ -1870,7 +1851,6 @@ def del_fed_button(update, context):
             )
 
 
-@run_async
 @typing_action
 def fed_stat_user(update, context):
     update.effective_user
@@ -1979,7 +1959,6 @@ def fed_stat_user(update, context):
         )
 
 
-@run_async
 @typing_action
 def set_fed_log(update, context):
     chat = update.effective_chat
@@ -2020,7 +1999,6 @@ def set_fed_log(update, context):
         )
 
 
-@run_async
 @typing_action
 def unset_fed_log(update, context):
     chat = update.effective_chat
@@ -2062,7 +2040,6 @@ def unset_fed_log(update, context):
         )
 
 
-@run_async
 @typing_action
 def subs_feds(update, context):
     chat = update.effective_chat
@@ -2128,7 +2105,6 @@ def subs_feds(update, context):
         )
 
 
-@run_async
 @typing_action
 def unsubs_feds(update, context):
     chat = update.effective_chat
@@ -2194,7 +2170,6 @@ def unsubs_feds(update, context):
         )
 
 
-@run_async
 @typing_action
 def get_myfedsubs(update, context):
     chat = update.effective_chat
@@ -2243,7 +2218,6 @@ def get_myfedsubs(update, context):
         send_message(update.effective_message, listfed, parse_mode="markdown")
 
 
-@run_async
 @typing_action
 def get_myfeds_list(update, context):
     update.effective_chat
@@ -2285,7 +2259,6 @@ def is_user_fed_owner(fed_id, user_id):
         return False
 
 
-@run_async
 def welcome_fed(update, context):
     chat = update.effective_chat
     user = update.effective_user
@@ -2390,39 +2363,63 @@ You can even designate admin federations, so your trusted admin can ban all the 
 """
 
 
-NEW_FED_HANDLER = CommandHandler("newfed", new_fed)
-DEL_FED_HANDLER = CommandHandler("delfed", del_fed, pass_args=True)
-JOIN_FED_HANDLER = CommandHandler("joinfed", join_fed, pass_args=True)
-LEAVE_FED_HANDLER = CommandHandler("leavefed", leave_fed, pass_args=True)
-PROMOTE_FED_HANDLER = CommandHandler("fpromote", user_join_fed, pass_args=True)
-DEMOTE_FED_HANDLER = CommandHandler("fdemote", user_demote_fed, pass_args=True)
-INFO_FED_HANDLER = CommandHandler("fedinfo", fed_info, pass_args=True)
-BAN_FED_HANDLER = DisableAbleCommandHandler(["fban", "fedban"], fed_ban, pass_args=True)
-UN_BAN_FED_HANDLER = CommandHandler("unfban", unfban, pass_args=True)
-FED_BROADCAST_HANDLER = CommandHandler("fbroadcast", fed_broadcast, pass_args=True)
-FED_SET_RULES_HANDLER = CommandHandler("setfrules", set_frules, pass_args=True)
-FED_GET_RULES_HANDLER = CommandHandler("frules", get_frules, pass_args=True)
-FED_CHAT_HANDLER = CommandHandler("chatfed", fed_chat, pass_args=True)
-FED_ADMIN_HANDLER = CommandHandler("fedadmins", fed_admin, pass_args=True)
-FED_USERBAN_HANDLER = CommandHandler(
-    "fbanlist", fed_ban_list, pass_args=True, pass_chat_data=True
+NEW_FED_HANDLER = CommandHandler("newfed", new_fed, run_async=True)
+DEL_FED_HANDLER = CommandHandler("delfed", del_fed, pass_args=True, run_async=True)
+JOIN_FED_HANDLER = CommandHandler("joinfed", join_fed, pass_args=True, run_async=True)
+LEAVE_FED_HANDLER = CommandHandler(
+    "leavefed", leave_fed, pass_args=True, run_async=True
 )
-FED_NOTIF_HANDLER = CommandHandler("fednotif", fed_notif, pass_args=True)
-FED_CHATLIST_HANDLER = CommandHandler("fedchats", fed_chats, pass_args=True)
+PROMOTE_FED_HANDLER = CommandHandler(
+    "fpromote", user_join_fed, pass_args=True, run_async=True
+)
+DEMOTE_FED_HANDLER = CommandHandler(
+    "fdemote", user_demote_fed, pass_args=True, run_async=True
+)
+INFO_FED_HANDLER = CommandHandler("fedinfo", fed_info, pass_args=True, run_async=True)
+BAN_FED_HANDLER = DisableAbleCommandHandler(
+    ["fban", "fedban"], fed_ban, pass_args=True, run_async=True
+)
+UN_BAN_FED_HANDLER = CommandHandler("unfban", unfban, pass_args=True, run_async=True)
+FED_BROADCAST_HANDLER = CommandHandler(
+    "fbroadcast", fed_broadcast, pass_args=True, run_async=True
+)
+FED_SET_RULES_HANDLER = CommandHandler(
+    "setfrules", set_frules, pass_args=True, run_async=True
+)
+FED_GET_RULES_HANDLER = CommandHandler(
+    "frules", get_frules, pass_args=True, run_async=True
+)
+FED_CHAT_HANDLER = CommandHandler("chatfed", fed_chat, pass_args=True, run_async=True)
+FED_ADMIN_HANDLER = CommandHandler(
+    "fedadmins", fed_admin, pass_args=True, run_async=True
+)
+FED_USERBAN_HANDLER = CommandHandler(
+    "fbanlist", fed_ban_list, pass_args=True, pass_chat_data=True, run_async=True
+)
+FED_NOTIF_HANDLER = CommandHandler(
+    "fednotif", fed_notif, pass_args=True, run_async=True
+)
+FED_CHATLIST_HANDLER = CommandHandler(
+    "fedchats", fed_chats, pass_args=True, run_async=True
+)
 FED_IMPORTBAN_HANDLER = CommandHandler(
-    "importfbans", fed_import_bans, pass_chat_data=True
+    "importfbans", fed_import_bans, pass_chat_data=True, run_async=True
 )
 FEDSTAT_USER = DisableAbleCommandHandler(
-    ["fedstat", "fbanstat"], fed_stat_user, pass_args=True
+    ["fedstat", "fbanstat"], fed_stat_user, pass_args=True, run_async=True
 )
-SET_FED_LOG = CommandHandler("setfedlog", set_fed_log, pass_args=True)
-UNSET_FED_LOG = CommandHandler("unsetfedlog", unset_fed_log, pass_args=True)
-SUBS_FED = CommandHandler("subfed", subs_feds, pass_args=True)
-UNSUBS_FED = CommandHandler("unsubfed", unsubs_feds, pass_args=True)
-MY_SUB_FED = CommandHandler("fedsubs", get_myfedsubs, pass_args=True)
-MY_FEDS_LIST = CommandHandler("myfeds", get_myfeds_list)
+SET_FED_LOG = CommandHandler("setfedlog", set_fed_log, pass_args=True, run_async=True)
+UNSET_FED_LOG = CommandHandler(
+    "unsetfedlog", unset_fed_log, pass_args=True, run_async=True
+)
+SUBS_FED = CommandHandler("subfed", subs_feds, pass_args=True, run_async=True)
+UNSUBS_FED = CommandHandler("unsubfed", unsubs_feds, pass_args=True, run_async=True)
+MY_SUB_FED = CommandHandler("fedsubs", get_myfedsubs, pass_args=True, run_async=True)
+MY_FEDS_LIST = CommandHandler("myfeds", get_myfeds_list, run_async=True)
 
-DELETEBTN_FED_HANDLER = CallbackQueryHandler(del_fed_button, pattern=r"rmfed_")
+DELETEBTN_FED_HANDLER = CallbackQueryHandler(
+    del_fed_button, pattern=r"rmfed_", run_async=True
+)
 
 dispatcher.add_handler(NEW_FED_HANDLER)
 dispatcher.add_handler(DEL_FED_HANDLER)

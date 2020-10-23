@@ -20,16 +20,15 @@ from io import BytesIO
 from requests import get
 from telegram import ChatAction, ParseMode
 from telegram.error import BadRequest, TelegramError
-from telegram.ext import CommandHandler, Filters, MessageHandler, run_async
+from telegram.ext import CommandHandler, Filters, MessageHandler
 from telegram.utils.helpers import mention_html
 
 import ubotindo.modules.sql.global_bans_sql as sql
 from ubotindo import (
     DEV_USERS,
     GBAN_LOGS,
-    LOGGER,
     OWNER_ID,
-    STRICT_GBAN,
+    STRICT_GBAN,  # LOGGER,
     SUDO_USERS,
     SUPPORT_USERS,
     dispatcher,
@@ -84,7 +83,6 @@ UNGBAN_ERRORS = {
 }
 
 
-@run_async
 @typing_action
 def gban(update, context):
     message = update.effective_message
@@ -231,7 +229,6 @@ def gban(update, context):
     sql.gban_user(user_id, user_chat.username or user_chat.first_name, reason)
 
 
-@run_async
 @typing_action
 def ungban(update, context):
     message = update.effective_message
@@ -300,7 +297,6 @@ def ungban(update, context):
     message.reply_text("Person has been un-gbanned.")
 
 
-@run_async
 @send_action(ChatAction.UPLOAD_DOCUMENT)
 def gbanlist(update, context):
     banned_users = sql.get_gban_list()
@@ -332,7 +328,7 @@ def check_cas(user_id):
         r = get(cas_url, timeout=3)
         data = r.json()
     except BaseException:
-        LOGGER.info(f"CAS check failed for {user_id}")
+        # LOGGER.info(f"CAS check failed for {user_id}")
         return False
     if data and data["ok"]:
         return "https://cas.chat/query?u={}".format(user_id)
@@ -382,7 +378,6 @@ def check_and_ban(update, user_id, should_message=True):
             return
 
 
-@run_async
 def enforce_gban(update, context):
     # Not using @restrict handler to avoid spamming - just ignore if cant gban.
     if (
@@ -407,7 +402,6 @@ def enforce_gban(update, context):
                 check_and_ban(update, user.id, should_message=False)
 
 
-@run_async
 @user_admin
 @typing_action
 def gbanstat(update, context):
@@ -442,17 +436,20 @@ def __stats__():
 
 def __user_info__(user_id):
     is_gbanned = sql.is_user_gbanned(user_id)
+    spmban = spamwtc.get_ban(int(user_id))
+    cas_banned = check_cas(user_id)
 
     text = "<b>Globally banned</b>: {}"
 
     if int(user_id) in DEV_USERS + SUDO_USERS + SUPPORT_USERS:
         return ""
-    if is_gbanned:
+    if is_gbanned or spmban or cas_banned:
         text = text.format("Yes")
-        user = sql.get_gbanned_user(user_id)
-        if user.reason:
-            text += "\n<b>Reason:</b> {}".format(html.escape(user.reason))
-            text += "\nAppeal at @userbotspamgroup if you think it's invalid."
+        if is_gbanned:
+            user = sql.get_gbanned_user(user_id)
+            if user.reason:
+                text += "\n<b>Reason:</b> {}".format(html.escape(user.reason))
+                text += "\nAppeal at @userbotspamgroup if you think it's invalid."
     else:
         text = text.format("No")
     return text
@@ -481,28 +478,26 @@ Userbotindobot will constantly help banning spammers off from your group automat
 __mod_name__ = "Spam Shield"
 
 GBAN_HANDLER = CommandHandler(
-    "gban",
-    gban,
-    pass_args=True,
-    filters=CustomFilters.support_filter,
+    "gban", gban, pass_args=True, filters=CustomFilters.support_filter, run_async=True
 )
 UNGBAN_HANDLER = CommandHandler(
     "ungban",
     ungban,
     pass_args=True,
     filters=CustomFilters.support_filter,
+    run_async=True,
 )
 GBAN_LIST = CommandHandler(
-    "gbanlist",
-    gbanlist,
-    filters=CustomFilters.support_filter,
+    "gbanlist", gbanlist, filters=CustomFilters.support_filter, run_async=True
 )
 
 GBAN_STATUS = CommandHandler(
-    "spamshield", gbanstat, pass_args=True, filters=Filters.group
+    "spamshield", gbanstat, pass_args=True, filters=Filters.group, run_async=True
 )
 
-GBAN_ENFORCER = MessageHandler(Filters.all & Filters.group, enforce_gban)
+GBAN_ENFORCER = MessageHandler(
+    Filters.all & Filters.group, enforce_gban, run_async=True
+)
 
 dispatcher.add_handler(GBAN_HANDLER)
 dispatcher.add_handler(UNGBAN_HANDLER)

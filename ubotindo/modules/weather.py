@@ -21,7 +21,6 @@ import requests
 from pytz import country_names as cname
 from telegram import ParseMode
 from telegram.error import BadRequest
-from telegram.ext import run_async
 
 from ubotindo import API_WEATHER as APPID
 from ubotindo import dispatcher
@@ -29,7 +28,6 @@ from ubotindo.modules.disable import DisableAbleCommandHandler
 from ubotindo.modules.helper_funcs.alternate import typing_action
 
 
-@run_async
 @typing_action
 def weather(update, context):
     args = context.args
@@ -149,6 +147,8 @@ Weather module:
 
 __mod_name__ = "Weather"
 
-WEATHER_HANDLER = DisableAbleCommandHandler("weather", weather, pass_args=True)
+WEATHER_HANDLER = DisableAbleCommandHandler(
+    "weather", weather, pass_args=True, run_async=True
+)
 
 dispatcher.add_handler(WEATHER_HANDLER)

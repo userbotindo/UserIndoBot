@@ -18,7 +18,7 @@ import time
 
 import requests
 from telegram import ParseMode, error
-from telegram.ext import CommandHandler, run_async
+from telegram.ext import CommandHandler
 
 import ubotindo.modules.sql.last_fm_sql as sql
 from ubotindo import LASTFM_API_KEY, dispatcher
@@ -27,7 +27,6 @@ from ubotindo.modules.helper_funcs.alternate import typing_action
 
 
 @typing_action
-@run_async
 def set_user(update, context):
     msg = update.effective_message
     args = context.args
@@ -48,7 +47,6 @@ def set_user(update, context):
         return
 
 
-@run_async
 @typing_action
 def clear_user(update, context):
     user = update.effective_user.id
@@ -60,7 +58,6 @@ def clear_user(update, context):
     clear.delete()
 
 
-@run_async
 @typing_action
 def last_fm(update, context):
     msg = update.effective_message
@@ -126,7 +123,7 @@ def last_fm(update, context):
         return
 
 
-SET_USER_HANDLER = CommandHandler("setuser", set_user, pass_args=True)
+SET_USER_HANDLER = CommandHandler("setuser", set_user, pass_args=True, run_async=True)
 CLEAR_USER_HANDLER = CommandHandler("clearuser", clear_user)
 LASTFM_HANDLER = DisableAbleCommandHandler("lastfm", last_fm)
 

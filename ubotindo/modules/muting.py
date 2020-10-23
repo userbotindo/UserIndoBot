@@ -20,7 +20,6 @@ from typing import Optional
 from telegram import Chat, ChatPermissions, Message, User
 from telegram.error import BadRequest
 from telegram.ext import CommandHandler, Filters
-from telegram.ext.dispatcher import run_async
 from telegram.utils.helpers import mention_html
 
 from ubotindo import LOGGER, dispatcher
@@ -37,7 +36,6 @@ from ubotindo.modules.helper_funcs.string_handling import extract_time
 from ubotindo.modules.log_channel import loggable
 
 
-@run_async
 @bot_admin
 @user_admin
 @loggable
@@ -95,7 +93,6 @@ def mute(update, context):
     return ""
 
 
-@run_async
 @bot_admin
 @user_admin
 @loggable
@@ -162,7 +159,6 @@ def unmute(update, context):
     return ""
 
 
-@run_async
 @bot_admin
 @can_restrict
 @user_admin
@@ -282,10 +278,18 @@ An example of temporarily mute someone:
 
 __mod_name__ = "Muting"
 
-MUTE_HANDLER = CommandHandler("mute", mute, pass_args=True, filters=Filters.group)
-UNMUTE_HANDLER = CommandHandler("unmute", unmute, pass_args=True, filters=Filters.group)
+MUTE_HANDLER = CommandHandler(
+    "mute", mute, pass_args=True, filters=Filters.group, run_async=True
+)
+UNMUTE_HANDLER = CommandHandler(
+    "unmute", unmute, pass_args=True, filters=Filters.group, run_async=True
+)
 TEMPMUTE_HANDLER = CommandHandler(
-    ["tmute", "tempmute"], temp_mute, pass_args=True, filters=Filters.group
+    ["tmute", "tempmute"],
+    temp_mute,
+    pass_args=True,
+    filters=Filters.group,
+    run_async=True,
 )
 
 dispatcher.add_handler(MUTE_HANDLER)

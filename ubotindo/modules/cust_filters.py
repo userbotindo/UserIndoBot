@@ -20,13 +20,7 @@ from html import escape
 import telegram
 from telegram import InlineKeyboardMarkup, ParseMode
 from telegram.error import BadRequest
-from telegram.ext import (
-    CommandHandler,
-    DispatcherHandlerStop,
-    Filters,
-    MessageHandler,
-    run_async,
-)
+from telegram.ext import CommandHandler, DispatcherHandlerStop, Filters, MessageHandler
 from telegram.utils.helpers import escape_markdown, mention_html
 
 from ubotindo import LOGGER, dispatcher
@@ -61,7 +55,6 @@ ENUM_FUNC_MAP = {
 }
 
 
-@run_async
 @typing_action
 def list_handlers(update, context):
     chat = update.effective_chat
@@ -281,7 +274,6 @@ def stop_filter(update, context):
     )
 
 
-@run_async
 def reply_filter(update, context):
     chat = update.effective_chat
     message = update.effective_message
@@ -469,7 +461,6 @@ def reply_filter(update, context):
                 break
 
 
-@run_async
 @user_admin
 @typing_action
 def rmall_filters(update, context):
@@ -568,14 +559,18 @@ Check `/markdownhelp` to know more!
 
 __mod_name__ = "Filters"
 
-FILTER_HANDLER = CommandHandler("filter", filters)
-STOP_HANDLER = CommandHandler("stop", stop_filter)
+FILTER_HANDLER = CommandHandler("filter", filters, run_async=True)
+STOP_HANDLER = CommandHandler("stop", stop_filter, run_async=True)
 RMALLFILTER_HANDLER = CommandHandler(
-    "rmallfilter", rmall_filters, filters=Filters.group
+    "rmallfilter", rmall_filters, filters=Filters.group, run_async=True
 )
-LIST_HANDLER = DisableAbleCommandHandler("filters", list_handlers, admin_ok=True)
+LIST_HANDLER = DisableAbleCommandHandler(
+    "filters", list_handlers, admin_ok=True, run_async=True
+)
 CUST_FILTER_HANDLER = MessageHandler(
-    CustomFilters.has_text & ~Filters.update.edited_message, reply_filter
+    CustomFilters.has_text & ~Filters.update.edited_message,
+    reply_filter,
+    run_async=True,
 )
 
 dispatcher.add_handler(FILTER_HANDLER)

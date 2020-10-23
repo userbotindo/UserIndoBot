@@ -26,13 +26,7 @@ from telegram import (
     User,
 )
 from telegram.error import BadRequest, Unauthorized
-from telegram.ext import (
-    CallbackQueryHandler,
-    CommandHandler,
-    Filters,
-    MessageHandler,
-    run_async,
-)
+from telegram.ext import CallbackQueryHandler, CommandHandler, Filters, MessageHandler
 from telegram.utils.helpers import mention_html
 
 from ubotindo import LOGGER, dispatcher
@@ -44,7 +38,6 @@ from ubotindo.modules.sql import reporting_sql as sql
 REPORT_GROUP = 5
 
 
-@run_async
 @user_admin
 @typing_action
 def report_setting(update, context):
@@ -94,7 +87,6 @@ def report_setting(update, context):
             )
 
 
-@run_async
 @user_not_admin
 @loggable
 @typing_action
@@ -278,9 +270,13 @@ You MUST reply to a message to report a user; you can't just use @admin to tag a
 Note that the report commands do not work when admins use them; or when used to report an admin. Bot assumes that \
 admins don't need to report, or be reported!
 """
-REPORT_HANDLER = CommandHandler("report", report, filters=Filters.group)
-SETTING_HANDLER = CommandHandler("reports", report_setting, pass_args=True)
-ADMIN_REPORT_HANDLER = MessageHandler(Filters.regex("(?i)@admin(s)?"), report)
+REPORT_HANDLER = CommandHandler("report", report, filters=Filters.group, run_async=True)
+SETTING_HANDLER = CommandHandler(
+    "reports", report_setting, pass_args=True, run_async=True
+)
+ADMIN_REPORT_HANDLER = MessageHandler(
+    Filters.regex("(?i)@admin(s)?"), report, run_async=True
+)
 REPORT_BUTTON_HANDLER = CallbackQueryHandler(report_buttons, pattern=r"report_")
 
 dispatcher.add_handler(REPORT_HANDLER, REPORT_GROUP)

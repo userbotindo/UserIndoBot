@@ -18,7 +18,7 @@ import re
 import sre_constants
 
 import telegram
-from telegram.ext import Filters, run_async
+from telegram.ext import Filters
 
 from ubotindo import LOGGER, dispatcher
 from ubotindo.modules.disable import DisableAbleMessageHandler
@@ -86,7 +86,6 @@ def separate_sed(sed_string):
         return replace, replace_with, flags.lower()
 
 
-@run_async
 def sed(update, context):
     sed_result = separate_sed(update.effective_message.text)
     if sed_result and update.effective_message.reply_to_message:
@@ -136,7 +135,10 @@ def sed(update, context):
 
 
 SED_HANDLER = DisableAbleMessageHandler(
-    Filters.regex(r"s([{}]).*?\1.*".format("".join(DELIMITERS))), sed, friendly="sed"
+    Filters.regex(r"s([{}]).*?\1.*".format("".join(DELIMITERS))),
+    sed,
+    friendly="sed",
+    run_async=True,
 )
 
 dispatcher.add_handler(SED_HANDLER)

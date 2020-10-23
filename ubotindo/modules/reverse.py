@@ -22,7 +22,6 @@ from urllib.error import HTTPError, URLError
 import requests
 from bs4 import BeautifulSoup
 from telegram import InputMediaPhoto, TelegramError
-from telegram.ext import run_async
 
 from ubotindo import dispatcher
 from ubotindo.modules.disable import DisableAbleCommandHandler
@@ -34,7 +33,6 @@ useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML
 opener.addheaders = [("User-agent", useragent)]
 
 
-@run_async
 @typing_action
 def reverse(update, context):
     if os.path.isfile("okgoogle.png"):
@@ -150,7 +148,6 @@ def reverse(update, context):
                 f"[{guess}]({fetchUrl})\n[Visually similar images]({imgspage})"
                 "\nCouldn't fetch any images.",
                 parse_mode="Markdown",
-                disable_web_page_preview=True,
             )
             return
 
@@ -222,7 +219,7 @@ def scam(imgspage, lim):
 
 
 REVERSE_HANDLER = DisableAbleCommandHandler(
-    "reverse", reverse, pass_args=True, admin_ok=True
+    "reverse", reverse, pass_args=True, admin_ok=True, run_async=True
 )
 
 dispatcher.add_handler(REVERSE_HANDLER)

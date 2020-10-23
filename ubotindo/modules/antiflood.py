@@ -17,9 +17,9 @@
 import html
 from typing import Optional
 
-from telegram import Chat, ChatPermissions, Message, ParseMode, User
+from telegram import Chat, ChatPermissions, Message, User
 from telegram.error import BadRequest
-from telegram.ext import CommandHandler, Filters, MessageHandler, run_async
+from telegram.ext import CommandHandler, Filters, MessageHandler
 from telegram.utils.helpers import mention_html
 
 from ubotindo import dispatcher
@@ -33,7 +33,6 @@ from ubotindo.modules.sql import antiflood_sql as sql
 FLOOD_GROUP = 3
 
 
-@run_async
 @loggable
 def check_flood(update, context) -> str:
     user = update.effective_user  # type: Optional[User]
@@ -113,7 +112,6 @@ def check_flood(update, context) -> str:
         )
 
 
-@run_async
 @user_admin
 @loggable
 @typing_action
@@ -211,7 +209,6 @@ def set_flood(update, context) -> str:
     return ""
 
 
-@run_async
 @typing_action
 def flood(update, context):
     chat = update.effective_chat  # type: Optional[Chat]
@@ -257,7 +254,6 @@ def flood(update, context):
         send_message(update.effective_message, text, parse_mode="markdown")
 
 
-@run_async
 @user_admin
 @loggable
 @typing_action
@@ -296,7 +292,6 @@ def set_flood_mode(update, context):
         elif args[0].lower() == "tban":
             if len(args) == 1:
                 teks = """It looks like you tried to set time value for antiflood but you didn't specified time; Try, `/setfloodmode tban <timevalue>`.
-
 Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks."""
                 send_message(update.effective_message, teks, parse_mode="markdown")
                 return
@@ -304,9 +299,11 @@ Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks.
             sql.set_flood_strength(chat_id, 4, str(args[1]))
         elif args[0].lower() == "tmute":
             if len(args) == 1:
-                teks = """It looks like you tried to set time value for antiflood but you didn't specified time; Try, `/setfloodmode tmute <timevalue>`.
-
-Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks."""
+                teks = (
+                    update.effective_message,
+                    """It looks like you tried to set time value for antiflood but you didn't specified time; Try, `/setfloodmode tmute <timevalue>`.
+Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks.""",
+                )
                 send_message(update.effective_message, teks, parse_mode="markdown")
                 return
             settypeflood = "tmute for {}".format(args[1])
@@ -328,7 +325,6 @@ Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks.
                     settypeflood
                 )
             )
-        send_message(update.effective_message, text, parse_mode="markdown")
         return (
             "<b>{}:</b>\n"
             "<b>Admin:</b> {}\n"
@@ -362,7 +358,6 @@ Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks.
                     settypeflood
                 )
             )
-        send_message(update.effective_message, text, parse_mode=ParseMode.MARKDOWN)
     return ""
 
 
@@ -404,15 +399,16 @@ will result in restricting that user.
 __mod_name__ = "Antiflood"
 
 FLOOD_BAN_HANDLER = MessageHandler(
-    Filters.all & ~Filters.status_update & Filters.group, check_flood
+    Filters.all & ~Filters.status_update & Filters.group, check_flood, run_async=True
 )
 SET_FLOOD_HANDLER = CommandHandler(
-    "setflood", set_flood, pass_args=True
+    "setflood", set_flood, pass_args=True, run_async=True
 )  # , filters=Filters.group)
 SET_FLOOD_MODE_HANDLER = CommandHandler(
-    "setfloodmode", set_flood_mode, pass_args=True
+    "setfloodmode", set_flood_mode, pass_args=True, run_async=True
 )  # , filters=Filters.group)
-FLOOD_HANDLER = CommandHandler("flood", flood)  # , filters=Filters.group)
+# , filters=Filters.group)
+FLOOD_HANDLER = CommandHandler("flood", flood, run_async=True)
 
 dispatcher.add_handler(FLOOD_BAN_HANDLER, FLOOD_GROUP)
 dispatcher.add_handler(SET_FLOOD_HANDLER)

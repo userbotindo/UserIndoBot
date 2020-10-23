@@ -20,7 +20,6 @@ from alphabet_detector import AlphabetDetector
 from telegram import ChatPermissions, MessageEntity, ParseMode, TelegramError
 from telegram.error import BadRequest
 from telegram.ext import CommandHandler, Filters, MessageHandler
-from telegram.ext.dispatcher import run_async
 from telegram.utils.helpers import mention_html
 
 import ubotindo.modules.sql.locks_sql as sql
@@ -145,7 +144,6 @@ def unrestr_members(
             pass
 
 
-@run_async
 def locktypes(update, context):
     update.effective_message.reply_text(
         "\n × ".join(
@@ -155,7 +153,6 @@ def locktypes(update, context):
     )
 
 
-@run_async
 @user_admin
 @loggable
 @typing_action
@@ -265,7 +262,6 @@ def lock(update, context) -> str:
     return ""
 
 
-@run_async
 @user_admin
 @loggable
 @typing_action
@@ -364,7 +360,6 @@ def unlock(update, context) -> str:
     return ""
 
 
-@run_async
 @user_not_admin
 def del_lockables(update, context):
     chat = update.effective_chat
@@ -502,7 +497,6 @@ def build_lock_message(chat_id):
     return res
 
 
-@run_async
 @user_admin
 @typing_action
 def list_locks(update, context):
@@ -593,14 +587,14 @@ Note:
 
 __mod_name__ = "Locks"
 
-LOCKTYPES_HANDLER = DisableAbleCommandHandler("locktypes", locktypes)
+LOCKTYPES_HANDLER = DisableAbleCommandHandler("locktypes", locktypes, run_async=True)
 # , filters=Filters.group)
-LOCK_HANDLER = CommandHandler("lock", lock, pass_args=True)
+LOCK_HANDLER = CommandHandler("lock", lock, pass_args=True, run_async=True)
 UNLOCK_HANDLER = CommandHandler(
-    "unlock", unlock, pass_args=True
+    "unlock", unlock, pass_args=True, run_async=True
 )  # , filters=Filters.group)
 # , filters=Filters.group)
-LOCKED_HANDLER = CommandHandler("locks", list_locks)
+LOCKED_HANDLER = CommandHandler("locks", list_locks, run_async=True)
 
 dispatcher.add_handler(LOCK_HANDLER)
 dispatcher.add_handler(UNLOCK_HANDLER)

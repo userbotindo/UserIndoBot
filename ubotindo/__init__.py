@@ -30,8 +30,8 @@ LOGGER = logging.getLogger(__name__)
 
 LOGGER.info("Starting ubotindo...")
 
-# if version < 3.8, stop bot.
-if sys.version_info[0] < 3 or sys.version_info[1] < 8:
+# if version < 3.6, stop bot.
+if sys.version_info[0] < 3 or sys.version_info[1] < 6:
     LOGGER.error(
         "You MUST have a python version of at least 3.6! Multiple features depend on this. Bot quitting."
     )
@@ -206,7 +206,7 @@ api_id = TELETHON_ID
 api_hash = TELETHON_HASH
 client = TelegramClient("ubotindo", api_id, api_hash)
 
-updater = tg.Updater(TOKEN, workers=WORKERS, use_context=True)
+updater = tg.Updater(TOKEN, workers=WORKERS)
 
 dispatcher = updater.dispatcher
 
