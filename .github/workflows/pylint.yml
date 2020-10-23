@@ -1,6 +1,9 @@
 name: PyLint
 
-on: push
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   PEP8:
