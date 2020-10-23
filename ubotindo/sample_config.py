@@ -51,15 +51,15 @@ class Config(object):
     # OPTIONAL
     # List of id's (not usernames) for users which have access to dev's
     # command.
-    DEV_USERS = ([])
+    DEV_USERS = []
     # List of id's (not usernames) for users which have sudo access to the bot.
-    SUDO_USERS = ([])
+    SUDO_USERS = []
     # List of id's (not usernames) for users which are allowed to gban, but
     # can also be banned.
-    SUPPORT_USERS = ([])
+    SUPPORT_USERS = []
     # List of id's (not usernames) for users which WONT be banned/kicked by
     # the bot.
-    WHITELIST_USERS = ([])
+    WHITELIST_USERS = []
     WHITELIST_CHATS = []
     BLACKLIST_CHATS = []
     DONATION_LINK = None  # EG, paypal

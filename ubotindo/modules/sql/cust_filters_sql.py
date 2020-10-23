@@ -169,9 +169,10 @@ def add_filter(
         if prev:
             with BUTTON_LOCK:
                 prev_buttons = (
-                    SESSION.query(Buttons) .filter(
-                        Buttons.chat_id == str(chat_id),
-                        Buttons.keyword == keyword) .all())
+                    SESSION.query(Buttons)
+                    .filter(Buttons.chat_id == str(chat_id), Buttons.keyword == keyword)
+                    .all()
+                )
                 for btn in prev_buttons:
                     SESSION.delete(btn)
             SESSION.delete(prev)
@@ -213,9 +214,10 @@ def new_add_filter(chat_id, keyword, reply_text, file_type, file_id, buttons):
         if prev:
             with BUTTON_LOCK:
                 prev_buttons = (
-                    SESSION.query(Buttons) .filter(
-                        Buttons.chat_id == str(chat_id),
-                        Buttons.keyword == keyword) .all())
+                    SESSION.query(Buttons)
+                    .filter(Buttons.chat_id == str(chat_id), Buttons.keyword == keyword)
+                    .all()
+                )
                 for btn in prev_buttons:
                     SESSION.delete(btn)
             SESSION.delete(prev)
@@ -259,9 +261,10 @@ def remove_filter(chat_id, keyword):
 
             with BUTTON_LOCK:
                 prev_buttons = (
-                    SESSION.query(Buttons) .filter(
-                        Buttons.chat_id == str(chat_id),
-                        Buttons.keyword == keyword) .all())
+                    SESSION.query(Buttons)
+                    .filter(Buttons.chat_id == str(chat_id), Buttons.keyword == keyword)
+                    .all()
+                )
                 for btn in prev_buttons:
                     SESSION.delete(btn)
 
@@ -307,10 +310,11 @@ def add_note_button_to_db(chat_id, keyword, b_name, url, same_line):
 def get_buttons(chat_id, keyword):
     try:
         return (
-            SESSION.query(Buttons) .filter(
-                Buttons.chat_id == str(chat_id),
-                Buttons.keyword == keyword) .order_by(
-                Buttons.id) .all())
+            SESSION.query(Buttons)
+            .filter(Buttons.chat_id == str(chat_id), Buttons.keyword == keyword)
+            .order_by(Buttons.id)
+            .all()
+        )
     finally:
         SESSION.close()
 
@@ -324,10 +328,7 @@ def num_filters():
 
 def num_chats():
     try:
-        return SESSION.query(
-            func.count(
-                distinct(
-                    CustomFilters.chat_id))).scalar()
+        return SESSION.query(func.count(distinct(CustomFilters.chat_id))).scalar()
     finally:
         SESSION.close()
 
@@ -405,8 +406,9 @@ def migrate_chat(old_chat_id, new_chat_id):
             del CHAT_FILTERS[str(old_chat_id)]
 
         with BUTTON_LOCK:
-            chat_buttons = (SESSION.query(Buttons).filter(
-                Buttons.chat_id == str(old_chat_id)).all())
+            chat_buttons = (
+                SESSION.query(Buttons).filter(Buttons.chat_id == str(old_chat_id)).all()
+            )
             for btn in chat_buttons:
                 btn.chat_id = str(new_chat_id)
             SESSION.commit()

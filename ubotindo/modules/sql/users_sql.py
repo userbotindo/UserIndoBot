@@ -70,12 +70,7 @@ class ChatMembers(BASE):
         ForeignKey("users.user_id", onupdate="CASCADE", ondelete="CASCADE"),
         nullable=False,
     )
-    __table_args__ = (
-        UniqueConstraint(
-            "chat",
-            "user",
-            name="_chat_members_uc"),
-    )
+    __table_args__ = (UniqueConstraint("chat", "user", name="_chat_members_uc"),)
 
     def __init__(self, chat, user):
         self.chat = chat
@@ -128,9 +123,10 @@ def update_user(user_id, username, chat_id=None, chat_name=None):
             chat.chat_name = chat_name
 
         member = (
-            SESSION.query(ChatMembers) .filter(
-                ChatMembers.chat == chat.chat_id,
-                ChatMembers.user == user.user_id) .first())
+            SESSION.query(ChatMembers)
+            .filter(ChatMembers.chat == chat.chat_id, ChatMembers.user == user.user_id)
+            .first()
+        )
         if not member:
             chat_member = ChatMembers(chat.chat_id, user.user_id)
             SESSION.add(chat_member)
@@ -158,8 +154,7 @@ def get_name_by_userid(user_id):
 
 def get_chat_members(chat_id):
     try:
-        return SESSION.query(ChatMembers).filter(
-            ChatMembers.chat == str(chat_id)).all()
+        return SESSION.query(ChatMembers).filter(ChatMembers.chat == str(chat_id)).all()
     finally:
         SESSION.close()
 
@@ -173,8 +168,9 @@ def get_all_chats():
 
 def get_user_num_chats(user_id):
     try:
-        return (SESSION.query(ChatMembers).filter(
-            ChatMembers.user == int(user_id)).count())
+        return (
+            SESSION.query(ChatMembers).filter(ChatMembers.user == int(user_id)).count()
+        )
     finally:
         SESSION.close()
 

@@ -159,7 +159,9 @@ def get_welcome_type(msg: Message):
     # determine what the contents of the filter are - text, image, sticker, etc
     if args:
         if msg.reply_to_message:
-            argumen = msg.reply_to_message.caption if msg.reply_to_message.caption else ""
+            argumen = (
+                msg.reply_to_message.caption if msg.reply_to_message.caption else ""
+            )
             offset = 0  # offset is no need since target was in reply
             entities = msg.reply_to_message.parse_entities()
         else:
@@ -168,7 +170,8 @@ def get_welcome_type(msg: Message):
             offset = len(argumen) - len(msg.text)
             entities = msg.parse_entities()
         text, buttons = button_markdown_parser(
-            argumen, entities=entities, offset=offset)
+            argumen, entities=entities, offset=offset
+        )
 
     if not data_type:
         if text and buttons:
