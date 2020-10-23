@@ -27,9 +27,8 @@ import ubotindo.modules.sql.global_bans_sql as sql
 from ubotindo import (
     DEV_USERS,
     GBAN_LOGS,
-#    LOGGER,
     OWNER_ID,
-    STRICT_GBAN,
+    STRICT_GBAN,  # LOGGER,
     SUDO_USERS,
     SUPPORT_USERS,
     dispatcher,
