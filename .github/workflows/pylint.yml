@@ -27,7 +27,6 @@ jobs:
           autoflake --in-place --recursive --remove-all-unused-imports --remove-unused-variables --ignore-init-module-imports .
       - name: lint with isort and black
         run: |
-          isort ubotindo/modules/*.py
           black ubotindo/modules/*.py
 
       - name: Import GPG key
