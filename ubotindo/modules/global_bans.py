@@ -92,6 +92,11 @@ def gban(update, context):
     args = context.args
     user_id, reason = extract_user_and_text(message, args)
 
+    if not reason:
+        message.reply_text(
+            "Please Specified a reason. I won't allow a bare gban :)")
+        return
+
     if not user_id:
         message.reply_text("You don't seem to be referring to a user.")
         return
