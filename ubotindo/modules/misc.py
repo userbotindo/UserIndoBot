@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import datetime
+import codecs
 import html
 import os
 import random
@@ -26,7 +27,7 @@ from typing import Optional
 import requests as r
 import wikipedia
 from covid import Covid
-from requests import get
+from requests import get, post
 from telegram import (
     Chat,
     ChatAction,
@@ -654,6 +655,35 @@ def format_integer(number, thousand_separator="."):
     return result
 
 
+@run_async
+@typing_action
+def paste(update, context):
+    msg = update.effective_message
+
+    if msg.reply_to_message and msg.reply_to_message.document:
+        message = msg.reply_text("Pasting Text...")
+        file = context.bot.get_file(msg.reply_to_message.document)
+        file.download("file.txt")
+        text = codecs.open("file.txt", "r+", encoding="utf-8")
+        paste_text = text.read()
+        link = (
+            post(
+                "https://nekobin.com/api/documents",
+                json={
+                    "content": paste_text}) .json() .get("result") .get("key"))
+        message.edit_text(
+            "Pasted to Nekobin\n\n"
+            f"[Nekobin URL](https://nekobin.com/{link})\n"
+            f"[View RAW](https://nekobin.com/raw/{link})",
+            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=True,
+        )
+        os.remove("file.txt")
+    else:
+        msg.reply_text("Give me a text file to paste on nekobin")
+        return
+
+
 __help__ = """
 An "odds and ends" module for small, simple commands which don't really fit anywhere
 
@@ -666,6 +696,7 @@ An "odds and ends" module for small, simple commands which don't really fit anyw
  × /reverse : Reverse searches image or stickers on google.
  × /lyrics <query> : You can either enter just the song name or both the artist and song name.
  × /covid <country name>: Give stats about COVID-19.
+ × /paste : Paste any text file to Nekobin.
  × /gdpr: Deletes your information from the bot's database. Private chats only.
  × /markdownhelp: Quick summary of how markdown works in telegram - can only be called in private chats.
 *Last.FM*
@@ -699,6 +730,7 @@ STAFFLIST_HANDLER = CommandHandler(
 REDDIT_MEMES_HANDLER = DisableAbleCommandHandler("rmeme", rmemes)
 # SRC_HANDLER = CommandHandler("source", src, filters=Filters.private)
 COVID_HANDLER = CommandHandler("covid", covid)
+PASTE_HANDLER = CommandHandler("paste", paste)
 
 dispatcher.add_handler(WALLPAPER_HANDLER)
 dispatcher.add_handler(UD_HANDLER)
@@ -715,3 +747,4 @@ dispatcher.add_handler(REDDIT_MEMES_HANDLER)
 # dispatcher.add_handler(SRC_HANDLER)
 dispatcher.add_handler(LYRICS_HANDLER)
 dispatcher.add_handler(COVID_HANDLER)
+dispatcher.add_handler(PASTE_HANDLER)
