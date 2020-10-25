@@ -88,7 +88,8 @@ def last_fm(update, context):
         return
     if first_track.get("@attr"):
         # Ensures the track is now playing
-        image = first_track.get("image")[3].get("#text")  # Grab URL of 300x300 image
+        image = first_track.get("image")[3].get(
+            "#text")  # Grab URL of 300x300 image
         artist = first_track.get("artist").get("name")
         song = first_track.get("name")
         loved = int(first_track.get("loved"))
@@ -101,9 +102,8 @@ def last_fm(update, context):
             rep += f"<a href='{image}'>\u200c</a>"
     else:
         tracks = res.json().get("recenttracks").get("track")
-        track_dict = {
-            tracks[i].get("artist").get("name"): tracks[i].get("name") for i in range(3)
-        }
+        track_dict = {tracks[i].get("artist").get(
+            "name"): tracks[i].get("name") for i in range(3)}
         rep = f"{user} was listening to:\n"
         for artist, song in track_dict.items():
             rep += f"🎧  <code>{artist} - {song}</code>\n"

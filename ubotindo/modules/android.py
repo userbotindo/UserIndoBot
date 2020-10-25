@@ -55,13 +55,11 @@ def magisk(update, context):
                 "https://github.com/topjohnwu/magisk_files/raw/canary/"
                 + data["uninstaller"]["link"]
             )
-        releases += (
-            f"*{type}*: \n"
-            f"• [Changelog](https://github.com/topjohnwu/magisk_files/blob/{branch[1]}/notes.md)\n"
-            f'• Zip - [{data["magisk"]["version"]}-{data["magisk"]["versionCode"]}]({data["magisk"]["link"]}) \n'
-            f'• App - [{data["app"]["version"]}-{data["app"]["versionCode"]}]({data["app"]["link"]}) \n'
-            f'• Uninstaller - [{data["magisk"]["version"]}-{data["magisk"]["versionCode"]}]({data["uninstaller"]["link"]})\n\n'
-        )
+        releases += (f"*{type}*: \n"
+                     f"• [Changelog](https://github.com/topjohnwu/magisk_files/blob/{branch[1]}/notes.md)\n"
+                     f'• Zip - [{data["magisk"]["version"]}-{data["magisk"]["versionCode"]}]({data["magisk"]["link"]}) \n'
+                     f'• App - [{data["app"]["version"]}-{data["app"]["versionCode"]}]({data["app"]["link"]}) \n'
+                     f'• Uninstaller - [{data["magisk"]["version"]}-{data["magisk"]["versionCode"]}]({data["uninstaller"]["link"]})\n\n')
 
     del_msg = update.message.reply_text(
         "*Latest Magisk Releases:*\n{}".format(releases),
@@ -130,8 +128,9 @@ def device(update, context):
             ):
                 return
     update.message.reply_text(
-        "{}".format(reply), parse_mode=ParseMode.HTML, disable_web_page_preview=True
-    )
+        "{}".format(reply),
+        parse_mode=ParseMode.HTML,
+        disable_web_page_preview=True)
 
 
 @run_async
@@ -176,7 +175,8 @@ def twrp(update, context):
     else:
         reply = f"*Latest Official TWRP for {device}*\n"
         db = get(DEVICES_DATA).json()
-        newdevice = device.strip("lte") if device.startswith("beyond") else device
+        newdevice = device.strip(
+            "lte") if device.startswith("beyond") else device
         try:
             brand = db[newdevice][0]["brand"]
             name = db[newdevice][0]["name"]
@@ -216,8 +216,9 @@ def los(update, context) -> str:
     if device == "":
         reply_text = f"*Please Type Your Device Codename*\nExample : `/los lavender`"
         message.reply_text(
-            reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
-        )
+            reply_text,
+            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=True)
         return
 
     fetch = get(f"https://download.lineageos.org/api/v1/{device}/nightly/*")
@@ -235,9 +236,8 @@ def los(update, context) -> str:
         reply_text += f"*Build Size :* `{buildsize_b}`\n"
         reply_text += f"*Version :* `{version}`\n"
 
-        keyboard = [
-            [InlineKeyboardButton(text="Click Here To Downloads", url=f"{url}")]
-        ]
+        keyboard = [[InlineKeyboardButton(
+            text="Click Here To Downloads", url=f"{url}")]]
         message.reply_text(
             reply_text,
             reply_markup=InlineKeyboardMarkup(keyboard),

@@ -70,7 +70,8 @@ def ban(update, context):
             raise
 
     if is_user_ban_protected(chat, user_id, member):
-        message.reply_text("I'm not gonna ban an admin, don't make fun of yourself!")
+        message.reply_text(
+            "I'm not gonna ban an admin, don't make fun of yourself!")
         return ""
 
     if user_id == context.bot.id:
@@ -136,7 +137,8 @@ def temp_ban(update, context):
     args = context.args
 
     if user_can_ban(chat, user, context.bot.id) is False:
-        message.reply_text("You don't have enough rights to temporarily ban someone!")
+        message.reply_text(
+            "You don't have enough rights to temporarily ban someone!")
         return ""
 
     user_id, reason = extract_user_and_text(message, args)
@@ -163,7 +165,8 @@ def temp_ban(update, context):
         return ""
 
     if not reason:
-        message.reply_text("You haven't specified a time to ban this user for!")
+        message.reply_text(
+            "You haven't specified a time to ban this user for!")
         return ""
 
     split_reason = reason.split(None, 1)
@@ -199,7 +202,8 @@ def temp_ban(update, context):
         chat.kick_member(user_id, until_date=bantime)
         # context.bot.send_sticker(chat.id, BAN_STICKER)  # banhammer marie
         # sticker
-        message.reply_text("Banned! User will be banned for {}.".format(time_val))
+        message.reply_text(
+            "Banned! User will be banned for {}.".format(time_val))
         return log
 
     except BadRequest as excp:
@@ -310,14 +314,13 @@ def banme(update, context):
     res = update.effective_chat.kick_member(user_id)
     if res:
         update.effective_message.reply_text("Yes, you're right! GTFO..")
-        log = (
-            "<b>{}:</b>"
-            "\n#BANME"
-            "\n<b>User:</b> {}"
-            "\n<b>ID:</b> <code>{}</code>".format(
-                html.escape(chat.title), mention_html(user.id, user.first_name), user_id
-            )
-        )
+        log = ("<b>{}:</b>"
+               "\n#BANME"
+               "\n<b>User:</b> {}"
+               "\n<b>ID:</b> <code>{}</code>".format(html.escape(chat.title),
+                                                     mention_html(user.id,
+                                                                  user.first_name),
+                                                     user_id))
         return log
 
     else:
@@ -331,10 +334,12 @@ def banme(update, context):
 def kickme(update, context):
     user_id = update.effective_message.from_user.id
     if is_user_admin(update.effective_chat, user_id):
-        update.effective_message.reply_text("Yeahhh.. not gonna kick an admin.")
+        update.effective_message.reply_text(
+            "Yeahhh.. not gonna kick an admin.")
         return
 
-    res = update.effective_chat.unban_member(user_id)  # unban on current user = kick
+    res = update.effective_chat.unban_member(
+        user_id)  # unban on current user = kick
     if res:
         update.effective_message.reply_text("Yeah, you're right Get Out!..")
     else:
@@ -354,7 +359,8 @@ def unban(update, context):
     args = context.args
 
     if user_can_ban(chat, user, context.bot.id) is False:
-        message.reply_text("You don't have enough rights to unban people here!")
+        message.reply_text(
+            "You don't have enough rights to unban people here!")
         return ""
 
     user_id, reason = extract_user_and_text(message, args)
@@ -424,10 +430,20 @@ BAN_HANDLER = CommandHandler("ban", ban, pass_args=True, filters=Filters.group)
 TEMPBAN_HANDLER = CommandHandler(
     ["tban", "tempban"], temp_ban, pass_args=True, filters=Filters.group
 )
-KICK_HANDLER = CommandHandler("kick", kick, pass_args=True, filters=Filters.group)
-UNBAN_HANDLER = CommandHandler("unban", unban, pass_args=True, filters=Filters.group)
-KICKME_HANDLER = DisableAbleCommandHandler("kickme", kickme, filters=Filters.group)
-BANME_HANDLER = DisableAbleCommandHandler("banme", banme, filters=Filters.group)
+KICK_HANDLER = CommandHandler(
+    "kick",
+    kick,
+    pass_args=True,
+    filters=Filters.group)
+UNBAN_HANDLER = CommandHandler(
+    "unban",
+    unban,
+    pass_args=True,
+    filters=Filters.group)
+KICKME_HANDLER = DisableAbleCommandHandler(
+    "kickme", kickme, filters=Filters.group)
+BANME_HANDLER = DisableAbleCommandHandler(
+    "banme", banme, filters=Filters.group)
 
 dispatcher.add_handler(BAN_HANDLER)
 dispatcher.add_handler(TEMPBAN_HANDLER)

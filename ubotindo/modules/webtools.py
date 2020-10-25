@@ -115,7 +115,8 @@ def speedtst(update, context):
 @run_async
 @typing_action
 def system_status(update, context):
-    uptime = datetime.datetime.fromtimestamp(boot_time()).strftime("%Y-%m-%d %H:%M:%S")
+    uptime = datetime.datetime.fromtimestamp(
+        boot_time()).strftime("%Y-%m-%d %H:%M:%S")
     status = "<b>======[ SYSTEM INFO ]======</b>\n\n"
     status += "<b>System uptime:</b> <code>" + str(uptime) + "</code>\n"
 
@@ -136,7 +137,10 @@ def system_status(update, context):
     status += "<b>Python version:</b> <code>" + python_version() + "</code>\n"
     status += "<b>Library version:</b> <code>" + str(__version__) + "</code>\n"
     status += "<b>Spamwatch API:</b> <code>" + str(__sw__) + "</code>\n"
-    context.bot.sendMessage(update.effective_chat.id, status, parse_mode=ParseMode.HTML)
+    context.bot.sendMessage(
+        update.effective_chat.id,
+        status,
+        parse_mode=ParseMode.HTML)
 
 
 def speed_convert(size):
@@ -153,7 +157,8 @@ def speed_convert(size):
 @run_async
 @typing_action
 def gitpull(update, context):
-    sent_msg = update.effective_message.reply_text("Pulling all changes from remote...")
+    sent_msg = update.effective_message.reply_text(
+        "Pulling all changes from remote...")
     subprocess.Popen("git pull", stdout=subprocess.PIPE, shell=True)
 
     sent_msg_text = (
@@ -192,7 +197,10 @@ def restart(update, context):
 
 IP_HANDLER = CommandHandler("ip", get_bot_ip, filters=Filters.chat(OWNER_ID))
 PING_HANDLER = CommandHandler("ping", ping, filters=CustomFilters.sudo_filter)
-SPEED_HANDLER = CommandHandler("speedtest", speedtst, filters=CustomFilters.sudo_filter)
+SPEED_HANDLER = CommandHandler(
+    "speedtest",
+    speedtst,
+    filters=CustomFilters.sudo_filter)
 SYS_STATUS_HANDLER = CommandHandler(
     "sysinfo", system_status, filters=CustomFilters.dev_filter
 )
@@ -202,8 +210,10 @@ LEAVECHAT_HANDLER = CommandHandler(
     pass_args=True,
     filters=CustomFilters.dev_filter,
 )
-GITPULL_HANDLER = CommandHandler("gitpull", gitpull, filters=CustomFilters.dev_filter)
-RESTART_HANDLER = CommandHandler("reboot", restart, filters=CustomFilters.dev_filter)
+GITPULL_HANDLER = CommandHandler(
+    "gitpull", gitpull, filters=CustomFilters.dev_filter)
+RESTART_HANDLER = CommandHandler(
+    "reboot", restart, filters=CustomFilters.dev_filter)
 
 dispatcher.add_handler(IP_HANDLER)
 dispatcher.add_handler(SPEED_HANDLER)

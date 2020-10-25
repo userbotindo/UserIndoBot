@@ -69,7 +69,7 @@ def separate_sed(sed_string):
                 and counter + 1 < len(sed_string)
                 and sed_string[counter + 1] == delim
             ):
-                sed_string = sed_string[:counter] + sed_string[counter + 1 :]
+                sed_string = sed_string[:counter] + sed_string[counter + 1:]
 
             elif sed_string[counter] == delim:
                 replace_with = sed_string[start:counter]
@@ -114,7 +114,12 @@ def sed(update, context):
             if "i" in flags and "g" in flags:
                 text = re.sub(repl, repl_with, to_fix, flags=re.I).strip()
             elif "i" in flags:
-                text = re.sub(repl, repl_with, to_fix, count=1, flags=re.I).strip()
+                text = re.sub(
+                    repl,
+                    repl_with,
+                    to_fix,
+                    count=1,
+                    flags=re.I).strip()
             elif "g" in flags:
                 text = re.sub(repl, repl_with, to_fix).strip()
             else:
@@ -122,7 +127,8 @@ def sed(update, context):
         except sre_constants.error:
             LOGGER.warning(update.effective_message.text)
             LOGGER.exception("SRE constant error")
-            update.effective_message.reply_text("Do you even sed? Apparently not.")
+            update.effective_message.reply_text(
+                "Do you even sed? Apparently not.")
             return
 
         # empty string errors -_-
@@ -135,8 +141,7 @@ def sed(update, context):
             update.effective_message.reply_to_message.reply_text(text)
 
 
-SED_HANDLER = DisableAbleMessageHandler(
-    Filters.regex(r"s([{}]).*?\1.*".format("".join(DELIMITERS))), sed, friendly="sed"
-)
+SED_HANDLER = DisableAbleMessageHandler(Filters.regex(
+    r"s([{}]).*?\1.*".format("".join(DELIMITERS))), sed, friendly="sed")
 
 dispatcher.add_handler(SED_HANDLER)

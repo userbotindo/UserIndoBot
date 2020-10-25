@@ -59,7 +59,8 @@ def send_rules(update, chat_id, from_pm=False):
             raise
 
     rules = sql.get_rules(chat_id)
-    text = "The rules for *{}* are:\n\n{}".format(escape_markdown(chat.title), rules)
+    text = "The rules for *{}* are:\n\n{}".format(
+        escape_markdown(chat.title), rules)
 
     if from_pm and rules:
         bot.send_message(user.id, text, parse_mode=ParseMode.MARKDOWN)
@@ -108,7 +109,8 @@ def set_rules(update, context):
         )
 
         sql.set_rules(chat_id, markdown_rules)
-        update.effective_message.reply_text("Successfully set rules for this group.")
+        update.effective_message.reply_text(
+            "Successfully set rules for this group.")
 
 
 @run_async
@@ -135,7 +137,8 @@ def __migrate__(old_chat_id, new_chat_id):
 
 
 def __chat_settings__(chat_id, user_id):
-    return "This chat has had it's rules set: `{}`".format(bool(sql.get_rules(chat_id)))
+    return "This chat has had it's rules set: `{}`".format(
+        bool(sql.get_rules(chat_id)))
 
 
 __help__ = """
@@ -151,8 +154,10 @@ Every chat works with different rules; this module will help make those rules cl
 __mod_name__ = "Rules"
 
 GET_RULES_HANDLER = CommandHandler("rules", get_rules, filters=Filters.group)
-SET_RULES_HANDLER = CommandHandler("setrules", set_rules, filters=Filters.group)
-RESET_RULES_HANDLER = CommandHandler("clearrules", clear_rules, filters=Filters.group)
+SET_RULES_HANDLER = CommandHandler(
+    "setrules", set_rules, filters=Filters.group)
+RESET_RULES_HANDLER = CommandHandler(
+    "clearrules", clear_rules, filters=Filters.group)
 
 dispatcher.add_handler(GET_RULES_HANDLER)
 dispatcher.add_handler(SET_RULES_HANDLER)

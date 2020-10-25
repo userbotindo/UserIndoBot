@@ -165,8 +165,7 @@ def demote(update, context):
     except BadRequest:
         message.reply_text(
             "Failed to demote. I might not be admin, or the admin status was appointed by another "
-            "user, so I can't act upon them!"
-        )
+            "user, so I can't act upon them!")
         return ""
 
 
@@ -201,8 +200,9 @@ def pin(update, context):
     if prev_message and is_group:
         try:
             context.bot.pinChatMessage(
-                chat.id, prev_message.message_id, disable_notification=is_silent
-            )
+                chat.id,
+                prev_message.message_id,
+                disable_notification=is_silent)
         except BadRequest as excp:
             if excp.message == "Chat_not_modified":
                 pass
@@ -240,20 +240,24 @@ def permanent_pin_set(update, context) -> str:
             )
             if get_permapin:
                 if chat.username:
-                    old_pin = "https://t.me/{}/{}".format(chat.username, get_permapin)
+                    old_pin = "https://t.me/{}/{}".format(
+                        chat.username, get_permapin)
                 else:
                     old_pin = "https://t.me/c/{}/{}".format(
                         str(chat.id)[4:], get_permapin
                     )
                 text_maker += "\nTo disable permanent pin: `/permanentpin off`"
-                text_maker += "\n\n[Permanent pin message is here]({})".format(old_pin)
-                update.effective_message.reply_text(text_maker, parse_mode="markdown")
+                text_maker += "\n\n[Permanent pin message is here]({})".format(
+                    old_pin)
+                update.effective_message.reply_text(
+                    text_maker, parse_mode="markdown")
             return ""
 
         prev_message = args[0]
         if prev_message == "off":
             sql.set_permapin(chat_id, 0)
-            update.effective_message.reply_text("Permanently pin has been disabled!")
+            update.effective_message.reply_text(
+                "Permanently pin has been disabled!")
             return
         if "/" in prev_message:
             prev_message = prev_message.split("/")[-1]
@@ -270,21 +274,26 @@ def permanent_pin_set(update, context) -> str:
             prev_message = update.effective_message.reply_to_message.message_id
         elif len(args) >= 1 and args[0] == "off":
             sql.set_permapin(chat.id, 0)
-            update.effective_message.reply_text("Permanently pin has been disabled!")
+            update.effective_message.reply_text(
+                "Permanently pin has been disabled!")
             return
         else:
             get_permapin = sql.get_permapin(chat.id)
-            text_maker = "Current permanent pin: `{}`".format(bool(int(get_permapin)))
+            text_maker = "Current permanent pin: `{}`".format(
+                bool(int(get_permapin)))
             if get_permapin:
                 if chat.username:
-                    old_pin = "https://t.me/{}/{}".format(chat.username, get_permapin)
+                    old_pin = "https://t.me/{}/{}".format(
+                        chat.username, get_permapin)
                 else:
                     old_pin = "https://t.me/c/{}/{}".format(
                         str(chat.id)[4:], get_permapin
                     )
                 text_maker += "\nTo disable permanent pin: `/permanentpin off`"
-                text_maker += "\n\n[Permanent pin message is here]({})".format(old_pin)
-            update.effective_message.reply_text(text_maker, parse_mode="markdown")
+                text_maker += "\n\n[Permanent pin message is here]({})".format(
+                    old_pin)
+            update.effective_message.reply_text(
+                text_maker, parse_mode="markdown")
             return ""
 
     is_group = chat.type != "private" and chat.type != "channel"
@@ -319,13 +328,13 @@ def permanent_pin(update, context):
         except BadRequest:
             sql.set_permapin(chat.id, 0)
             if chat.username:
-                old_pin = "https://t.me/{}/{}".format(chat.username, get_permapin)
+                old_pin = "https://t.me/{}/{}".format(
+                    chat.username, get_permapin)
             else:
-                old_pin = "https://t.me/c/{}/{}".format(str(chat.id)[4:], get_permapin)
+                old_pin = "https://t.me/c/{}/{}".format(
+                    str(chat.id)[4:], get_permapin)
             message.reply_text(
-                "*Permanent pin error:*\nI can't pin messages here!\nMake sure I'm admin and can pin messages.\n\nPermanent pin disabled now, [here is your old pinned message]({})".format(
-                    old_pin
-                ),
+                "*Permanent pin error:*\nI can't pin messages here!\nMake sure I'm admin and can pin messages.\n\nPermanent pin disabled now, [here is your old pinned message]({})".format(old_pin),
                 parse_mode="markdown",
             )
             return
@@ -409,7 +418,8 @@ def invite(update, context):
 @typing_action
 def adminlist(update, context):
     administrators = update.effective_chat.get_administrators()
-    text = "Admins in <b>{}</b>:".format(update.effective_chat.title or "this chat")
+    text = "Admins in <b>{}</b>:".format(
+        update.effective_chat.title or "this chat")
     for admin in administrators:
         user = admin.user
         status = admin.status
@@ -474,7 +484,8 @@ def set_title(update, context):
         )
 
     try:
-        context.bot.set_chat_administrator_custom_title(chat.id, user_id, title)
+        context.bot.set_chat_administrator_custom_title(
+            chat.id, user_id, title)
         message.reply_text(
             "Sucessfully set title for <b>{}</b> to <code>{}</code>!".format(
                 user_member.user.first_name or user_id, title[:16]
@@ -483,7 +494,8 @@ def set_title(update, context):
         )
 
     except BadRequest:
-        message.reply_text("I can't set custom title for admins that I didn't promote!")
+        message.reply_text(
+            "I can't set custom title for admins that I didn't promote!")
 
 
 @run_async
@@ -594,7 +606,8 @@ def set_sticker(update, context):
         stkr = msg.reply_to_message.sticker.set_name
         try:
             context.bot.set_chat_sticker_set(chat.id, stkr)
-            msg.reply_text(f"Successfully set new group stickers in {chat.title}!")
+            msg.reply_text(
+                f"Successfully set new group stickers in {chat.title}!")
         except BadRequest as excp:
             if excp.message == "Participants_too_few":
                 return msg.reply_text(
@@ -602,7 +615,8 @@ def set_sticker(update, context):
                 )
             msg.reply_text(f"Error! {excp.message}.")
     else:
-        msg.reply_text("You need to reply to some sticker to set chat sticker set!")
+        msg.reply_text(
+            "You need to reply to some sticker to set chat sticker set!")
 
 
 @run_async
@@ -624,9 +638,11 @@ def set_desc(update, context):
         return msg.reply_text("Setting empty description won't do anything!")
     try:
         if len(desc) > 255:
-            return msg.reply_text("Description must needs to be under 255 characters!")
+            return msg.reply_text(
+                "Description must needs to be under 255 characters!")
         context.bot.set_chat_description(chat.id, desc)
-        msg.reply_text(f"Successfully updated chat description in {chat.title}!")
+        msg.reply_text(
+            f"Successfully updated chat description in {chat.title}!")
     except BadRequest as excp:
         msg.reply_text(f"Error! {excp.message}.")
 
@@ -679,19 +695,29 @@ PERMANENT_PIN_HANDLER = MessageHandler(
 
 INVITE_HANDLER = CommandHandler("invitelink", invite)
 CHAT_PIC_HANDLER = CommandHandler("setgpic", setchatpic, filters=Filters.group)
-DEL_CHAT_PIC_HANDLER = CommandHandler("delgpic", rmchatpic, filters=Filters.group)
+DEL_CHAT_PIC_HANDLER = CommandHandler(
+    "delgpic", rmchatpic, filters=Filters.group)
 SETCHAT_TITLE_HANDLER = CommandHandler(
     "setgtitle", setchat_title, filters=Filters.group
 )
-SETSTICKET_HANDLER = CommandHandler("setsticker", set_sticker, filters=Filters.group)
-SETDESC_HANDLER = CommandHandler("setdescription", set_desc, filters=Filters.group)
+SETSTICKET_HANDLER = CommandHandler(
+    "setsticker", set_sticker, filters=Filters.group)
+SETDESC_HANDLER = CommandHandler(
+    "setdescription",
+    set_desc,
+    filters=Filters.group)
 
 PROMOTE_HANDLER = CommandHandler(
     "promote", promote, pass_args=True, filters=Filters.group
 )
-DEMOTE_HANDLER = CommandHandler("demote", demote, pass_args=True, filters=Filters.group)
+DEMOTE_HANDLER = CommandHandler(
+    "demote",
+    demote,
+    pass_args=True,
+    filters=Filters.group)
 
-SET_TITLE_HANDLER = DisableAbleCommandHandler("settitle", set_title, pass_args=True)
+SET_TITLE_HANDLER = DisableAbleCommandHandler(
+    "settitle", set_title, pass_args=True)
 ADMINLIST_HANDLER = DisableAbleCommandHandler(
     "adminlist", adminlist, filters=Filters.group
 )

@@ -96,7 +96,8 @@ def reverse(update, context):
             msg.reply_text(f"{UE.reason}")
             return
         except ValueError as VE:
-            msg.reply_text(f"{VE}\nPlease try again using http or https protocol.")
+            msg.reply_text(
+                f"{VE}\nPlease try again using http or https protocol.")
             return
     else:
         msg.reply_markdown(
@@ -110,7 +111,10 @@ def reverse(update, context):
             "encoded_image": (imagename, open(imagename, "rb")),
             "image_content": "",
         }
-        response = requests.post(searchUrl, files=multipart, allow_redirects=False)
+        response = requests.post(
+            searchUrl,
+            files=multipart,
+            allow_redirects=False)
         fetchUrl = response.headers["Location"]
 
         if response != 400:
@@ -122,8 +126,9 @@ def reverse(update, context):
             )
         else:
             xx = context.bot.send_message(
-                chat_id, "Google told me to go away.", reply_to_message_id=rtmid
-            )
+                chat_id,
+                "Google told me to go away.",
+                reply_to_message_id=rtmid)
             return
 
         os.remove(imagename)
@@ -187,9 +192,8 @@ def ParseSauce(googleurl):
         pass
 
     for similar_image in soup.findAll("input", {"class": "gLFyf"}):
-        url = "https://www.google.com/search?tbm=isch&q=" + urllib.parse.quote_plus(
-            similar_image.get("value")
-        )
+        url = "https://www.google.com/search?tbm=isch&q=" + \
+            urllib.parse.quote_plus(similar_image.get("value"))
         results["similar_images"] = url
 
     for best_guess in soup.findAll("div", attrs={"class": "r5a77d"}):

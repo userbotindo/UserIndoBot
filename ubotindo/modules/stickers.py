@@ -122,8 +122,8 @@ def kang(update, context):
                     emojis=sticker_emoji,
                 )
                 msg.reply_text(
-                    f"Sticker successfully added to [pack](t.me/addstickers/{packname})"
-                    + f"\nEmoji is: {sticker_emoji}",
+                    f"Sticker successfully added to [pack](t.me/addstickers/{packname})" +
+                    f"\nEmoji is: {sticker_emoji}",
                     parse_mode=ParseMode.MARKDOWN,
                 )
 
@@ -153,26 +153,30 @@ def kang(update, context):
                         emojis=sticker_emoji,
                     )
                     msg.reply_text(
-                        f"Sticker successfully added to [pack](t.me/addstickers/{packname})"
-                        + f"\nEmoji is: {sticker_emoji}",
+                        f"Sticker successfully added to [pack](t.me/addstickers/{packname})" +
+                        f"\nEmoji is: {sticker_emoji}",
                         parse_mode=ParseMode.MARKDOWN,
                     )
                 elif e.message == "Invalid sticker emojis":
                     msg.reply_text("Invalid emoji(s).")
                 elif e.message == "Stickers_too_much":
-                    msg.reply_text("Max packsize reached. Press F to pay respecc.")
+                    msg.reply_text(
+                        "Max packsize reached. Press F to pay respecc.")
                 elif e.message == "Internal Server Error: sticker set not found (500)":
                     msg.reply_text(
-                        "Sticker successfully added to [pack](t.me/addstickers/%s)"
-                        % packname
-                        + "\n"
-                        "Emoji is:" + " " + sticker_emoji,
+                        "Sticker successfully added to [pack](t.me/addstickers/%s)" %
+                        packname +
+                        "\n"
+                        "Emoji is:" +
+                        " " +
+                        sticker_emoji,
                         parse_mode=ParseMode.MARKDOWN,
                     )
                 print(e)
 
         else:
-            packname = "animated" + str(user.id) + "_by_" + context.bot.username
+            packname = "animated" + str(user.id) + \
+                "_by_" + context.bot.username
             packname_found = 0
             max_stickers = 50
             while packname_found == 0:
@@ -201,8 +205,8 @@ def kang(update, context):
                     emojis=sticker_emoji,
                 )
                 msg.reply_text(
-                    f"Sticker successfully added to [pack](t.me/addstickers/{packname})"
-                    + f"\nEmoji is: {sticker_emoji}",
+                    f"Sticker successfully added to [pack](t.me/addstickers/{packname})" +
+                    f"\nEmoji is: {sticker_emoji}",
                     parse_mode=ParseMode.MARKDOWN,
                 )
             except TelegramError as e:
@@ -221,10 +225,12 @@ def kang(update, context):
                     msg.reply_text("Invalid emoji(s).")
                 elif e.message == "Internal Server Error: sticker set not found (500)":
                     msg.reply_text(
-                        "Sticker successfully added to [pack](t.me/addstickers/%s)"
-                        % packname
-                        + "\n"
-                        "Emoji is:" + " " + sticker_emoji,
+                        "Sticker successfully added to [pack](t.me/addstickers/%s)" %
+                        packname +
+                        "\n"
+                        "Emoji is:" +
+                        " " +
+                        sticker_emoji,
                         parse_mode=ParseMode.MARKDOWN,
                     )
                 print(e)
@@ -266,8 +272,8 @@ def kang(update, context):
                 emojis=sticker_emoji,
             )
             msg.reply_text(
-                f"Sticker successfully added to [pack](t.me/addstickers/{packname})"
-                + f"\nEmoji is: {sticker_emoji}",
+                f"Sticker successfully added to [pack](t.me/addstickers/{packname})" +
+                f"\nEmoji is: {sticker_emoji}",
                 parse_mode=ParseMode.MARKDOWN,
             )
         except OSError as e:
@@ -372,9 +378,8 @@ def makepack_internal(
         print(e)
         if e.message == "Sticker set name is already occupied":
             msg.reply_text(
-                "Your pack can be found [here](t.me/addstickers/%s)" % packname,
-                parse_mode=ParseMode.MARKDOWN,
-            )
+                "Your pack can be found [here](t.me/addstickers/%s)" %
+                packname, parse_mode=ParseMode.MARKDOWN, )
         elif e.message == "Peer_id_invalid" or "bot was blocked by the user":
             msg.reply_text(
                 "Contact me in PM first.",
@@ -390,20 +395,17 @@ def makepack_internal(
             )
         elif e.message == "Internal Server Error: created sticker set not found (500)":
             msg.reply_text(
-                "Sticker pack successfully created. Get it [here](t.me/addstickers/%s)"
-                % packname,
-                parse_mode=ParseMode.MARKDOWN,
-            )
+                "Sticker pack successfully created. Get it [here](t.me/addstickers/%s)" %
+                packname, parse_mode=ParseMode.MARKDOWN, )
         return
 
     if success:
         msg.reply_text(
-            "Sticker pack successfully created. Get it [here](t.me/addstickers/%s)"
-            % packname,
-            parse_mode=ParseMode.MARKDOWN,
-        )
+            "Sticker pack successfully created. Get it [here](t.me/addstickers/%s)" %
+            packname, parse_mode=ParseMode.MARKDOWN, )
     else:
-        msg.reply_text("Failed to create sticker pack. Possibly due to blek mejik.")
+        msg.reply_text(
+            "Failed to create sticker pack. Possibly due to blek mejik.")
 
 
 @run_async
@@ -468,7 +470,8 @@ Kanging Stickers made easy with stickers module!
 """
 
 __mod_name__ = "Stickers"
-KANG_HANDLER = DisableAbleCommandHandler("kang", kang, pass_args=True, admin_ok=True)
+KANG_HANDLER = DisableAbleCommandHandler(
+    "kang", kang, pass_args=True, admin_ok=True)
 STICKERID_HANDLER = DisableAbleCommandHandler("stickerid", stickerid)
 GETSTICKER_HANDLER = DisableAbleCommandHandler("getsticker", getsticker)
 

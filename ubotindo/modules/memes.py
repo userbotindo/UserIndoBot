@@ -49,8 +49,7 @@ def slap(update, context):
 
     # reply to correct message
     reply_text = (
-        msg.reply_to_message.reply_text if msg.reply_to_message else msg.reply_text
-    )
+        msg.reply_to_message.reply_text if msg.reply_to_message else msg.reply_text)
 
     # get user who sent message
     if msg.from_user.username:
@@ -73,7 +72,8 @@ def slap(update, context):
 
     # if no target found, bot targets the sender
     else:
-        user1 = "[{}](tg://user?id={})".format(context.bot.first_name, context.bot.id)
+        user1 = "[{}](tg://user?id={})".format(context.bot.first_name,
+                                               context.bot.id)
         user2 = curr_user
 
     temp = random.choice(fun.SLAP_TEMPLATES)
@@ -81,7 +81,12 @@ def slap(update, context):
     hit = random.choice(fun.HIT)
     throw = random.choice(fun.THROW)
 
-    repl = temp.format(user1=user1, user2=user2, item=item, hits=hit, throws=throw)
+    repl = temp.format(
+        user1=user1,
+        user2=user2,
+        item=item,
+        hits=hit,
+        throws=throw)
 
     reply_text(repl, parse_mode=ParseMode.MARKDOWN)
 
@@ -94,8 +99,7 @@ def punch(update, context):
 
     # reply to correct message
     reply_text = (
-        msg.reply_to_message.reply_text if msg.reply_to_message else msg.reply_text
-    )
+        msg.reply_to_message.reply_text if msg.reply_to_message else msg.reply_text)
 
     # get user who sent message
     if msg.from_user.username:
@@ -118,7 +122,8 @@ def punch(update, context):
 
     # if no target found, bot targets the sender
     else:
-        user1 = "[{}](tg://user?id={})".format(context.bot.first_name, context.bot.id)
+        user1 = "[{}](tg://user?id={})".format(context.bot.first_name,
+                                               context.bot.id)
         user2 = curr_user
 
     temp = random.choice(fun.PUNCH_TEMPLATES)
@@ -147,8 +152,7 @@ def hug(update, context):
 
     # reply to correct message
     reply_text = (
-        msg.reply_to_message.reply_text if msg.reply_to_message else msg.reply_text
-    )
+        msg.reply_to_message.reply_text if msg.reply_to_message else msg.reply_text)
 
     # get user who sent message
     if msg.from_user.username:
@@ -300,7 +304,8 @@ def snipe(update, context):
         chat_id = str(args[0])
         del args[0]
     except (TypeError, IndexError):
-        update.effective_message.reply_text("Please give me a chat to echo to!")
+        update.effective_message.reply_text(
+            "Please give me a chat to echo to!")
     to_send = " ".join(args)
     if len(to_send) >= 2:
         try:
@@ -436,8 +441,9 @@ def stretch(update, context):
     else:
         count = random.randint(3, 10)
         reply_text = re.sub(
-            r"([aeiouAEIOUａｅｉｏｕＡＥＩＯＵ])", (r"\1" * count), message.reply_to_message.text
-        )
+            r"([aeiouAEIOUａｅｉｏｕＡＥＩＯＵ])",
+            (r"\1" * count),
+            message.reply_to_message.text)
         if len(reply_text) >= MAX_MESSAGE_LENGTH:
             return message.reply_text(
                 "Result of this message was too long for telegram!"
@@ -449,7 +455,8 @@ def stretch(update, context):
 @run_async
 def me_too(update, context):
     message = update.effective_message
-    reply = random.choice(["Me too thanks", "Haha yes, me too", "Same lol", "Me irl"])
+    reply = random.choice(
+        ["Me too thanks", "Haha yes, me too", "Same lol", "Me irl"])
     message.reply_text(reply)
 
 

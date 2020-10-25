@@ -65,8 +65,8 @@ def check_flood(update, context) -> str:
             tag = "KICKED"
         elif getmode == 3:
             context.bot.restrict_chat_member(
-                chat.id, user.id, permissions=ChatPermissions(can_send_messages=False)
-            )
+                chat.id, user.id, permissions=ChatPermissions(
+                    can_send_messages=False))
             execstrings = "Muted"
             tag = "MUTED"
         elif getmode == 4:
@@ -95,9 +95,9 @@ def check_flood(update, context) -> str:
             "\n#{}"
             "\n<b>User:</b> {}"
             "\nFlooded the group.".format(
-                tag, html.escape(chat.title), mention_html(user.id, user.first_name)
-            )
-        )
+                tag, html.escape(
+                    chat.title), mention_html(
+                    user.id, user.first_name)))
 
     except BadRequest:
         msg.reply_text(
@@ -164,9 +164,10 @@ def set_flood(update, context) -> str:
                     "\n#SETFLOOD"
                     "\n<b>Admin:</b> {}"
                     "\nDisable antiflood.".format(
-                        html.escape(chat_name), mention_html(user.id, user.first_name)
-                    )
-                )
+                        html.escape(chat_name),
+                        mention_html(
+                            user.id,
+                            user.first_name)))
 
             elif amount < 3:
                 send_message(
@@ -185,9 +186,11 @@ def set_flood(update, context) -> str:
                     )
                 else:
                     text = message.reply_text(
-                        "Successfully updated anti-flood limit to {}!".format(amount)
-                    )
-                send_message(update.effective_message, text, parse_mode="markdown")
+                        "Successfully updated anti-flood limit to {}!".format(amount))
+                send_message(
+                    update.effective_message,
+                    text,
+                    parse_mode="markdown")
                 return (
                     "<b>{}:</b>"
                     "\n#SETFLOOD"
@@ -200,12 +203,11 @@ def set_flood(update, context) -> str:
                 )
 
         else:
-            message.reply_text("Invalid argument please use a number, 'off' or 'no'")
+            message.reply_text(
+                "Invalid argument please use a number, 'off' or 'no'")
     else:
         message.reply_text(
-            (
-                "Use `/setflood number` to enable anti-flood.\nOr use `/setflood off` to disable antiflood!."
-            ),
+            ("Use `/setflood number` to enable anti-flood.\nOr use `/setflood off` to disable antiflood!."),
             parse_mode="markdown",
         )
     return ""
@@ -245,9 +247,7 @@ def flood(update, context):
         if conn:
             text = msg.reply_text(
                 "I'm currently restricting members after {} consecutive messages in {}.".format(
-                    limit, chat_name
-                )
-            )
+                    limit, chat_name))
         else:
             text = msg.reply_text(
                 "I'm currently restricting members after {} consecutive messages.".format(
@@ -298,7 +298,10 @@ def set_flood_mode(update, context):
                 teks = """It looks like you tried to set time value for antiflood but you didn't specified time; Try, `/setfloodmode tban <timevalue>`.
 
 Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks."""
-                send_message(update.effective_message, teks, parse_mode="markdown")
+                send_message(
+                    update.effective_message,
+                    teks,
+                    parse_mode="markdown")
                 return
             settypeflood = "tban for {}".format(args[1])
             sql.set_flood_strength(chat_id, 4, str(args[1]))
@@ -307,21 +310,21 @@ Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks.
                 teks = """It looks like you tried to set time value for antiflood but you didn't specified time; Try, `/setfloodmode tmute <timevalue>`.
 
 Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks."""
-                send_message(update.effective_message, teks, parse_mode="markdown")
+                send_message(
+                    update.effective_message,
+                    teks,
+                    parse_mode="markdown")
                 return
             settypeflood = "tmute for {}".format(args[1])
             sql.set_flood_strength(chat_id, 5, str(args[1]))
         else:
-            send_message(
-                update.effective_message, "I only understand ban/kick/mute/tban/tmute!"
-            )
+            send_message(update.effective_message,
+                         "I only understand ban/kick/mute/tban/tmute!")
             return
         if conn:
             text = msg.reply_text(
                 "Exceeding consecutive flood limit will result in {} in {}!".format(
-                    settypeflood, chat_name
-                )
-            )
+                    settypeflood, chat_name))
         else:
             text = msg.reply_text(
                 "Exceeding consecutive flood limit will result in {}!".format(
@@ -353,16 +356,15 @@ Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks.
         if conn:
             text = msg.reply_text(
                 "Sending more messages than flood limit will result in {} in {}.".format(
-                    settypeflood, chat_name
-                )
-            )
+                    settypeflood, chat_name))
         else:
             text = msg.reply_text(
                 "Sending more message than flood limit will result in {}.".format(
                     settypeflood
                 )
             )
-        send_message(update.effective_message, text, parse_mode=ParseMode.MARKDOWN)
+        send_message(update.effective_message, text,
+                     parse_mode=ParseMode.MARKDOWN)
     return ""
 
 

@@ -110,7 +110,8 @@ def dbcleanup(update, context):
     reply = f"Total invalid chats - {invalid_chat_count}\n"
     reply += f"Total invalid gbanned users - {invalid_gban_count}"
 
-    buttons = [[InlineKeyboardButton("Cleanup DB", callback_data="db_cleanup")]]
+    buttons = [[InlineKeyboardButton(
+        "Cleanup DB", callback_data="db_cleanup")]]
 
     update.effective_message.reply_text(
         reply, reply_markup=InlineKeyboardMarkup(buttons)
@@ -174,7 +175,8 @@ def leave_muted_chats(update, context):
     progress_message = message.reply_text("Getting chat count ...")
     muted_chats = get_muted_chats(context.bot, update)
 
-    buttons = [[InlineKeyboardButton("Leave chats", callback_data="db_leave_chat")]]
+    buttons = [[InlineKeyboardButton(
+        "Leave chats", callback_data="db_leave_chat")]]
 
     update.effective_message.reply_text(
         f"I am muted in {muted_chats} chats.",
@@ -195,14 +197,20 @@ def callback_button(update, context):
 
     if query_type == "db_leave_chat":
         if query.from_user.id in DEV_USERS:
-            bot.editMessageText("Leaving chats ...", chat_id, message.message_id)
+            bot.editMessageText(
+                "Leaving chats ...",
+                chat_id,
+                message.message_id)
             chat_count = get_muted_chats(bot, update, True)
             bot.sendMessage(chat_id, f"Left {chat_count} chats.")
         else:
             query.answer("You are not allowed to use this.")
     elif query_type == "db_cleanup":
         if query.from_user.id in DEV_USERS:
-            bot.editMessageText("Cleaning up DB ...", chat_id, message.message_id)
+            bot.editMessageText(
+                "Cleaning up DB ...",
+                chat_id,
+                message.message_id)
             invalid_chat_count = get_invalid_chats(bot, update, True)
             invalid_gban_count = get_invalid_gban(bot, update, True)
             reply = "Cleaned up {} chats and {} gbanned users from db.".format(
