@@ -1,13 +1,13 @@
 # USERINDOBOT
 
 [![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
-[![ForTheBadge built-with-love](http://ForTheBadge.com/images/badges/built-with-love.svg)](https://GitHub.com/Naereen/)
+[![ForTheBadge built-with-love](http://ForTheBadge.com/images/badges/built-with-love.svg)](https://github.com/UserBotIndo/)
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/6bbe3cf7286643c4ab89da5613be08b0)](https://www.codacy.com/manual/TomyPrs/UserbotindoBot?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=TomyPrs/UserbotindoBot&amp;utm_campaign=Badge_Grade)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
-[![DeepSource](https://static.deepsource.io/deepsource-badge-light-mini.svg)](https://deepsource.io/gh/TomyPrs/UserbotindoBot/?ref=repository-badge)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/8bfae649db3742a883e0ac1008755db3)](https://www.codacy.com/gh/userbotindo/UserIndoBot/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=userbotindo/UserIndoBot&amp;utm_campaign=Badge_Grade)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/userbotindo/UserIndoBot/pulls)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/userbotindo/UserIndoBot/graphs/commit-activity)
+[![DeepSource](https://static.deepsource.io/deepsource-badge-light-mini.svg)](https://deepsource.io/gh/userbotindo/UserIndoBot/?ref=repository-badge)
 
 ![logo](https://i.ibb.co/zJdLsyg/Userindobot.png)
 
@@ -46,8 +46,7 @@ Once you've set up your database and your configuration (see below) is complete,
 
 `python3 -m ubotindo`
 
-
-## Setting up the bot Read this before trying to use!
+## Setting up the bot Read this before trying to use
 
 Please make sure to use python3.8, as I cannot guarantee everything will work as expected on older Python versions!
 This is because markdown parsing is done by iterating through a dict, which is ordered by default in 3.8.
@@ -65,14 +64,14 @@ It is recommended to import sample_config and extend the Config class, as this w
 defaults set in the sample_config, hence making it easier to upgrade.
 
 An example `config.py` file could be:
-```
+```python
 from ubotindo.sample_config import Config
 
 
 class Development(Config):
-    OWNER_ID = 1227561036 # my telegram ID
-    OWNER_USERNAME = "tomyprs25"  # my telegram username
-    API_KEY = "your bot api key"  # my api key, as provided by the botfather
+    OWNER_ID = 1227561036 # your telegram ID
+    OWNER_USERNAME = "tomyprs25"  # your telegram username
+    API_KEY = "your bot api key"  # bot api key, as provided by the botfather
     SQLALCHEMY_DATABASE_URI = 'postgresql://username:password@localhost:5432/database'  # sample db credentials
     MESSAGE_DUMP = '-1234567890' # some group chat that your bot is a member of
     USE_MESSAGE_DUMP = True
@@ -98,27 +97,27 @@ you'll need to have a database installed on your system. I use Postgres, so I re
 
 In the case of Postgres, this is how you would set up a database on a Debian/Ubuntu system. Other distributions may vary.
 
-- install PostgreSQL:
+-   install PostgreSQL:
 
 `sudo apt-get update && sudo apt-get install postgresql`
 
-- change to the Postgres user:
+-   change to the Postgres user:
 
 `sudo su - postgres`
 
-- create a new database user (change YOUR_USER appropriately):
+-   create a new database user (change YOUR_USER appropriately):
 
 `createuser -P -s -e YOUR_USER`
 
 This will be followed by you need to input your password.
 
-- create a new database table:
+-   create a new database table:
 
 `createdb -O YOUR_USER YOUR_DB_NAME`
 
 Change YOUR_USER and YOUR_DB_NAME appropriately.
 
-- finally:
+-   finally:
 
 `psql YOUR_DB_NAME -h YOUR_HOST YOUR_USER`
 
@@ -133,7 +132,7 @@ Replace SqlDbType with whichever DB you're using (eg Postgres, MySQL, SQLite, et
 repeat for your username, password, hostname (localhost?), port (5432?), and DB name.
 
 ## Modules
-### Setting load order.
+### Setting load order
 
 The module load order can be changed via the `LOAD` and `NO_LOAD` configuration settings.
 These should both represent lists.
@@ -144,7 +143,7 @@ If `NO_LOAD` is not present or is an empty list, all modules selected for loadin
 
 If a module is in both `LOAD` and `NO_LOAD`, the module will not be loaded - `NO_LOAD` takes priority.
 
-### Creating your own modules.
+### Creating your own modules
 
 Creating a module has been simplified as much as possible - but do not hesitate to suggest further simplification.
 
