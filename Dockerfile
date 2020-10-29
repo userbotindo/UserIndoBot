@@ -1,13 +1,21 @@
 FROM userindobot/docker:ubotindo
 
-# Clone Repo 
-RUN git clone https://github.com/userbotindo/UserIndoBot.git -b master /app/userindo
+RUN apt -qq update -y
 
 # Wokrking Dir
 WORKDIR /app/userindo/
 
-# Copy Config To Working Dir
-COPY ./config.py /app/userindo/ubotindo
+# requirements setup
+COPY requirements.txt .
+
+RUN pip install -U pip
+RUN pip install -r requirements.txt
+
+# Copy All resources
+COPY . .
+
+# set env path
+ENV PATH="/home/bot/bin:$PATH"
 
 # Run
 CMD ["bash", "start"]
