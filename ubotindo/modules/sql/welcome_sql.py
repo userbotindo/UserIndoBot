@@ -1,28 +1,14 @@
-# UserindoBot
-# Copyright (C) 2020  UserindoBot Team, <https://github.com/MoveAngel/UserIndoBot.git>
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+import random
 import threading
 from typing import Union
-from sqlalchemy import Column, String, Boolean, UnicodeText, Integer, BigInteger
 
 from ubotindo.modules.helper_funcs.msg_types import Types
-from ubotindo.modules.sql import SESSION, BASE
+from ubotindo.modules.sql import BASE, SESSION
+from sqlalchemy import (BigInteger, Boolean, Column, Integer, String,
+                        UnicodeText)
 
-DEFAULT_WELCOME = "Hi {first}, how are you?"
-DEFAULT_GOODBYE = "{first} has left the game."
+DEFAULT_WELCOME = 'Hey {first}, how are you?'
+DEFAULT_GOODBYE = 'Nice knowing ya!'
 
 
 class Welcome(BASE):
@@ -32,10 +18,12 @@ class Welcome(BASE):
     should_goodbye = Column(Boolean, default=True)
     custom_content = Column(UnicodeText, default=None)
 
-    custom_welcome = Column(UnicodeText, default=DEFAULT_WELCOME)
+    custom_welcome = Column(
+        UnicodeText, default=random.choice(DEFAULT_WELCOME_MESSAGES))
     welcome_type = Column(Integer, default=Types.TEXT.value)
 
-    custom_leave = Column(UnicodeText, default=DEFAULT_GOODBYE)
+    custom_leave = Column(
+        UnicodeText, default=random.choice(DEFAULT_GOODBYE_MESSAGES))
     leave_type = Column(Integer, default=Types.TEXT.value)
 
     clean_welcome = Column(BigInteger)
@@ -47,8 +35,7 @@ class Welcome(BASE):
 
     def __repr__(self):
         return "<Chat {} should Welcome new users: {}>".format(
-            self.chat_id, self.should_welcome
-        )
+            self.chat_id, self.should_welcome)
 
 
 class WelcomeButtons(BASE):
@@ -98,7 +85,7 @@ class WelcomeMuteUsers(BASE):
     human_check = Column(Boolean)
 
     def __init__(self, user_id, chat_id, human_check):
-        self.user_id = user_id  # ensure string
+        self.user_id = (user_id)  # ensure string
         self.chat_id = str(chat_id)
         self.human_check = human_check
 
@@ -151,8 +138,8 @@ def set_welcome_mutes(chat_id, welcomemutes):
 
 def set_human_checks(user_id, chat_id):
     with INSERTION_LOCK:
-        human_check = SESSION.query(
-            WelcomeMuteUsers).get((user_id, str(chat_id)))
+        human_check = SESSION.query(WelcomeMuteUsers).get(
+            (user_id, str(chat_id)))
         if not human_check:
             human_check = WelcomeMuteUsers(user_id, str(chat_id), True)
 
@@ -167,14 +154,24 @@ def set_human_checks(user_id, chat_id):
 
 def get_human_checks(user_id, chat_id):
     try:
-        human_check = SESSION.query(
-            WelcomeMuteUsers).get((user_id, str(chat_id)))
+        human_check = SESSION.query(WelcomeMuteUsers).get(
+            (user_id, str(chat_id)))
         if not human_check:
             return None
         human_check = human_check.human_check
         return human_check
     finally:
         SESSION.close()
+
+
+def get_welc_mutes_pref(chat_id):
+    welcomemutes = SESSION.query(WelcomeMute).get(str(chat_id))
+    SESSION.close()
+
+    if welcomemutes:
+        return welcomemutes.welcomemutes
+
+    return False
 
 
 def get_welc_pref(chat_id):
@@ -220,16 +217,6 @@ def get_clean_pref(chat_id):
     return False
 
 
-def get_welc_mutes_pref(chat_id):
-    welcomemutes = SESSION.query(WelcomeMute).get(str(chat_id))
-    SESSION.close()
-
-    if welcomemutes:
-        return welcomemutes.welcomemutes
-
-    return False
-
-
 def set_welc_preference(chat_id, should_welcome):
     with INSERTION_LOCK:
         curr = SESSION.query(Welcome).get(str(chat_id))
@@ -254,12 +241,11 @@ def set_gdbye_preference(chat_id, should_goodbye):
         SESSION.commit()
 
 
-def set_custom_welcome(
-        chat_id,
-        custom_content,
-        custom_welcome,
-        welcome_type,
-        buttons=None):
+def set_custom_welcome(chat_id,
+                       custom_content,
+                       custom_welcome,
+                       welcome_type,
+                       buttons=None):
     if buttons is None:
         buttons = []
 
@@ -280,11 +266,8 @@ def set_custom_welcome(
         SESSION.add(welcome_settings)
 
         with WELC_BTN_LOCK:
-            prev_buttons = (
-                SESSION.query(WelcomeButtons)
-                .filter(WelcomeButtons.chat_id == str(chat_id))
-                .all()
-            )
+            prev_buttons = SESSION.query(WelcomeButtons).filter(
+                WelcomeButtons.chat_id == str(chat_id)).all()
             for btn in prev_buttons:
                 SESSION.delete(btn)
 
@@ -325,11 +308,8 @@ def set_custom_gdbye(chat_id, custom_goodbye, goodbye_type, buttons=None):
         SESSION.add(welcome_settings)
 
         with LEAVE_BTN_LOCK:
-            prev_buttons = (
-                SESSION.query(GoodbyeButtons)
-                .filter(GoodbyeButtons.chat_id == str(chat_id))
-                .all()
-            )
+            prev_buttons = SESSION.query(GoodbyeButtons).filter(
+                GoodbyeButtons.chat_id == str(chat_id)).all()
             for btn in prev_buttons:
                 SESSION.delete(btn)
 
@@ -352,24 +332,18 @@ def get_custom_gdbye(chat_id):
 
 def get_welc_buttons(chat_id):
     try:
-        return (
-            SESSION.query(WelcomeButtons)
-            .filter(WelcomeButtons.chat_id == str(chat_id))
-            .order_by(WelcomeButtons.id)
-            .all()
-        )
+        return SESSION.query(WelcomeButtons).filter(
+            WelcomeButtons.chat_id == str(chat_id)).order_by(
+                WelcomeButtons.id).all()
     finally:
         SESSION.close()
 
 
 def get_gdbye_buttons(chat_id):
     try:
-        return (
-            SESSION.query(GoodbyeButtons)
-            .filter(GoodbyeButtons.chat_id == str(chat_id))
-            .order_by(GoodbyeButtons.id)
-            .all()
-        )
+        return SESSION.query(GoodbyeButtons).filter(
+            GoodbyeButtons.chat_id == str(chat_id)).order_by(
+                GoodbyeButtons.id).all()
     finally:
         SESSION.close()
 
@@ -402,20 +376,14 @@ def migrate_chat(old_chat_id, new_chat_id):
             chat.chat_id = str(new_chat_id)
 
         with WELC_BTN_LOCK:
-            chat_buttons = (
-                SESSION.query(WelcomeButtons)
-                .filter(WelcomeButtons.chat_id == str(old_chat_id))
-                .all()
-            )
+            chat_buttons = SESSION.query(WelcomeButtons).filter(
+                WelcomeButtons.chat_id == str(old_chat_id)).all()
             for btn in chat_buttons:
                 btn.chat_id = str(new_chat_id)
 
         with LEAVE_BTN_LOCK:
-            chat_buttons = (
-                SESSION.query(GoodbyeButtons)
-                .filter(GoodbyeButtons.chat_id == str(old_chat_id))
-                .all()
-            )
+            chat_buttons = SESSION.query(GoodbyeButtons).filter(
+                GoodbyeButtons.chat_id == str(old_chat_id)).all()
             for btn in chat_buttons:
                 btn.chat_id = str(new_chat_id)
 
