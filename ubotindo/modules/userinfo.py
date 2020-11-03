@@ -36,7 +36,7 @@ def about_me(update, context):
     user_id = extract_user(message, args)
 
     if user_id:
-        user = bot.get_chat(user_id)
+        user = context.bot.get_chat(user_id)
     else:
         user = message.from_user
 
