@@ -25,6 +25,8 @@ import telegram.ext as tg
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO)
+aps_logger = logging.getLogger('apscheduler')
+aps_logger.setLevel(logging.WARNING)    
 
 LOGGER = logging.getLogger(__name__)
 
