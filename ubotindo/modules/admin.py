@@ -39,7 +39,6 @@ from ubotindo.modules.helper_funcs.chat_status import (
 )
 from ubotindo.modules.helper_funcs.extraction import extract_user, extract_user_and_text
 from ubotindo.modules.log_channel import loggable
-from ubotindo.modules.sql import admin_sql as sql
 
 
 @bot_admin
@@ -215,120 +214,6 @@ def pin(update, context):
     return ""
 
 
-@can_pin
-@user_admin
-def permanent_pin_set(update, context) -> str:
-    user = update.effective_user
-    chat = update.effective_chat
-    args = context.args
-    bot = context.bot
-
-    conn = connected(bot, update, chat, user.id, need_admin=True)
-    if conn:
-        chat = dispatcher.bot.getChat(conn)
-        chat_id = conn
-        dispatcher.bot.getChat(conn).title
-        if not args:
-            get_permapin = sql.get_permapin(chat_id)
-            text_maker = "Permanent pin is currently set:`{}`".format(
-                bool(int(get_permapin))
-            )
-            if get_permapin:
-                if chat.username:
-                    old_pin = "https://t.me/{}/{}".format(chat.username, get_permapin)
-                else:
-                    old_pin = "https://t.me/c/{}/{}".format(
-                        str(chat.id)[4:], get_permapin
-                    )
-                text_maker += "\nTo disable permanent pin: `/permanentpin off`"
-                text_maker += "\n\n[Permanent pin message is here]({})".format(old_pin)
-                update.effective_message.reply_text(text_maker, parse_mode="markdown")
-            return ""
-
-        prev_message = args[0]
-        if prev_message == "off":
-            sql.set_permapin(chat_id, 0)
-            update.effective_message.reply_text("Permanently pin has been disabled!")
-            return
-        if "/" in prev_message:
-            prev_message = prev_message.split("/")[-1]
-    else:
-        if update.effective_message.chat.type == "private":
-            update.effective_message.reply_text(
-                "You can do this command on groups, not on PM!!!"
-            )
-            return ""
-        chat = update.effective_chat
-        chat_id = update.effective_chat.id
-        update.effective_message.chat.title
-        if update.effective_message.reply_to_message:
-            prev_message = update.effective_message.reply_to_message.message_id
-        elif len(args) >= 1 and args[0] == "off":
-            sql.set_permapin(chat.id, 0)
-            update.effective_message.reply_text("Permanently pin has been disabled!")
-            return
-        else:
-            get_permapin = sql.get_permapin(chat.id)
-            text_maker = "Current permanent pin: `{}`".format(bool(int(get_permapin)))
-            if get_permapin:
-                if chat.username:
-                    old_pin = "https://t.me/{}/{}".format(chat.username, get_permapin)
-                else:
-                    old_pin = "https://t.me/c/{}/{}".format(
-                        str(chat.id)[4:], get_permapin
-                    )
-                text_maker += "\nTo disable permanent pin: `/permanentpin off`"
-                text_maker += "\n\n[Permanent pin message is here]({})".format(old_pin)
-            update.effective_message.reply_text(text_maker, parse_mode="markdown")
-            return ""
-
-    is_group = chat.type != "private" and chat.type != "channel"
-
-    if prev_message and is_group:
-        sql.set_permapin(chat.id, prev_message)
-        update.effective_message.reply_text("Permanent Pin Set successfully!")
-        return (
-            "<b>{}:</b>"
-            "\n#PERMANENT_PIN"
-            "\n<b>Admin:</b> {}".format(
-                html.escape(chat.title), mention_html(user.id, user.first_name)
-            )
-        )
-
-    return ""
-
-
-def permanent_pin(update, context):
-    user = update.effective_user
-    chat = update.effective_chat
-    message = update.effective_message
-    bot = context.bot
-
-    get_permapin = sql.get_permapin(chat.id)
-    if get_permapin and not user.id == bot.id:
-        try:
-            to_del = bot.pinChatMessage(
-                chat.id, get_permapin, disable_notification=True
-            )
-        except BadRequest:
-            sql.set_permapin(chat.id, 0)
-            if chat.username:
-                old_pin = "https://t.me/{}/{}".format(chat.username, get_permapin)
-            else:
-                old_pin = "https://t.me/c/{}/{}".format(str(chat.id)[4:], get_permapin)
-            message.reply_text(
-                "*Permanent pin error:*\nI can't pin messages here!\nMake sure I'm admin and can pin messages.\n\nPermanent pin disabled now, [here is your old pinned message]({})".format(
-                    old_pin
-                ),
-                parse_mode="markdown",
-            )
-            return
-
-        if to_del:
-            try:
-                bot.deleteMessage(chat.id, message.message_id + 1)
-            except BadRequest:
-                print("Permanent pin error: cannot delete pin msg")
 
 
 @bot_admin
@@ -633,7 +518,6 @@ done easily using the bot.
 *Admin only:*
  × /pin: Silently pins the message replied to - add `loud`, `notify` or `violent` to give notificaton to users.
  × /unpin: Unpins the currently pinned message.
- × /permanentpin: Set a permanent pin for supergroup chat, when an admin or telegram channel change pinned message, bot will change pinned message immediatelly
  × /invitelink: Gets private chat's invitelink.
  × /promote: Promotes the user replied to.
  × /demote: Demotes the user replied to.
@@ -656,20 +540,6 @@ PIN_HANDLER = CommandHandler(
     "pin", pin, pass_args=True, filters=Filters.group, run_async=True
 )
 UNPIN_HANDLER = CommandHandler("unpin", unpin, filters=Filters.group, run_async=True)
-
-PERMANENT_PIN_SET_HANDLER = CommandHandler(
-    "permanentpin",
-    permanent_pin_set,
-    pass_args=True,
-    filters=Filters.group,
-    run_async=True,
-)
-PERMANENT_PIN_HANDLER = MessageHandler(
-    Filters.status_update.pinned_message | Filters.user(777000),
-    permanent_pin,
-    run_async=True,
-)
-
 INVITE_HANDLER = CommandHandler("invitelink", invite, run_async=True)
 CHAT_PIC_HANDLER = CommandHandler(
     "setgpic", setchatpic, filters=Filters.group, run_async=True
@@ -703,8 +573,6 @@ ADMINLIST_HANDLER = DisableAbleCommandHandler(
 
 dispatcher.add_handler(PIN_HANDLER)
 dispatcher.add_handler(UNPIN_HANDLER)
-dispatcher.add_handler(PERMANENT_PIN_SET_HANDLER)
-dispatcher.add_handler(PERMANENT_PIN_HANDLER)
 dispatcher.add_handler(INVITE_HANDLER)
 dispatcher.add_handler(PROMOTE_HANDLER)
 dispatcher.add_handler(DEMOTE_HANDLER)

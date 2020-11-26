@@ -40,7 +40,6 @@ from telegram import (
 from telegram.error import BadRequest
 from telegram.ext import CommandHandler, Filters
 from telegram.utils.helpers import escape_markdown, mention_html
-from tswift import Song
 
 from ubotindo import (
     DEV_USERS,
@@ -399,37 +398,6 @@ def src(update, context):
     )
 
 
-@typing_action
-def lyrics(update, context):
-    msg = update.effective_message
-    args = context.args
-    query = " ".join(args)
-    song = ""
-    if not query:
-        msg.reply_text("You haven't specified which song to look for!")
-        return
-    else:
-        song = Song.find_song(query)
-        if song:
-            if song.lyrics:
-                reply = song.format()
-            else:
-                reply = "Couldn't find any lyrics for that song!"
-        else:
-            reply = "Song not found!"
-        if len(reply) > 4090:
-            with open("lyrics.txt", "w") as f:
-                f.write(reply)
-            with open("lyrics.txt", "rb") as f:
-                msg.reply_document(
-                    document=f,
-                    caption="Message length exceeded max limit! Sending as a text file.",
-                )
-            os.remove("lyrics.txt")
-        else:
-            msg.reply_text(reply)
-
-
 @send_action(ChatAction.UPLOAD_PHOTO)
 def wall(update, context):
     chat_id = update.effective_chat.id
@@ -676,18 +644,12 @@ An "odds and ends" module for small, simple commands which don't really fit anyw
  × /id: Get the current group id. If used by replying to a message, gets that user's id.
  × /info: Get information about a user.
  × /wiki : Search wikipedia articles.
- × /rmeme: Sends random meme scraped from reddit.
  × /ud <query> : Search stuffs in urban dictionary.
  × /wall <query> : Get random wallpapers directly from bot!
  × /reverse : Reverse searches image or stickers on google.
- × /lyrics <query> : You can either enter just the song name or both the artist and song name.
  × /covid <country name>: Give stats about COVID-19.
  × /gdpr: Deletes your information from the bot's database. Private chats only.
  × /markdownhelp: Quick summary of how markdown works in telegram - can only be called in private chats.
-*Last.FM*
- × /setuser <username>: sets your last.fm username.
- × /clearuser: removes your last.fm username from the bot's database.
- × /lastfm: returns what you're scrobbling on last.fm.
 """
 
 __mod_name__ = "Miscs"
@@ -734,8 +696,6 @@ dispatcher.add_handler(GDPR_HANDLER)
 dispatcher.add_handler(WIKI_HANDLER)
 dispatcher.add_handler(GETLINK_HANDLER)
 dispatcher.add_handler(STAFFLIST_HANDLER)
-dispatcher.add_handler(REDDIT_MEMES_HANDLER)
 # dispatcher.add_handler(SRC_HANDLER)
-dispatcher.add_handler(LYRICS_HANDLER)
 dispatcher.add_handler(COVID_HANDLER)
 dispatcher.add_handler(PASTE_HANDLER)

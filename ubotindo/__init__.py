@@ -29,7 +29,6 @@ aps_logger = logging.getLogger('apscheduler')
 aps_logger.setLevel(logging.WARNING)    
 
 LOGGER = logging.getLogger(__name__)
-
 LOGGER.info("Starting ubotindo...")
 
 # if version < 3.6, stop bot.
@@ -124,7 +123,6 @@ if ENV:
     TELETHON_ID = int(os.environ.get("TL_APP_ID", None))
     TELETHON_HASH = os.environ.get("TL_HASH", None)
     SPAMWATCH = os.environ.get("SPAMWATCH_API", None)
-    LASTFM_API_KEY = os.environ.get("LASTFM_API_KEY", None)
 
 else:
     from ubotindo.config import Development as Config
@@ -192,7 +190,6 @@ else:
     TELETHON_HASH = Config.TELETHON_HASH
     TELETHON_ID = Config.TELETHON_ID
     SPAMWATCH = Config.SPAMWATCH_API
-    LASTFM_API_KEY = Config.LASTFM_API_KEY
 
 DEV_USERS.add(OWNER_ID)
 
@@ -223,7 +220,7 @@ STAFF_USERS = list(STAFF)
 WHITELIST_USERS = list(WHITELIST_USERS)
 
 # Load at end to ensure all prev variables have been set
-from ubotindo.modules.helper_funcs.handlers import CustomCommandHandler  # noqa
+from ubotindo.modules.helper_funcs.handlers import CustomCommandHandler  # noqa: disable wrong import module
 
 if CUSTOM_CMD and len(CUSTOM_CMD) >= 1:
     tg.CommandHandler = CustomCommandHandler
