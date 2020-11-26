@@ -36,7 +36,10 @@ from ubotindo import (
 )
 from ubotindo.modules.helper_funcs.alternate import send_action, typing_action
 from ubotindo.modules.helper_funcs.chat_status import is_user_admin, user_admin
-from ubotindo.modules.helper_funcs.extraction import extract_user, extract_user_and_text
+from ubotindo.modules.helper_funcs.extraction import (
+    extract_user,
+    extract_user_and_text,
+)
 from ubotindo.modules.helper_funcs.filters import CustomFilters
 from ubotindo.modules.sql.users_sql import get_all_chats
 
@@ -91,7 +94,9 @@ def gban(update, context):
     user_id, reason = extract_user_and_text(message, args)
 
     if not reason:
-        message.reply_text("Please Specified a reason. I won't allow a bare gban :)")
+        message.reply_text(
+            "Please Specified a reason. I won't allow a bare gban :)"
+        )
         return
 
     if not user_id:
@@ -103,7 +108,9 @@ def gban(update, context):
         return
 
     if int(user_id) in DEV_USERS:
-        message.reply_text("Whatt... How can i gban someone that take care of me +_+")
+        message.reply_text(
+            "Whatt... How can i gban someone that take care of me +_+"
+        )
         return
 
     if int(user_id) in SUDO_USERS:
@@ -118,12 +125,16 @@ def gban(update, context):
         )
         return
 
-    if user_id == int(1087968824):
-        message.reply_text("How can i ban someone that i don't know who is it.")
+    if user_id == int(777000, 1087968824):
+        message.reply_text(
+            "How can i ban someone that i don't know who is it."
+        )
         return
 
     if user_id == context.bot.id:
-        message.reply_text("-_- So funny, lets gban myself why don't I? Nice try.")
+        message.reply_text(
+            "-_- So funny, lets gban myself why don't I? Nice try."
+        )
         return
 
     try:
@@ -137,7 +148,9 @@ def gban(update, context):
         return
 
     if user_chat.first_name == "":
-        message.reply_text("This is a deleted account! no point to gban them...")
+        message.reply_text(
+            "This is a deleted account! no point to gban them..."
+        )
         return
 
     if sql.is_user_gbanned(user_id):
@@ -156,9 +169,7 @@ def gban(update, context):
             banner = update.effective_user
             bannerid = banner.id
             bannername = banner.first_name
-            new_reason = (
-                f"{new_reason} // GBanned by {bannername} banner id: {bannerid}"
-            )
+            new_reason = f"{new_reason} // GBanned by {bannername} banner id: {bannerid}"
 
             context.bot.sendMessage(
                 GBAN_LOGS,
@@ -289,9 +300,12 @@ def ungban(update, context):
             if excp.message in UNGBAN_ERRORS:
                 pass
             else:
-                message.reply_text("Could not un-gban due to: {}".format(excp.message))
+                message.reply_text(
+                    "Could not un-gban due to: {}".format(excp.message)
+                )
                 context.bot.send_message(
-                    OWNER_ID, "Could not un-gban due to: {}".format(excp.message)
+                    OWNER_ID,
+                    "Could not un-gban due to: {}".format(excp.message),
                 )
                 return
         except TelegramError:
@@ -386,7 +400,9 @@ def enforce_gban(update, context):
     # Not using @restrict handler to avoid spamming - just ignore if cant gban.
     if (
         sql.does_chat_gban(update.effective_chat.id)
-        and update.effective_chat.get_member(context.bot.id).can_restrict_members
+        and update.effective_chat.get_member(
+            context.bot.id
+        ).can_restrict_members
     ):
         user = update.effective_user
         chat = update.effective_chat
@@ -447,13 +463,19 @@ def __user_info__(user_id):
 
     if int(user_id) in DEV_USERS + SUDO_USERS + SUPPORT_USERS:
         return ""
+
+    if user_id in (777000, 1087968824):
+        return ""
+
     if is_gbanned or spmban or cas_banned:
         text = text.format("Yes")
         if is_gbanned:
             user = sql.get_gbanned_user(user_id)
             if user.reason:
                 text += "\n<b>Reason:</b> {}".format(html.escape(user.reason))
-                text += "\nAppeal at @userbotspamgroup if you think it's invalid."
+                text += (
+                    "\nAppeal at @userbotspamgroup if you think it's invalid."
+                )
     else:
         text = text.format("No")
     return text
@@ -464,7 +486,9 @@ def __migrate__(old_chat_id, new_chat_id):
 
 
 def __chat_settings__(chat_id, user_id):
-    return "This chat is enforcing *gbans*: `{}`.".format(sql.does_chat_gban(chat_id))
+    return "This chat is enforcing *gbans*: `{}`.".format(
+        sql.does_chat_gban(chat_id)
+    )
 
 
 __help__ = """
@@ -482,7 +506,11 @@ Userbotindobot will constantly help banning spammers off from your group automat
 __mod_name__ = "Spam Shield"
 
 GBAN_HANDLER = CommandHandler(
-    "gban", gban, pass_args=True, filters=CustomFilters.support_filter, run_async=True
+    "gban",
+    gban,
+    pass_args=True,
+    filters=CustomFilters.support_filter,
+    run_async=True,
 )
 UNGBAN_HANDLER = CommandHandler(
     "ungban",
@@ -496,7 +524,11 @@ GBAN_LIST = CommandHandler(
 )
 
 GBAN_STATUS = CommandHandler(
-    "spamshield", gbanstat, pass_args=True, filters=Filters.group, run_async=True
+    "spamshield",
+    gbanstat,
+    pass_args=True,
+    filters=Filters.group,
+    run_async=True,
 )
 
 GBAN_ENFORCER = MessageHandler(

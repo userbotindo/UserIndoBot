@@ -66,7 +66,9 @@ def import_data(update, context):
 
     if msg.reply_to_message and msg.reply_to_message.document:
         try:
-            file_info = context.bot.get_file(msg.reply_to_message.document.file_id)
+            file_info = context.bot.get_file(
+                msg.reply_to_message.document.file_id
+            )
         except BadRequest:
             msg.reply_text(
                 "Try downloading and uploading the file yourself again, This one seem broken!"
@@ -209,31 +211,43 @@ def export_data(update, context):
                     buttonlist.append(
                         ("{}".format(btn.name), "{}".format(btn.url), False)
                     )
-            isicat += "###button###: {}<###button###>{}<###splitter###>".format(
-                note.value, str(buttonlist)
+            isicat += (
+                "###button###: {}<###button###>{}<###splitter###>".format(
+                    note.value, str(buttonlist)
+                )
             )
             buttonlist.clear()
         elif note.msgtype == 2:
             isicat += "###sticker###:{}<###splitter###>".format(note.file)
         elif note.msgtype == 3:
-            isicat += "###file###:{}<###TYPESPLIT###>{}<###splitter###>".format(
-                note.file, note.value
+            isicat += (
+                "###file###:{}<###TYPESPLIT###>{}<###splitter###>".format(
+                    note.file, note.value
+                )
             )
         elif note.msgtype == 4:
-            isicat += "###photo###:{}<###TYPESPLIT###>{}<###splitter###>".format(
-                note.file, note.value
+            isicat += (
+                "###photo###:{}<###TYPESPLIT###>{}<###splitter###>".format(
+                    note.file, note.value
+                )
             )
         elif note.msgtype == 5:
-            isicat += "###audio###:{}<###TYPESPLIT###>{}<###splitter###>".format(
-                note.file, note.value
+            isicat += (
+                "###audio###:{}<###TYPESPLIT###>{}<###splitter###>".format(
+                    note.file, note.value
+                )
             )
         elif note.msgtype == 6:
-            isicat += "###voice###:{}<###TYPESPLIT###>{}<###splitter###>".format(
-                note.file, note.value
+            isicat += (
+                "###voice###:{}<###TYPESPLIT###>{}<###splitter###>".format(
+                    note.file, note.value
+                )
             )
         elif note.msgtype == 7:
-            isicat += "###video###:{}<###TYPESPLIT###>{}<###splitter###>".format(
-                note.file, note.value
+            isicat += (
+                "###video###:{}<###TYPESPLIT###>{}<###splitter###>".format(
+                    note.file, note.value
+                )
             )
         elif note.msgtype == 8:
             isicat += "###video_note###:{}<###TYPESPLIT###>{}<###splitter###>".format(
@@ -242,9 +256,9 @@ def export_data(update, context):
         else:
             isicat += "{}<###splitter###>".format(note.value)
     for x in range(count):
-        notes["#{}".format(namacat.split("<###splitter###>")[x])] = "{}".format(
-            isicat.split("<###splitter###>")[x]
-        )
+        notes[
+            "#{}".format(namacat.split("<###splitter###>")[x])
+        ] = "{}".format(isicat.split("<###splitter###>")[x])
     # Rules
     rules = rulessql.get_rules(chat_id)
     # Blacklist

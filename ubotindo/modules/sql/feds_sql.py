@@ -33,13 +33,8 @@ class Federations(BASE):
     fed_users = Column(UnicodeText)
 
     def __init__(
-            self,
-            owner_id,
-            fed_name,
-            fed_id,
-            fed_rules,
-            fed_log,
-            fed_users):
+        self, owner_id, fed_name, fed_id, fed_rules, fed_log, fed_users
+    ):
         self.owner_id = owner_id
         self.fed_name = fed_name
         self.fed_id = fed_id
@@ -71,14 +66,8 @@ class BansF(BASE):
     time = Column(Integer, default=0)
 
     def __init__(
-            self,
-            fed_id,
-            user_id,
-            first_name,
-            last_name,
-            user_name,
-            reason,
-            time):
+        self, fed_id, user_id, first_name, last_name, user_name, reason, time
+    ):
         self.fed_id = fed_id
         self.user_id = user_id
         self.first_name = first_name
@@ -182,7 +171,8 @@ def get_user_admin_fed_name(user_id):
     user_feds = []
     for f in FEDERATION_BYFEDID:
         if int(user_id) in eval(
-                eval(FEDERATION_BYFEDID[f]["fusers"])["members"]):
+            eval(FEDERATION_BYFEDID[f]["fusers"])["members"]
+        ):
             user_feds.append(FEDERATION_BYFEDID[f]["fname"])
     return user_feds
 
@@ -199,7 +189,8 @@ def get_user_admin_fed_full(user_id):
     user_feds = []
     for f in FEDERATION_BYFEDID:
         if int(user_id) in eval(
-                eval(FEDERATION_BYFEDID[f]["fusers"])["members"]):
+            eval(FEDERATION_BYFEDID[f]["fusers"])["members"]
+        ):
             user_feds.append({"fed_id": f, "fed": FEDERATION_BYFEDID[f]})
     return user_feds
 
@@ -321,7 +312,9 @@ def chat_join_fed(fed_id, chat_name, chat_id):
         r = ChatF(chat_id, chat_name, fed_id)
         SESSION.add(r)
         FEDERATION_CHATS[str(chat_id)] = {
-            "chat_name": chat_name, "fid": fed_id}
+            "chat_name": chat_name,
+            "fid": fed_id,
+        }
         checkid = FEDERATION_CHATS_BYID.get(fed_id)
         if checkid is None:
             FEDERATION_CHATS_BYID[fed_id] = []
@@ -504,7 +497,8 @@ def set_frules(fed_id, rules):
             str(fed_id),
             fed_rules,
             fed_log,
-            str(fed_members))
+            str(fed_members),
+        )
         SESSION.merge(fed)
         SESSION.commit()
         return True
@@ -531,7 +525,8 @@ def fban_user(fed_id, user_id, first_name, last_name, user_name, reason, time):
             last_name,
             user_name,
             reason,
-            time)
+            time,
+        )
 
         SESSION.add(r)
         try:
@@ -740,7 +735,8 @@ def set_fed_log(fed_id, chat_id):
             str(fed_id),
             fed_rules,
             fed_log,
-            str(fed_members))
+            str(fed_members),
+        )
         SESSION.merge(fed)
         SESSION.commit()
         print(fed_log)
@@ -854,7 +850,9 @@ def __load_all_feds_chats():
             if check is None:
                 FEDERATION_CHATS[x.chat_id] = {}
             FEDERATION_CHATS[x.chat_id] = {
-                "chat_name": x.chat_name, "fid": x.fed_id}
+                "chat_name": x.chat_name,
+                "fid": x.fed_id,
+            }
             # Federation Chats By ID
             check = FEDERATION_CHATS_BYID.get(x.fed_id)
             if check is None:

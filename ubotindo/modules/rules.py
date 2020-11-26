@@ -58,7 +58,9 @@ def send_rules(update, chat_id, from_pm=False):
             raise
 
     rules = sql.get_rules(chat_id)
-    text = "The rules for *{}* are:\n\n{}".format(escape_markdown(chat.title), rules)
+    text = "The rules for *{}* are:\n\n{}".format(
+        escape_markdown(chat.title), rules
+    )
 
     if from_pm and rules:
         bot.send_message(user.id, text, parse_mode=ParseMode.MARKDOWN)
@@ -76,7 +78,9 @@ def send_rules(update, chat_id, from_pm=False):
                     [
                         InlineKeyboardButton(
                             text="Rules",
-                            url="t.me/{}?start={}".format(bot.username, chat_id),
+                            url="t.me/{}?start={}".format(
+                                bot.username, chat_id
+                            ),
                         )
                     ]
                 ]
@@ -106,7 +110,9 @@ def set_rules(update, context):
         )
 
         sql.set_rules(chat_id, markdown_rules)
-        update.effective_message.reply_text("Successfully set rules for this group.")
+        update.effective_message.reply_text(
+            "Successfully set rules for this group."
+        )
 
 
 @user_admin
@@ -132,7 +138,9 @@ def __migrate__(old_chat_id, new_chat_id):
 
 
 def __chat_settings__(chat_id, user_id):
-    return "This chat has had it's rules set: `{}`".format(bool(sql.get_rules(chat_id)))
+    return "This chat has had it's rules set: `{}`".format(
+        bool(sql.get_rules(chat_id))
+    )
 
 
 __help__ = """

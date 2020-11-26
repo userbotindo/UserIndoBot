@@ -26,7 +26,12 @@ from telegram import (
     ParseMode,
 )
 from telegram.error import BadRequest
-from telegram.ext import CallbackQueryHandler, CommandHandler, Filters, MessageHandler
+from telegram.ext import (
+    CallbackQueryHandler,
+    CommandHandler,
+    Filters,
+    MessageHandler,
+)
 from telegram.utils.helpers import mention_html
 
 import ubotindo.modules.sql.notes_sql as sql
@@ -34,7 +39,10 @@ from ubotindo import LOGGER, MESSAGE_DUMP, dispatcher
 from ubotindo.modules.connection import connected
 from ubotindo.modules.disable import DisableAbleCommandHandler
 from ubotindo.modules.helper_funcs.alternate import typing_action
-from ubotindo.modules.helper_funcs.chat_status import user_admin, user_admin_no_reply
+from ubotindo.modules.helper_funcs.chat_status import (
+    user_admin,
+    user_admin_no_reply,
+)
 from ubotindo.modules.helper_funcs.misc import build_keyboard, revert_buttons
 from ubotindo.modules.helper_funcs.msg_types import get_note_type
 from ubotindo.modules.helper_funcs.string_handling import (
@@ -140,7 +148,8 @@ def get(bot, update, notename, show_none=True, no_format=False):
                 text = valid_format.format(
                     first=escape(message.from_user.first_name),
                     last=escape(
-                        message.from_user.last_name or message.from_user.first_name
+                        message.from_user.last_name
+                        or message.from_user.first_name
                     ),
                     fullname=" ".join(
                         [
@@ -218,7 +227,9 @@ def get(bot, update, notename, show_none=True, no_format=False):
                     )
 
                     LOGGER.exception(
-                        "Could not parse message #%s in chat %s", notename, str(chat_id)
+                        "Could not parse message #%s in chat %s",
+                        notename,
+                        str(chat_id),
                     )
                     LOGGER.warning("Message was: %s", str(note.value))
         return
@@ -230,7 +241,13 @@ def get(bot, update, notename, show_none=True, no_format=False):
 def cmd_get(update, context):
     args = context.args
     if len(args) >= 2 and args[1].lower() == "noformat":
-        get(context.bot, update, args[0].lower(), show_none=True, no_format=True)
+        get(
+            context.bot,
+            update,
+            args[0].lower(),
+            show_none=True,
+            no_format=True,
+        )
     elif len(args) >= 1:
         get(context.bot, update, args[0].lower(), show_none=True)
     else:
@@ -346,7 +363,9 @@ def list_notes(update, context):
     for note in note_list:
         note_name = " × `{}`\n".format(note.name.lower())
         if len(msg) + len(note_name) > MAX_MESSAGE_LENGTH:
-            update.effective_message.reply_text(msg, parse_mode=ParseMode.MARKDOWN)
+            update.effective_message.reply_text(
+                msg, parse_mode=ParseMode.MARKDOWN
+            )
             msg = ""
         msg += note_name
 
@@ -383,12 +402,14 @@ def clear_notes(update, context):
                     [
                         [
                             InlineKeyboardButton(
-                                text="Yes I'm sure️", callback_data="rmnotes_true"
+                                text="Yes I'm sure️",
+                                callback_data="rmnotes_true",
                             )
                         ],
                         [
                             InlineKeyboardButton(
-                                text="⚠️ Cancel", callback_data="rmnotes_cancel"
+                                text="⚠️ Cancel",
+                                callback_data="rmnotes_cancel",
                             )
                         ],
                     ]
@@ -423,7 +444,9 @@ def rmbutton(update, context):
 
         for i in notelist:
             sql.rm_note(chat.id, i)
-        query.message.edit_text(f"Successfully cleaned {count} notes in {chat.title}.")
+        query.message.edit_text(
+            f"Successfully cleaned {count} notes in {chat.title}."
+        )
 
 
 def __import_data__(chat_id, data):
@@ -443,12 +466,18 @@ def __import_data__(chat_id, data):
             failures.append(notename)
             notedata = notedata[match.end() :].strip()
             if notedata:
-                sql.add_note_to_db(chat_id, notename[1:], notedata, sql.Types.TEXT)
+                sql.add_note_to_db(
+                    chat_id, notename[1:], notedata, sql.Types.TEXT
+                )
         elif matchsticker:
             content = notedata[matchsticker.end() :].strip()
             if content:
                 sql.add_note_to_db(
-                    chat_id, notename[1:], notedata, sql.Types.STICKER, file=content
+                    chat_id,
+                    notename[1:],
+                    notedata,
+                    sql.Types.STICKER,
+                    file=content,
                 )
         elif matchbtn:
             parse = notedata[matchbtn.end() :].strip()
@@ -470,7 +499,11 @@ def __import_data__(chat_id, data):
             content = file[0]
             if content:
                 sql.add_note_to_db(
-                    chat_id, notename[1:], notedata, sql.Types.DOCUMENT, file=content
+                    chat_id,
+                    notename[1:],
+                    notedata,
+                    sql.Types.DOCUMENT,
+                    file=content,
                 )
         elif matchphoto:
             photo = notedata[matchphoto.end() :].strip()
@@ -479,7 +512,11 @@ def __import_data__(chat_id, data):
             content = photo[0]
             if content:
                 sql.add_note_to_db(
-                    chat_id, notename[1:], notedata, sql.Types.PHOTO, file=content
+                    chat_id,
+                    notename[1:],
+                    notedata,
+                    sql.Types.PHOTO,
+                    file=content,
                 )
         elif matchaudio:
             audio = notedata[matchaudio.end() :].strip()
@@ -488,7 +525,11 @@ def __import_data__(chat_id, data):
             content = audio[0]
             if content:
                 sql.add_note_to_db(
-                    chat_id, notename[1:], notedata, sql.Types.AUDIO, file=content
+                    chat_id,
+                    notename[1:],
+                    notedata,
+                    sql.Types.AUDIO,
+                    file=content,
                 )
         elif matchvoice:
             voice = notedata[matchvoice.end() :].strip()
@@ -497,7 +538,11 @@ def __import_data__(chat_id, data):
             content = voice[0]
             if content:
                 sql.add_note_to_db(
-                    chat_id, notename[1:], notedata, sql.Types.VOICE, file=content
+                    chat_id,
+                    notename[1:],
+                    notedata,
+                    sql.Types.VOICE,
+                    file=content,
                 )
         elif matchvideo:
             video = notedata[matchvideo.end() :].strip()
@@ -506,7 +551,11 @@ def __import_data__(chat_id, data):
             content = video[0]
             if content:
                 sql.add_note_to_db(
-                    chat_id, notename[1:], notedata, sql.Types.VIDEO, file=content
+                    chat_id,
+                    notename[1:],
+                    notedata,
+                    sql.Types.VIDEO,
+                    file=content,
                 )
         elif matchvn:
             video_note = notedata[matchvn.end() :].strip()
@@ -515,7 +564,11 @@ def __import_data__(chat_id, data):
             content = video_note[0]
             if content:
                 sql.add_note_to_db(
-                    chat_id, notename[1:], notedata, sql.Types.VIDEO_NOTE, file=content
+                    chat_id,
+                    notename[1:],
+                    notedata,
+                    sql.Types.VIDEO_NOTE,
+                    file=content,
                 )
         else:
             sql.add_note_to_db(chat_id, notename[1:], notedata, sql.Types.TEXT)
@@ -534,7 +587,9 @@ def __import_data__(chat_id, data):
 
 
 def __stats__():
-    return "× {} notes, across {} chats.".format(sql.num_notes(), sql.num_chats())
+    return "× {} notes, across {} chats.".format(
+        sql.num_notes(), sql.num_chats()
+    )
 
 
 def __migrate__(old_chat_id, new_chat_id):
@@ -583,7 +638,9 @@ This will retrieve the note and send it without formatting it; getting you the r
 __mod_name__ = "Notes"
 
 GET_HANDLER = CommandHandler("get", cmd_get, pass_args=True, run_async=True)
-HASH_GET_HANDLER = MessageHandler(Filters.regex(r"^#[^\s]+"), hash_get, run_async=True)
+HASH_GET_HANDLER = MessageHandler(
+    Filters.regex(r"^#[^\s]+"), hash_get, run_async=True
+)
 
 SAVE_HANDLER = CommandHandler("save", save, run_async=True)
 DELETE_HANDLER = CommandHandler("clear", clear, pass_args=True, run_async=True)
@@ -595,7 +652,9 @@ CLEARALLNOTES_HANDLER = CommandHandler(
     "rmallnotes", clear_notes, filters=Filters.group, run_async=True
 )
 
-RMBTN_HANDLER = CallbackQueryHandler(rmbutton, pattern=r"rmnotes_", run_async=True)
+RMBTN_HANDLER = CallbackQueryHandler(
+    rmbutton, pattern=r"rmnotes_", run_async=True
+)
 
 dispatcher.add_handler(GET_HANDLER)
 dispatcher.add_handler(SAVE_HANDLER)

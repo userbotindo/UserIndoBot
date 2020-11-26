@@ -88,7 +88,9 @@ def log_user(update, context):
     chat = update.effective_chat
     msg = update.effective_message
 
-    sql.update_user(msg.from_user.id, msg.from_user.username, chat.id, chat.title)
+    sql.update_user(
+        msg.from_user.id, msg.from_user.username, chat.id, chat.title
+    )
 
     if msg.reply_to_message:
         sql.update_user(
@@ -119,7 +121,9 @@ def chats(update, context):
 
 def chat_checker(update, context):
     if (
-        update.effective_message.chat.get_member(context.bot.id).can_send_messages
+        update.effective_message.chat.get_member(
+            context.bot.id
+        ).can_send_messages
         is False
     ):
         context.bot.leaveChat(update.effective_message.chat.id)
@@ -129,11 +133,15 @@ def __user_info__(user_id):
     if user_id == dispatcher.bot.id:
         return """I've seen them in... Wow. Are they stalking me? They're in all the same places I am... oh. It's me."""
     num_chats = sql.get_user_num_chats(user_id)
-    return """I've seen them in <code>{}</code> chats in total.""".format(num_chats)
+    return """I've seen them in <code>{}</code> chats in total.""".format(
+        num_chats
+    )
 
 
 def __stats__():
-    return "× {} users, across {} chats".format(sql.num_users(), sql.num_chats())
+    return "× {} users, across {} chats".format(
+        sql.num_users(), sql.num_chats()
+    )
 
 
 def __migrate__(old_chat_id, new_chat_id):
@@ -147,7 +155,9 @@ __mod_name__ = "Users"
 BROADCAST_HANDLER = CommandHandler(
     "broadcast", broadcast, filters=Filters.user(OWNER_ID), run_async=True
 )
-USER_HANDLER = MessageHandler(Filters.all & Filters.group, log_user, run_async=True)
+USER_HANDLER = MessageHandler(
+    Filters.all & Filters.group, log_user, run_async=True
+)
 CHATLIST_HANDLER = CommandHandler(
     "chatlist", chats, filters=CustomFilters.sudo_filter, run_async=True
 )

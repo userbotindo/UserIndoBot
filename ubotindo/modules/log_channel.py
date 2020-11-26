@@ -55,7 +55,8 @@ if is_module_loaded(FILENAME):
                 pass
             else:
                 LOGGER.warning(
-                    "%s was set as loggable, but had no return statement.", func
+                    "%s was set as loggable, but had no return statement.",
+                    func,
                 )
 
             return result
@@ -68,7 +69,8 @@ if is_module_loaded(FILENAME):
         except BadRequest as excp:
             if excp.message == "Chat not found":
                 bot.send_message(
-                    orig_chat_id, "This log channel has been deleted - unsetting."
+                    orig_chat_id,
+                    "This log channel has been deleted - unsetting.",
                 )
                 sql.stop_chat_logging(orig_chat_id)
             else:
@@ -129,8 +131,13 @@ if is_module_loaded(FILENAME):
                     ),
                 )
             except Unauthorized as excp:
-                if excp.message == "Forbidden: bot is not a member of the channel chat":
-                    context.bot.send_message(chat.id, "Successfully set log channel!")
+                if (
+                    excp.message
+                    == "Forbidden: bot is not a member of the channel chat"
+                ):
+                    context.bot.send_message(
+                        chat.id, "Successfully set log channel!"
+                    )
                 else:
                     LOGGER.exception("ERROR in setting the log channel.")
 
@@ -152,7 +159,8 @@ if is_module_loaded(FILENAME):
         log_channel = sql.stop_chat_logging(chat.id)
         if log_channel:
             context.bot.send_message(
-                log_channel, "Channel has been unlinked from {}".format(chat.title)
+                log_channel,
+                "Channel has been unlinked from {}".format(chat.title),
             )
             message.reply_text("Log channel has been un-set.")
 

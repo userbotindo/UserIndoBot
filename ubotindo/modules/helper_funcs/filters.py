@@ -48,7 +48,8 @@ class CustomFilters(object):
     class _Devs(MessageFilter):
         def filter(self, message: Message):
             return bool(
-                message.from_user and message.from_user.id in DEV_USERS)
+                message.from_user and message.from_user.id in DEV_USERS
+            )
 
     dev_filter = _Devs()
 
@@ -59,7 +60,9 @@ class CustomFilters(object):
 
         def filter(self, message: Message):
             return bool(
-                message.document and message.document.mime_type == self.mime_type)
+                message.document
+                and message.document.mime_type == self.mime_type
+            )
 
     mime_type = _MimeType
 

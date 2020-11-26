@@ -36,6 +36,13 @@ AFK_REPLY_GROUP = 8
 
 def afk(update, context):
     args = update.effective_message.text.split(None, 1)
+
+    if not user:
+        return
+
+    if update.effective_user.id in (777000, 1087968824):
+        return
+
     notice = ""
     if len(args) >= 2:
         reason = args[1]
@@ -48,7 +55,9 @@ def afk(update, context):
     sql.set_afk(update.effective_user.id, reason)
     afkstr = random.choice(fun.AFK)
     msg = update.effective_message
-    afksend = msg.reply_text(afkstr.format(update.effective_user.first_name, notice))
+    afksend = msg.reply_text(
+        afkstr.format(update.effective_user.first_name, notice)
+    )
     sleep(5)
     afksend.delete()
 
@@ -77,7 +86,9 @@ def no_longer_afk(update, context):
                 "Where is {}?\nIn the chat!",
             ]
             chosen_option = random.choice(options)
-            unafk = update.effective_message.reply_text(chosen_option.format(firstname))
+            unafk = update.effective_message.reply_text(
+                chosen_option.format(firstname)
+            )
             sleep(10)
             unafk.delete()
         except BaseException:
@@ -157,7 +168,9 @@ def check_afk(update, context, user_id, fst_name, userc_id):
             res = "<b>{}</b> is away from keyboard! says it's because of <b>Reason:</b> <code>{}</code>".format(
                 fst_name, user.reason
             )
-            replafk = update.effective_message.reply_text(res, parse_mode="html")
+            replafk = update.effective_message.reply_text(
+                res, parse_mode="html"
+            )
             sleep(10)
             replafk.delete()
 

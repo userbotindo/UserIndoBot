@@ -25,13 +25,28 @@ from telegram import (
     ParseMode,
 )
 from telegram.error import BadRequest
-from telegram.ext import CallbackQueryHandler, CommandHandler, Filters, MessageHandler
+from telegram.ext import (
+    CallbackQueryHandler,
+    CommandHandler,
+    Filters,
+    MessageHandler,
+)
 from telegram.utils.helpers import mention_html
 
 import ubotindo.modules.sql.welcome_sql as sql
-from ubotindo import DEV_USERS, LOGGER, MESSAGE_DUMP, OWNER_ID, dispatcher, spamwtc
+from ubotindo import (
+    DEV_USERS,
+    LOGGER,
+    MESSAGE_DUMP,
+    OWNER_ID,
+    dispatcher,
+    spamwtc,
+)
 from ubotindo.modules.helper_funcs.alternate import send_message, typing_action
-from ubotindo.modules.helper_funcs.chat_status import is_user_ban_protected, user_admin
+from ubotindo.modules.helper_funcs.chat_status import (
+    is_user_ban_protected,
+    user_admin,
+)
 from ubotindo.modules.helper_funcs.misc import (
     build_keyboard,
     build_keyboard_parser,
@@ -112,7 +127,8 @@ def send(update, message, keyboard, backup_message):
         if excp.message == "Button_url_invalid":
             msg = update.effective_message.reply_text(
                 markdown_parser(
-                    backup_message + "\nNote: the current message has an invalid url "
+                    backup_message
+                    + "\nNote: the current message has an invalid url "
                     "in one of its buttons. Please update."
                 ),
                 parse_mode=ParseMode.MARKDOWN,
@@ -121,7 +137,8 @@ def send(update, message, keyboard, backup_message):
         elif excp.message == "Unsupported url protocol":
             msg = update.effective_message.reply_text(
                 markdown_parser(
-                    backup_message + "\nNote: the current message has buttons which "
+                    backup_message
+                    + "\nNote: the current message has buttons which "
                     "use url protocols that are unsupported by "
                     "telegram. Please update."
                 ),
@@ -131,7 +148,8 @@ def send(update, message, keyboard, backup_message):
         elif excp.message == "Wrong url host":
             msg = update.effective_message.reply_text(
                 markdown_parser(
-                    backup_message + "\nNote: the current message has some bad urls. "
+                    backup_message
+                    + "\nNote: the current message has some bad urls. "
                     "Please update."
                 ),
                 parse_mode=ParseMode.MARKDOWN,
@@ -143,7 +161,8 @@ def send(update, message, keyboard, backup_message):
         else:
             msg = update.effective_message.reply_text(
                 markdown_parser(
-                    backup_message + "\nNote: An error occured when sending the "
+                    backup_message
+                    + "\nNote: An error occured when sending the "
                     "custom message. Please update."
                 ),
                 parse_mode=ParseMode.MARKDOWN,
@@ -159,7 +178,9 @@ def new_member(update, context):
     user = update.effective_user
     msg = update.effective_message
     chat_name = chat.title or chat.first or chat.username
-    should_welc, cust_welcome, cust_content, welc_type = sql.get_welc_pref(chat.id)
+    should_welc, cust_welcome, cust_content, welc_type = sql.get_welc_pref(
+        chat.id
+    )
     cust_welcome = markdown_to_html(cust_welcome)
     welc_mutes = sql.welcome_mutes(chat.id)
     user_id = user.id
@@ -176,7 +197,9 @@ def new_member(update, context):
             if cleanserv:
                 reply = False
                 try:
-                    dispatcher.bot.delete_message(chat.id, update.message.message_id)
+                    dispatcher.bot.delete_message(
+                        chat.id, update.message.message_id
+                    )
                 except BadRequest:
                     pass
 
@@ -226,12 +249,17 @@ def new_member(update, context):
                 )
             else:
                 # If welcome message is media, send with appropriate function
-                if welc_type != sql.Types.TEXT and welc_type != sql.Types.BUTTON_TEXT:
+                if (
+                    welc_type != sql.Types.TEXT
+                    and welc_type != sql.Types.BUTTON_TEXT
+                ):
                     # edge case of empty name - occurs for some bugs.
                     first_name = new_mem.first_name or "PersonWithNoName"
                     # Start formating text
                     if new_mem.last_name:
-                        fullname = "{} {}".format(first_name, new_mem.last_name)
+                        fullname = "{} {}".format(
+                            first_name, new_mem.last_name
+                        )
                     else:
                         fullname = first_name
                     count = chat.get_members_count()
@@ -259,7 +287,9 @@ def new_member(update, context):
                     # build the button
                     buttons = sql.get_welc_buttons(chat.id)
                     if buttons:
-                        keyb = build_keyboard_parser(context.bot, chat.id, buttons)
+                        keyb = build_keyboard_parser(
+                            context.bot, chat.id, buttons
+                        )
                         keyboard = InlineKeyboardMarkup(keyb)
                     else:
                         keyboard = None
@@ -279,7 +309,9 @@ def new_member(update, context):
                     first_name = new_mem.first_name or "PersonWithNoName"
                     if cust_welcome:
                         if new_mem.last_name:
-                            fullname = "{} {}".format(first_name, new_mem.last_name)
+                            fullname = "{} {}".format(
+                                first_name, new_mem.last_name
+                            )
                         else:
                             fullname = first_name
                         count = chat.get_members_count()
@@ -402,7 +434,9 @@ def left_member(update, context):
         # Clean service welcome
         if cleanserv:
             try:
-                dispatcher.bot.delete_message(chat.id, update.message.message_id)
+                dispatcher.bot.delete_message(
+                    chat.id, update.message.message_id
+                )
             except BadRequest:
                 pass
             reply = False
@@ -434,7 +468,10 @@ def left_member(update, context):
                 return
 
             # if media goodbye, use appropriate function for it
-            if goodbye_type != sql.Types.TEXT and goodbye_type != sql.Types.BUTTON_TEXT:
+            if (
+                goodbye_type != sql.Types.TEXT
+                and goodbye_type != sql.Types.BUTTON_TEXT
+            ):
                 ENUM_FUNC_MAP[goodbye_type](chat.id, cust_goodbye)
                 return
 
@@ -486,7 +523,9 @@ def welcome(update, context):
     # if no args, show current replies.
     if len(args) == 0 or args[0].lower() == "noformat":
         noformat = args and args[0].lower() == "noformat"
-        pref, welcome_m, cust_content, welcome_type = sql.get_welc_pref(chat.id)
+        pref, welcome_m, cust_content, welcome_type = sql.get_welc_pref(
+            chat.id
+        )
         update.effective_message.reply_text(
             "This chat has it's welcome setting set to: `{}`.\n*The welcome message "
             "(not filling the {{}}) is:*".format(pref),
@@ -494,7 +533,10 @@ def welcome(update, context):
         )
 
         buttons = sql.get_welc_buttons(chat.id)
-        if welcome_type == sql.Types.BUTTON_TEXT or welcome_type == sql.Types.TEXT:
+        if (
+            welcome_type == sql.Types.BUTTON_TEXT
+            or welcome_type == sql.Types.TEXT
+        ):
             if noformat:
                 welcome_m += revert_buttons(buttons)
                 send_message(update.effective_message, welcome_m)
@@ -511,7 +553,9 @@ def welcome(update, context):
         else:
             if noformat:
                 welcome_m += revert_buttons(buttons)
-                ENUM_FUNC_MAP[welcome_type](chat.id, cust_content, caption=welcome_m)
+                ENUM_FUNC_MAP[welcome_type](
+                    chat.id, cust_content, caption=welcome_m
+                )
 
             else:
                 if buttons:
@@ -534,7 +578,9 @@ def welcome(update, context):
 
         elif args[0].lower() in ("off", "no"):
             sql.set_welc_preference(str(chat.id), False)
-            update.effective_message.reply_text("I'm sulking, not gonna greet anymore.")
+            update.effective_message.reply_text(
+                "I'm sulking, not gonna greet anymore."
+            )
 
         else:
             # idek what you're writing, say yes or no
@@ -582,11 +628,15 @@ def goodbye(update, context):
     elif len(args) >= 1:
         if args[0].lower() in ("on", "yes"):
             sql.set_gdbye_preference(str(chat.id), True)
-            update.effective_message.reply_text("I'll be sorry when people leave!")
+            update.effective_message.reply_text(
+                "I'll be sorry when people leave!"
+            )
 
         elif args[0].lower() in ("off", "no"):
             sql.set_gdbye_preference(str(chat.id), False)
-            update.effective_message.reply_text("They leave, they're dead to me.")
+            update.effective_message.reply_text(
+                "They leave, they're dead to me."
+            )
 
         else:
             # idek what you're writing, say yes or no
@@ -745,7 +795,9 @@ def welcomemute(update, context) -> str:
     else:
         curr_setting = sql.welcome_mutes(chat.id)
         reply = "\n Give me a setting! Choose one of: `off`/`no` or `soft` or `strong` only! \nCurrent setting: `{}`"
-        msg.reply_text(reply.format(curr_setting), parse_mode=ParseMode.MARKDOWN)
+        msg.reply_text(
+            reply.format(curr_setting), parse_mode=ParseMode.MARKDOWN
+        )
         return ""
 
 
@@ -771,7 +823,9 @@ def clean_welcome(update, context) -> str:
 
     if args[0].lower() in ("on", "yes"):
         sql.set_clean_welcome(str(chat.id), True)
-        update.effective_message.reply_text("I'll try to delete old welcome messages!")
+        update.effective_message.reply_text(
+            "I'll try to delete old welcome messages!"
+        )
         return (
             "<b>{}:</b>"
             "\n#CLEAN_WELCOME"
@@ -782,7 +836,9 @@ def clean_welcome(update, context) -> str:
         )
     elif args[0].lower() in ("off", "no"):
         sql.set_clean_welcome(str(chat.id), False)
-        update.effective_message.reply_text("I won't delete old welcome messages.")
+        update.effective_message.reply_text(
+            "I won't delete old welcome messages."
+        )
         return (
             "<b>{}:</b>"
             "\n#CLEAN_WELCOME"
@@ -793,7 +849,9 @@ def clean_welcome(update, context) -> str:
         )
     else:
         # idek what you're writing, say yes or no
-        update.effective_message.reply_text("I understand 'on/yes' or 'off/no' only!")
+        update.effective_message.reply_text(
+            "I understand 'on/yes' or 'off/no' only!"
+        )
         return ""
 
 
@@ -898,7 +956,9 @@ WELC_HELP_TXT = (
 @user_admin
 @typing_action
 def welcome_help(update, context):
-    update.effective_message.reply_text(WELC_HELP_TXT, parse_mode=ParseMode.MARKDOWN)
+    update.effective_message.reply_text(
+        WELC_HELP_TXT, parse_mode=ParseMode.MARKDOWN
+    )
 
 
 # TODO: get welcome data from group butler snap
@@ -997,13 +1057,25 @@ RESET_GOODBYE = CommandHandler(
     "resetgoodbye", reset_goodbye, filters=Filters.group, run_async=True
 )
 CLEAN_WELCOME = CommandHandler(
-    "cleanwelcome", clean_welcome, pass_args=True, filters=Filters.group, run_async=True
+    "cleanwelcome",
+    clean_welcome,
+    pass_args=True,
+    filters=Filters.group,
+    run_async=True,
 )
 WELCOMEMUTE_HANDLER = CommandHandler(
-    "welcomemute", welcomemute, pass_args=True, filters=Filters.group, run_async=True
+    "welcomemute",
+    welcomemute,
+    pass_args=True,
+    filters=Filters.group,
+    run_async=True,
 )
 CLEAN_SERVICE_HANDLER = CommandHandler(
-    "cleanservice", cleanservice, pass_args=True, filters=Filters.group, run_async=True
+    "cleanservice",
+    cleanservice,
+    pass_args=True,
+    filters=Filters.group,
+    run_async=True,
 )
 WELCOME_HELP = CommandHandler("welcomehelp", welcome_help, run_async=True)
 BUTTON_VERIFY_HANDLER = CallbackQueryHandler(

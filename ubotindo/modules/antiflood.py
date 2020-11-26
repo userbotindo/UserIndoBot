@@ -64,7 +64,9 @@ def check_flood(update, context) -> str:
             tag = "KICKED"
         elif getmode == 3:
             context.bot.restrict_chat_member(
-                chat.id, user.id, permissions=ChatPermissions(can_send_messages=False)
+                chat.id,
+                user.id,
+                permissions=ChatPermissions(can_send_messages=False),
             )
             execstrings = "Muted"
             tag = "MUTED"
@@ -94,7 +96,9 @@ def check_flood(update, context) -> str:
             "\n#{}"
             "\n<b>User:</b> {}"
             "\nFlooded the group.".format(
-                tag, html.escape(chat.title), mention_html(user.id, user.first_name)
+                tag,
+                html.escape(chat.title),
+                mention_html(user.id, user.first_name),
             )
         )
 
@@ -162,7 +166,8 @@ def set_flood(update, context) -> str:
                     "\n#SETFLOOD"
                     "\n<b>Admin:</b> {}"
                     "\nDisable antiflood.".format(
-                        html.escape(chat_name), mention_html(user.id, user.first_name)
+                        html.escape(chat_name),
+                        mention_html(user.id, user.first_name),
                     )
                 )
 
@@ -183,9 +188,13 @@ def set_flood(update, context) -> str:
                     )
                 else:
                     text = message.reply_text(
-                        "Successfully updated anti-flood limit to {}!".format(amount)
+                        "Successfully updated anti-flood limit to {}!".format(
+                            amount
+                        )
                     )
-                send_message(update.effective_message, text, parse_mode="markdown")
+                send_message(
+                    update.effective_message, text, parse_mode="markdown"
+                )
                 return (
                     "<b>{}:</b>"
                     "\n#SETFLOOD"
@@ -198,7 +207,9 @@ def set_flood(update, context) -> str:
                 )
 
         else:
-            message.reply_text("Invalid argument please use a number, 'off' or 'no'")
+            message.reply_text(
+                "Invalid argument please use a number, 'off' or 'no'"
+            )
     else:
         message.reply_text(
             (
@@ -293,7 +304,9 @@ def set_flood_mode(update, context):
             if len(args) == 1:
                 teks = """It looks like you tried to set time value for antiflood but you didn't specified time; Try, `/setfloodmode tban <timevalue>`.
 Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks."""
-                send_message(update.effective_message, teks, parse_mode="markdown")
+                send_message(
+                    update.effective_message, teks, parse_mode="markdown"
+                )
                 return
             settypeflood = "tban for {}".format(args[1])
             sql.set_flood_strength(chat_id, 4, str(args[1]))
@@ -304,13 +317,16 @@ Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks.
                     """It looks like you tried to set time value for antiflood but you didn't specified time; Try, `/setfloodmode tmute <timevalue>`.
 Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks.""",
                 )
-                send_message(update.effective_message, teks, parse_mode="markdown")
+                send_message(
+                    update.effective_message, teks, parse_mode="markdown"
+                )
                 return
             settypeflood = "tmute for {}".format(args[1])
             sql.set_flood_strength(chat_id, 5, str(args[1]))
         else:
             send_message(
-                update.effective_message, "I only understand ban/kick/mute/tban/tmute!"
+                update.effective_message,
+                "I only understand ban/kick/mute/tban/tmute!",
             )
             return
         if conn:
@@ -399,7 +415,9 @@ will result in restricting that user.
 __mod_name__ = "Antiflood"
 
 FLOOD_BAN_HANDLER = MessageHandler(
-    Filters.all & ~Filters.status_update & Filters.group, check_flood, run_async=True
+    Filters.all & ~Filters.status_update & Filters.group,
+    check_flood,
+    run_async=True,
 )
 SET_FLOOD_HANDLER = CommandHandler(
     "setflood", set_flood, pass_args=True, run_async=True

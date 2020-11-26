@@ -81,7 +81,9 @@ def magisk(update, context):
 def device(update, context):
     args = context.args
     if len(args) == 0:
-        reply = "No codename provided, write a codename for fetching informations."
+        reply = (
+            "No codename provided, write a codename for fetching informations."
+        )
         del_msg = update.effective_message.reply_text(
             "{}".format(reply),
             parse_mode=ParseMode.MARKDOWN,
@@ -127,7 +129,9 @@ def device(update, context):
             ):
                 return
     update.message.reply_text(
-        "{}".format(reply), parse_mode=ParseMode.HTML, disable_web_page_preview=True
+        "{}".format(reply),
+        parse_mode=ParseMode.HTML,
+        disable_web_page_preview=True,
     )
 
 
@@ -135,7 +139,9 @@ def device(update, context):
 def twrp(update, context):
     args = context.args
     if len(args) == 0:
-        reply = "No codename provided, write a codename for fetching informations."
+        reply = (
+            "No codename provided, write a codename for fetching informations."
+        )
         del_msg = update.effective_message.reply_text(
             "{}".format(reply),
             parse_mode=ParseMode.MARKDOWN,
@@ -172,7 +178,9 @@ def twrp(update, context):
     else:
         reply = f"*Latest Official TWRP for {device}*\n"
         db = get(DEVICES_DATA).json()
-        newdevice = device.strip("lte") if device.startswith("beyond") else device
+        newdevice = (
+            device.strip("lte") if device.startswith("beyond") else device
+        )
         try:
             brand = db[newdevice][0]["brand"]
             name = db[newdevice][0]["name"]
@@ -209,9 +217,13 @@ def los(update, context) -> str:
         device = ""
 
     if device == "":
-        reply_text = f"*Please Type Your Device Codename*\nExample : `/los lavender`"
+        reply_text = (
+            f"*Please Type Your Device Codename*\nExample : `/los lavender`"
+        )
         message.reply_text(
-            reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
+            reply_text,
+            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=True,
         )
         return
 
@@ -231,7 +243,11 @@ def los(update, context) -> str:
         reply_text += f"*Version :* `{version}`\n"
 
         keyboard = [
-            [InlineKeyboardButton(text="Click Here To Downloads", url=f"{url}")]
+            [
+                InlineKeyboardButton(
+                    text="Click Here To Downloads", url=f"{url}"
+                )
+            ]
         ]
         message.reply_text(
             reply_text,
@@ -365,12 +381,18 @@ MAGISK_HANDLER = DisableAbleCommandHandler("magisk", magisk, run_async=True)
 DEVICE_HANDLER = DisableAbleCommandHandler(
     "device", device, pass_args=True, run_async=True
 )
-TWRP_HANDLER = DisableAbleCommandHandler("twrp", twrp, pass_args=True, run_async=True)
-LOS_HANDLER = DisableAbleCommandHandler("los", los, pass_args=True, run_async=True)
+TWRP_HANDLER = DisableAbleCommandHandler(
+    "twrp", twrp, pass_args=True, run_async=True
+)
+LOS_HANDLER = DisableAbleCommandHandler(
+    "los", los, pass_args=True, run_async=True
+)
 BOOTLEG_HANDLER = DisableAbleCommandHandler(
     "bootleg", bootleg, pass_args=True, run_async=True
 )
-GSI_HANDLER = DisableAbleCommandHandler("gsi", gsi, pass_args=True, run_async=True)
+GSI_HANDLER = DisableAbleCommandHandler(
+    "gsi", gsi, pass_args=True, run_async=True
+)
 
 
 dispatcher.add_handler(MAGISK_HANDLER)

@@ -36,7 +36,9 @@ def gtrans(update, context):
     if not lang:
         lang = "en"
     try:
-        translate_text = msg.reply_to_message.text or msg.reply_to_message.caption
+        translate_text = (
+            msg.reply_to_message.text or msg.reply_to_message.caption
+        )
     except AttributeError:
         return msg.reply_text("Give me the text to translate!")
 
@@ -50,7 +52,9 @@ def gtrans(update, context):
         translated = translator.translate(translate_text, dest=lang)
         trl = translated.src
         results = translated.text
-        msg.reply_text("Translated from {} to {}.\n {}".format(trl, lang, results))
+        msg.reply_text(
+            "Translated from {} to {}.\n {}".format(trl, lang, results)
+        )
     except BaseException:
         msg.reply_text("Error! invalid language code.")
 
@@ -88,7 +92,9 @@ def spellcheck(update, context):
     if update.effective_message.reply_to_message:
         msg = update.effective_message.reply_to_message
 
-        params = dict(lang="US", clientVersion="2.0", apiKey=API_KEY, text=msg.text)
+        params = dict(
+            lang="US", clientVersion="2.0", apiKey=API_KEY, text=msg.text
+        )
 
         res = requests.get(URL, params=params)
         changes = json.loads(res.text).get("LightGingerTheTextResult")
@@ -121,9 +127,13 @@ __help__ = """
 __mod_name__ = "Translate"
 
 dispatcher.add_handler(
-    DisableAbleCommandHandler(["tr", "tl"], gtrans, pass_args=True, run_async=True)
+    DisableAbleCommandHandler(
+        ["tr", "tl"], gtrans, pass_args=True, run_async=True
+    )
 )
 dispatcher.add_handler(
     DisableAbleCommandHandler("tts", gtts, pass_args=True, run_async=True)
 )
-dispatcher.add_handler(DisableAbleCommandHandler("spell", spellcheck, run_async=True))
+dispatcher.add_handler(
+    DisableAbleCommandHandler("spell", spellcheck, run_async=True)
+)

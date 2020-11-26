@@ -59,7 +59,9 @@ from ubotindo.modules.log_channel import loggable
 from ubotindo.modules.sql import warns_sql as sql
 
 WARN_HANDLER_GROUP = 9
-CURRENT_WARNING_FILTER_STRING = "<b>Current warning filters in this chat:</b>\n"
+CURRENT_WARNING_FILTER_STRING = (
+    "<b>Current warning filters in this chat:</b>\n"
+)
 
 
 # Not async
@@ -119,7 +121,8 @@ def warn(
             [
                 [
                     InlineKeyboardButton(
-                        "Remove warn ⚠️", callback_data="rm_warn({})".format(user.id)
+                        "Remove warn ⚠️",
+                        callback_data="rm_warn({})".format(user.id),
                     )
                 ]
             ]
@@ -149,12 +152,17 @@ def warn(
         )
 
     try:
-        message.reply_text(reply, reply_markup=keyboard, parse_mode=ParseMode.HTML)
+        message.reply_text(
+            reply, reply_markup=keyboard, parse_mode=ParseMode.HTML
+        )
     except BadRequest as excp:
         if excp.message == "Reply message not found":
             # Do not reply
             message.reply_text(
-                reply, reply_markup=keyboard, parse_mode=ParseMode.HTML, quote=False
+                reply,
+                reply_markup=keyboard,
+                parse_mode=ParseMode.HTML,
+                quote=False,
             )
         else:
             raise
@@ -187,7 +195,9 @@ def button(update, context):
                 "\n<b>User:</b> {} (<code>{}</code>)".format(
                     html.escape(chat.title),
                     mention_html(user.id, user.first_name),
-                    mention_html(user_member.user.id, user_member.user.first_name),
+                    mention_html(
+                        user_member.user.id, user_member.user.first_name
+                    ),
                     user_member.user.id,
                 )
             )
@@ -223,7 +233,9 @@ def warn_user(update, context):
                 warner,
             )
         else:
-            return warn(chat.get_member(user_id).user, chat, reason, message, warner)
+            return warn(
+                chat.get_member(user_id).user, chat, reason, message, warner
+            )
     else:
         message.reply_text("No user was designated!")
     return ""
@@ -324,11 +336,9 @@ def warns(update, context):
                     num_warns, limit, chat_name
                 )
             else:
-                text = (
-                    "This user has {}/{} warnings, for the following reasons:".format(
-                        num_warns,
-                        limit,
-                    )
+                text = "This user has {}/{} warnings, for the following reasons:".format(
+                    num_warns,
+                    limit,
                 )
             for reason in reasons:
                 text += "\n {}. {}".format(num, reason)
@@ -345,7 +355,9 @@ def warns(update, context):
                 parse_mode="markdown",
             )
     else:
-        update.effective_message.reply_text("This user hasn't got any warnings!")
+        update.effective_message.reply_text(
+            "This user hasn't got any warnings!"
+        )
 
 
 # Dispatcher handler stop - do not async
@@ -459,20 +471,26 @@ def list_warn_filters(update, context):
     all_handlers = sql.get_chat_warn_triggers(chat_id)
 
     if not all_handlers:
-        update.effective_message.reply_text("No warning filters are active here!")
+        update.effective_message.reply_text(
+            "No warning filters are active here!"
+        )
         return
 
     filter_list = CURRENT_WARNING_FILTER_STRING
     for keyword in all_handlers:
         entry = " - {}\n".format(html.escape(keyword))
         if len(entry) + len(filter_list) > telegram.MAX_MESSAGE_LENGTH:
-            update.effective_message.reply_text(filter_list, parse_mode=ParseMode.HTML)
+            update.effective_message.reply_text(
+                filter_list, parse_mode=ParseMode.HTML
+            )
             filter_list = entry
         else:
             filter_list += entry
 
     if not filter_list == CURRENT_WARNING_FILTER_STRING:
-        update.effective_message.reply_text(filter_list, parse_mode=ParseMode.HTML)
+        update.effective_message.reply_text(
+            filter_list, parse_mode=ParseMode.HTML
+        )
 
 
 @loggable
@@ -541,7 +559,9 @@ def set_warn_limit(update, context) -> str:
     else:
         limit, _ = sql.get_warn_setting(chat_id)
 
-        msg.reply_text("The current warn in {} limit is {}".format(chat_name, limit))
+        msg.reply_text(
+            "The current warn in {} limit is {}".format(chat_name, limit)
+        )
     return ""
 
 
@@ -690,7 +710,10 @@ RM_WARN_HANDLER = CommandHandler(
     ["nowarn", "stopwarn"], remove_warn_filter, run_async=True
 )
 LIST_WARN_HANDLER = DisableAbleCommandHandler(
-    ["warnlist", "warnfilters"], list_warn_filters, admin_ok=True, run_async=True
+    ["warnlist", "warnfilters"],
+    list_warn_filters,
+    admin_ok=True,
+    run_async=True,
 )
 WARN_FILTER_HANDLER = MessageHandler(
     CustomFilters.has_text & Filters.group, reply_filter, run_async=True

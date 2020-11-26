@@ -26,12 +26,20 @@ from telegram import (
     User,
 )
 from telegram.error import BadRequest, Unauthorized
-from telegram.ext import CallbackQueryHandler, CommandHandler, Filters, MessageHandler
+from telegram.ext import (
+    CallbackQueryHandler,
+    CommandHandler,
+    Filters,
+    MessageHandler,
+)
 from telegram.utils.helpers import mention_html
 
 from ubotindo import LOGGER, dispatcher
 from ubotindo.modules.helper_funcs.alternate import typing_action
-from ubotindo.modules.helper_funcs.chat_status import user_admin, user_not_admin
+from ubotindo.modules.helper_funcs.chat_status import (
+    user_admin,
+    user_not_admin,
+)
 from ubotindo.modules.log_channel import loggable
 from ubotindo.modules.sql import reporting_sql as sql
 
@@ -55,7 +63,9 @@ def report_setting(update, context):
 
             elif args[0] in ("no", "off"):
                 sql.set_user_setting(chat.id, False)
-                msg.reply_text("Turned off reporting! You wont get any reports.")
+                msg.reply_text(
+                    "Turned off reporting! You wont get any reports."
+                )
         else:
             msg.reply_text(
                 "Your current report preference is: `{}`".format(
@@ -185,7 +195,9 @@ def report(update, context) -> str:
                             "Exception while reporting user " + excp.message
                         )
 
-        message.reply_to_message.reply_text(reported, parse_mode=ParseMode.HTML)
+        message.reply_to_message.reply_text(
+            reported, parse_mode=ParseMode.HTML
+        )
         return msg
 
     return ""
@@ -270,14 +282,18 @@ You MUST reply to a message to report a user; you can't just use @admin to tag a
 Note that the report commands do not work when admins use them; or when used to report an admin. Bot assumes that \
 admins don't need to report, or be reported!
 """
-REPORT_HANDLER = CommandHandler("report", report, filters=Filters.group, run_async=True)
+REPORT_HANDLER = CommandHandler(
+    "report", report, filters=Filters.group, run_async=True
+)
 SETTING_HANDLER = CommandHandler(
     "reports", report_setting, pass_args=True, run_async=True
 )
 ADMIN_REPORT_HANDLER = MessageHandler(
     Filters.regex("(?i)@admin(s)?"), report, run_async=True
 )
-REPORT_BUTTON_HANDLER = CallbackQueryHandler(report_buttons, pattern=r"report_")
+REPORT_BUTTON_HANDLER = CallbackQueryHandler(
+    report_buttons, pattern=r"report_"
+)
 
 dispatcher.add_handler(REPORT_HANDLER, REPORT_GROUP)
 dispatcher.add_handler(ADMIN_REPORT_HANDLER, REPORT_GROUP)

@@ -113,7 +113,9 @@ def sed(update, context):
             if "i" in flags and "g" in flags:
                 text = re.sub(repl, repl_with, to_fix, flags=re.I).strip()
             elif "i" in flags:
-                text = re.sub(repl, repl_with, to_fix, count=1, flags=re.I).strip()
+                text = re.sub(
+                    repl, repl_with, to_fix, count=1, flags=re.I
+                ).strip()
             elif "g" in flags:
                 text = re.sub(repl, repl_with, to_fix).strip()
             else:
@@ -121,7 +123,9 @@ def sed(update, context):
         except sre_constants.error:
             LOGGER.warning(update.effective_message.text)
             LOGGER.exception("SRE constant error")
-            update.effective_message.reply_text("Do you even sed? Apparently not.")
+            update.effective_message.reply_text(
+                "Do you even sed? Apparently not."
+            )
             return
 
         # empty string errors -_-
