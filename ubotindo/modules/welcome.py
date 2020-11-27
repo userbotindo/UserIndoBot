@@ -520,6 +520,7 @@ def left_member(update, context):
 def welcome(update, context):
     chat = update.effective_chat
     args = context.args
+    reply = update.message.message_id
     # if no args, show current replies.
     if len(args) == 0 or args[0].lower() == "noformat":
         noformat = args and args[0].lower() == "noformat"
@@ -563,13 +564,21 @@ def welcome(update, context):
                     keyboard = InlineKeyboardMarkup(keyb)
                 else:
                     keyboard = None
-                ENUM_FUNC_MAP[welcome_type](
-                    chat.id,
-                    cust_content,
-                    caption=welcome_m,
-                    reply_markup=keyboard,
-                    parse_mode=ParseMode.MARKDOWN,
-                )
+                
+                if ENUM_FUNC_MAP[welcome_type] == dispatcher.bot.send_sticker:
+                    ENUM_FUNC_MAP[welcome_type](
+                        chat.id,
+                        cust_content,
+                        reply_to_message_id=reply,
+                        reply_markup=keyboard)
+                else:
+                    ENUM_FUNC_MAP[welcome_type](
+                        chat.id,
+                        cust_content,
+                        caption=welcome_m,
+                        reply_markup=keyboard,
+                        parse_mode=ParseMode.MARKDOWN,
+                    )
 
     elif len(args) >= 1:
         if args[0].lower() in ("on", "yes"):
