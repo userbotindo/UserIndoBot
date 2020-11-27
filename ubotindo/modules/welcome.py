@@ -978,8 +978,8 @@ def __migrate__(old_chat_id, new_chat_id):
 
 
 def __chat_settings__(chat_id, user_id):
-    welcome_pref, _, _, _ = sql.get_welc_pref(chat_id)
-    goodbye_pref, _, _ = sql.get_gdbye_pref(chat_id)
+    welcome_pref = sql.get_welc_pref(chat_id)[0]
+    goodbye_pref = sql.get_gdbye_pref(chat_id)[0]
     clean_welc_pref = sql.get_clean_pref(chat_id)
     welc_mutes_pref = sql.get_welc_mutes_pref(chat_id)
     return (
