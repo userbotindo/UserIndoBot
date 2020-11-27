@@ -564,13 +564,14 @@ def welcome(update, context):
                     keyboard = InlineKeyboardMarkup(keyb)
                 else:
                     keyboard = None
-                
+
                 if ENUM_FUNC_MAP[welcome_type] == dispatcher.bot.send_sticker:
                     ENUM_FUNC_MAP[welcome_type](
                         chat.id,
                         cust_content,
                         reply_to_message_id=reply,
-                        reply_markup=keyboard)
+                        reply_markup=keyboard,
+                    )
                 else:
                     ENUM_FUNC_MAP[welcome_type](
                         chat.id,
