@@ -19,6 +19,7 @@ import traceback
 import html
 import json
 import re
+import requests
 from typing import Optional
 
 from telegram import Message, Chat, User
