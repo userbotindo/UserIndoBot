@@ -524,16 +524,17 @@ def set_desc(update, context):
 
 @user_admin
 @typing_action
-def refresh_admin(update, context):
+def refresh_admin(update, _):
     ADMIN_CACHE.pop(update.effective_chat.id)
     update.effective_message.reply_text("Admins cache refreshed!")
+
 
 
 def __chat_settings__(chat_id, user_id):
     return "You are *admin*: `{}`".format(
         dispatcher.bot.get_chat_member(chat_id, user_id).status
         in ("administrator", "creator")
-    )
+    )    
 
 
 __help__ = """
@@ -600,9 +601,7 @@ SET_TITLE_HANDLER = DisableAbleCommandHandler(
 ADMINLIST_HANDLER = DisableAbleCommandHandler(
     "adminlist", adminlist, filters=Filters.group, run_async=True
 )
-ADMIN_REFRESH_HANDLER = CommandHandler(
-    "admincache", refresh_admin, run_async=True
-)
+ADMIN_REFRESH_HANDLER = CommandHandler("admincache", refresh_admin, run_async=True)
 
 
 dispatcher.add_handler(PIN_HANDLER)
