@@ -20,7 +20,7 @@ import os
 from telegram import ParseMode
 from telegram.error import BadRequest
 from telegram.ext import CommandHandler, Filters, MessageHandler
-from telegram.utils.helpers import mention_html
+from telegram.utils.helpers import mention_html, mention_markdown
 
 from ubotindo import dispatcher
 from ubotindo.modules.connection import connected
@@ -36,6 +36,7 @@ from ubotindo.modules.helper_funcs.chat_status import (
     can_pin,
     can_promote,
     user_admin,
+    ADMIN_CACHE,
 )
 from ubotindo.modules.helper_funcs.extraction import (
     extract_user,
@@ -521,6 +522,13 @@ def set_desc(update, context):
         msg.reply_text(f"Error! {excp.message}.")
 
 
+@user_admin
+@typing_action
+def refresh_admin(update, context):
+    ADMIN_CACHE.pop(update.effective_chat.id)
+    update.effective_message.reply_text("Admins cache refreshed!")
+
+
 def __chat_settings__(chat_id, user_id):
     return "You are *admin*: `{}`".format(
         dispatcher.bot.get_chat_member(chat_id, user_id).status
@@ -592,6 +600,10 @@ SET_TITLE_HANDLER = DisableAbleCommandHandler(
 ADMINLIST_HANDLER = DisableAbleCommandHandler(
     "adminlist", adminlist, filters=Filters.group, run_async=True
 )
+ADMIN_REFRESH_HANDLER = CommandHandler(
+    "admincache", refresh_admin, run_async=True
+)
+
 
 dispatcher.add_handler(PIN_HANDLER)
 dispatcher.add_handler(UNPIN_HANDLER)
@@ -599,6 +611,7 @@ dispatcher.add_handler(INVITE_HANDLER)
 dispatcher.add_handler(PROMOTE_HANDLER)
 dispatcher.add_handler(DEMOTE_HANDLER)
 dispatcher.add_handler(ADMINLIST_HANDLER)
+dispatcher.add_handler(ADMIN_REFRESH_HANDLER)
 dispatcher.add_handler(SET_TITLE_HANDLER)
 dispatcher.add_handler(CHAT_PIC_HANDLER)
 dispatcher.add_handler(DEL_CHAT_PIC_HANDLER)

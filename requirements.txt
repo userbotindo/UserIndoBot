@@ -17,7 +17,7 @@
 future
 emoji
 requests
-telethon
+telethon==1.16.4
 sqlalchemy
 python-telegram-bot==13.0
 psycopg2-binary
@@ -42,3 +42,4 @@ git+https://github.com/TomyPrs/python-markdown2.git
 alphabet_detector
 covid
 hurry.filesize
+cachetools
