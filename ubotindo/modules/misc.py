@@ -696,9 +696,6 @@ WALLPAPER_HANDLER = DisableAbleCommandHandler(
     "wall", wall, pass_args=True, run_async=True
 )
 UD_HANDLER = DisableAbleCommandHandler("ud", ud, run_async=True)
-LYRICS_HANDLER = DisableAbleCommandHandler(
-    "lyrics", lyrics, pass_args=True, run_async=True
-)
 GETLINK_HANDLER = CommandHandler(
     "getlink",
     getlink,
@@ -708,9 +705,6 @@ GETLINK_HANDLER = CommandHandler(
 )
 STAFFLIST_HANDLER = CommandHandler(
     "staffids", staff_ids, filters=Filters.user(OWNER_ID), run_async=True
-)
-REDDIT_MEMES_HANDLER = DisableAbleCommandHandler(
-    "rmeme", rmemes, run_async=True
 )
 # SRC_HANDLER = CommandHandler("source", src, filters=Filters.private)
 COVID_HANDLER = CommandHandler("covid", covid, run_async=True)
