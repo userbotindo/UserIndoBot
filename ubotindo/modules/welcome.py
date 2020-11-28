@@ -293,8 +293,16 @@ def new_member(update, context):
                         keyboard = InlineKeyboardMarkup(keyb)
                     else:
                         keyboard = None
-
-                    sent = ENUM_FUNC_MAP[welc_type](
+                         
+                    if ENUM_FUNC_MAP[welc_type] == dispatcher.bot.send_sticker:
+                    	sent = ENUM_FUNC_MAP[welc_type](
+                    	chat.id,
+                        cust_content,
+                        reply_to_message_id=reply,
+                        reply_markup=keyboard,
+                    )
+                    else:
+                    	sent = ENUM_FUNC_MAP[welc_type](
                         chat.id,
                         cust_content,
                         caption=formated_text,
