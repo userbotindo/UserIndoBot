@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import codecs
 import datetime
 import html
 import os
@@ -486,57 +487,6 @@ def getlink(update, context):
     message.reply_text(links)
 
 
-@send_action(ChatAction.UPLOAD_PHOTO)
-def rmemes(update, context):
-    msg = update.effective_message
-    chat = update.effective_chat
-
-    SUBREDS = [
-        "meirl",
-        "dankmemes",
-        "AdviceAnimals",
-        "memes",
-        "meme",
-        "memes_of_the_dank",
-        "PornhubComments",
-        "teenagers",
-        "memesIRL",
-        "insanepeoplefacebook",
-        "terriblefacebookmemes",
-    ]
-
-    subreddit = random.choice(SUBREDS)
-    res = r.get(f"https://meme-api.herokuapp.com/gimme/{subreddit}")
-
-    if res.status_code != 200:  # Like if api is down?
-        msg.reply_text("Sorry some error occurred :(")
-        return
-    else:
-        res = res.json()
-
-    rpage = res.get(str("subreddit"))  # Subreddit
-    title = res.get(str("title"))  # Post title
-    memeu = res.get(str("url"))  # meme pic url
-    plink = res.get(str("postLink"))
-
-    caps = f"× <b>Title</b>: {title}\n"
-    caps += f"× <b>Subreddit:</b> <pre>r/{rpage}</pre>"
-
-    keyb = [[InlineKeyboardButton(text="Subreddit Postlink 🔗", url=plink)]]
-    try:
-        context.bot.send_photo(
-            chat.id,
-            photo=memeu,
-            caption=(caps),
-            reply_markup=InlineKeyboardMarkup(keyb),
-            timeout=60,
-            parse_mode=ParseMode.HTML,
-        )
-
-    except BadRequest as excp:
-        return msg.reply_text(f"Error! {excp.message}")
-
-
 def staff_ids(update, context):
     sfile = "List of SUDO & SUPPORT users:\n"
     sfile += f"× DEV USER IDs; {DEV_USERS}\n"
@@ -630,7 +580,6 @@ def paste(update, context):
     msg = update.effective_message
 
     if msg.reply_to_message and msg.reply_to_message.document:
-        message = msg.reply_text("Pasting Text...")
         file = context.bot.get_file(msg.reply_to_message.document)
         file.download("file.txt")
         text = codecs.open("file.txt", "r+", encoding="utf-8")
@@ -644,10 +593,21 @@ def paste(update, context):
             .get("result")
             .get("key")
         )
-        message.edit_text(
-            "Pasted to Nekobin\n\n"
-            f"[Nekobin URL](https://nekobin.com/{link})\n"
-            f"[View RAW](https://nekobin.com/raw/{link})",
+        text = f"**Pasted to Nekobin!!!**"
+        buttons = [
+            [
+                InlineKeyboardButton(
+                    text="View Link", url=f"https://nekobin.com/{link}"
+                ),
+                InlineKeyboardButton(
+                    text="View Raw",
+                    url=f"https://nekobin.com/raw/{link}",
+                ),
+            ]
+        ]
+        msg.reply_text(
+            text,
+            reply_markup=InlineKeyboardMarkup(buttons),
             parse_mode=ParseMode.MARKDOWN,
             disable_web_page_preview=True,
         )
