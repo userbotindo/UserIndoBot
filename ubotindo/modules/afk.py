@@ -37,7 +37,7 @@ AFK_REPLY_GROUP = 8
 def afk(update, context):
     args = update.effective_message.text.split(None, 1)
 
-    if not user:
+    if not update.effective_user.id:
         return
 
     if update.effective_user.id in (777000, 1087968824):
