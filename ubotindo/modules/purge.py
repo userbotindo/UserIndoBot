@@ -43,7 +43,7 @@ async def purge(event):
     chat = event.chat_id
     msgs = []
 
-    if not await is_administrator(user_id=event.from_id, message=event):
+    if not await is_administrator(user_id=event.sender_id, message=event):
         await event.reply("You're not an admin!")
         return
 
@@ -89,7 +89,7 @@ async def purge(event):
 @client.on(events.NewMessage(pattern="^/del$"))
 async def delete_msg(event):
 
-    if not await is_administrator(user_id=event.from_id, message=event):
+    if not await is_administrator(user_id=event.sender_id, message=event):
         await event.reply("You're not an admin!")
         return
 
