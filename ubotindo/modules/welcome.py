@@ -159,7 +159,7 @@ def send(update, message, keyboard, backup_message):
             LOGGER.warning(keyboard)
             LOGGER.exception("Could not parse! got invalid url host errors")
         elif excp.message == "Reply message not found":
-            msg = context.bot.send_message(
+            msg = dispatcher.bot.send_message(
                 chat.id,
                 message,
                 parse_mode=ParseMode.MARKDOWN,

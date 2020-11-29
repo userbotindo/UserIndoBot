@@ -793,9 +793,10 @@ def main():
     else:
         LOGGER.info("Using long polling.")
         updater.start_polling(timeout=15, read_latency=4)
-        updater.bot.send_message(
-            chat_id=MESSAGE_DUMP, text="Ubotindo Started..."
-        )
+        if MESSAGE_DUMP:
+            updater.bot.send_message(
+                chat_id=MESSAGE_DUMP, text="Ubotindo Started..."
+            )
         client.run_until_disconnected()
 
     updater.idle()

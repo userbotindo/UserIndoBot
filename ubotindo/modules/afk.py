@@ -59,7 +59,10 @@ def afk(update, context):
         afkstr.format(update.effective_user.first_name, notice)
     )
     sleep(5)
-    afksend.delete()
+    try:
+        afksend.delete()
+    except BadRequest:
+        return
 
 
 def no_longer_afk(update, context):
@@ -159,9 +162,7 @@ def check_afk(update, context, user_id, fst_name, userc_id):
             if int(userc_id) == int(user_id):
                 return
             res = "{} is afk".format(fst_name)
-            noreason = update.effective_message.reply_text(res)
-            sleep(10)
-            noreason.delete()
+            replafk = update.effective_message.reply_text(res)
         else:
             if int(userc_id) == int(user_id):
                 return
@@ -171,8 +172,11 @@ def check_afk(update, context, user_id, fst_name, userc_id):
             replafk = update.effective_message.reply_text(
                 res, parse_mode="html"
             )
-            sleep(10)
+        sleep(10)
+        try:
             replafk.delete()
+        except BadRequest:
+            return
 
 
 def __gdpr__(user_id):
