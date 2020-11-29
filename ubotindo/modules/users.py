@@ -80,7 +80,8 @@ def broadcast(update, context):
 
         update.effective_message.reply_text(
             "Broadcast complete. {} groups failed to receive the message, probably "
-            "due to being kicked.".format(failed))
+            "due to being kicked.".format(failed)
+        )
 
 
 def log_user(update, context):

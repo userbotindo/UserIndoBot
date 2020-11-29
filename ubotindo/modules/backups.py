@@ -92,7 +92,8 @@ def import_data(update, context):
             if data.get(str(chat.id)) is None:
                 if conn:
                     text = "Backup comes from another chat, I can't return another chat to chat *{}*".format(
-                        chat_name)
+                        chat_name
+                    )
                 else:
                     text = "Backup comes from another chat, I can't return another chat to this chat"
                 return msg.reply_text(text, parse_mode="markdown")
@@ -250,7 +251,8 @@ def export_data(update, context):
             )
         elif note.msgtype == 8:
             isicat += "###video_note###:{}<###TYPESPLIT###>{}<###splitter###>".format(
-                note.file, note.value)
+                note.file, note.value
+            )
         else:
             isicat += "{}<###splitter###>".format(note.value)
     for x in range(count):
@@ -363,22 +365,18 @@ def export_data(update, context):
         context.bot.sendMessage(
             MESSAGE_DUMP,
             "*Successfully imported backup:*\nChat: `{}`\nChat ID: `{}`\nOn: `{}`".format(
-                chat.title,
-                chat_id,
-                tgl),
+                chat.title, chat_id, tgl
+            ),
             parse_mode=ParseMode.MARKDOWN,
         )
     except BadRequest:
         pass
     context.bot.sendDocument(
         current_chat_id,
-        document=open(
-            "Userindo-Bot{}.backup".format(chat_id),
-            "rb"),
+        document=open("Userindo-Bot{}.backup".format(chat_id), "rb"),
         caption="*Successfully backup:*\nChat: `{}`\nChat ID: `{}`\nOn: `{}`\n\nNote: This `Userindobot-Backup` is specially made for notes.".format(
-            chat.title,
-            chat_id,
-            tgl),
+            chat.title, chat_id, tgl
+        ),
         timeout=360,
         reply_to_message_id=msg.message_id,
         parse_mode=ParseMode.MARKDOWN,
@@ -420,7 +418,7 @@ __help__ = """
 # IMPORT_HANDLER = CommandHandler("import", import_data, run_async=True)
 # EXPORT_HANDLER = CommandHandler(
 #    "export", export_data, pass_chat_data=True, run_async=True
-#)
+# )
 
 # dispatcher.add_handler(IMPORT_HANDLER)
 # dispatcher.add_handler(EXPORT_HANDLER)

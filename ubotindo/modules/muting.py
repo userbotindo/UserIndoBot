@@ -160,7 +160,8 @@ def unmute(update, context):
     else:
         message.reply_text(
             "This user isn't even in the chat, unmuting them won't make them talk more than they "
-            "already do!")
+            "already do!"
+        )
 
     return ""
 

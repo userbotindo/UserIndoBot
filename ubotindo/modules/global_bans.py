@@ -93,7 +93,6 @@ def gban(update, context):
     args = context.args
     user_id, reason = extract_user_and_text(message, args)
 
-
     if not user_id:
         message.reply_text("You don't seem to be referring to a user.")
         return
@@ -432,22 +431,23 @@ def gbanstat(update, context):
             sql.enable_gbans(update.effective_chat.id)
             update.effective_message.reply_text(
                 "I've enabled Spam Shield in this group. This will help protect you "
-                "from spammers, unsavoury characters, and the biggest trolls.")
+                "from spammers, unsavoury characters, and the biggest trolls."
+            )
         elif args[0].lower() in ["off", "no"]:
             sql.disable_gbans(update.effective_chat.id)
             update.effective_message.reply_text(
                 "I've disabled Spam shield in this group. SpamShield wont affect your users "
                 "anymore. You'll be less protected from any trolls and spammers "
-                "though!")
+                "though!"
+            )
     else:
         update.effective_message.reply_text(
             "Give me some arguments to choose a setting! on/off, yes/no!\n\n"
             "Your current setting is: {}\n"
             "When True, Any Spam Shield that happen will also happen in your group. "
             "When False, they won't, leaving you at the possible mercy of "
-            "spammers.".format(
-                sql.does_chat_gban(
-                    update.effective_chat.id)))
+            "spammers.".format(sql.does_chat_gban(update.effective_chat.id))
+        )
 
 
 def __stats__():
@@ -473,9 +473,7 @@ def __user_info__(user_id):
             user = sql.get_gbanned_user(user_id)
             if user.reason:
                 text += "\n<b>Reason:</b> {}".format(html.escape(user.reason))
-                text += (
-                    "\nAppeal at @botspamgroup if you think it's invalid."
-                )
+                text += "\nAppeal at @botspamgroup if you think it's invalid."
     else:
         text = text.format("No")
     return text

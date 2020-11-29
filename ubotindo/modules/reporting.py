@@ -80,7 +80,8 @@ def report_setting(update, context):
                 sql.set_chat_setting(chat.id, True)
                 msg.reply_text(
                     "Turned on reporting! Admins who have turned on reports will be notified when /report "
-                    "or @admin are called.")
+                    "or @admin are called."
+                )
 
             elif args[0] in ("no", "off"):
                 sql.set_chat_setting(chat.id, False)
@@ -130,7 +131,8 @@ def report(update, context) -> str:
             msg = (
                 f"<b>Report from: </b>{html.escape(chat.title)}\n"
                 f"<b> × Report by:</b> {mention_html(user.id, user.first_name)}(<code>{user.id}</code>)\n"
-                f"<b> × Reported user:</b> {mention_html(reported_user.id, reported_user.first_name)} (<code>{reported_user.id}</code>)\n")
+                f"<b> × Reported user:</b> {mention_html(reported_user.id, reported_user.first_name)} (<code>{reported_user.id}</code>)\n"
+            )
             link = f'<b> × Reported message:</b> <a href="https://t.me/{chat.username}/{message.reply_to_message.message_id}">click here</a>'
             should_forward = False
             keyboard = [
@@ -249,12 +251,14 @@ def __migrate__(old_chat_id, new_chat_id):
 
 def __chat_settings__(chat_id, user_id):
     return "This chat is setup to send user reports to admins, via /report and @admin: `{}`".format(
-        sql.chat_should_report(chat_id))
+        sql.chat_should_report(chat_id)
+    )
 
 
 def __user_settings__(user_id):
     return "You receive reports from chats you're admin in: `{}`.\nToggle this with /reports in PM.".format(
-        sql.user_should_report(user_id))
+        sql.user_should_report(user_id)
+    )
 
 
 __mod_name__ = "Reporting"

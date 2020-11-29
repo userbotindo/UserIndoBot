@@ -212,7 +212,9 @@ def set_flood(update, context) -> str:
             )
     else:
         message.reply_text(
-            ("Use `/setflood number` to enable anti-flood.\nOr use `/setflood off` to disable antiflood!."),
+            (
+                "Use `/setflood number` to enable anti-flood.\nOr use `/setflood off` to disable antiflood!."
+            ),
             parse_mode="markdown",
         )
     return ""
@@ -251,7 +253,9 @@ def flood(update, context):
         if conn:
             text = msg.reply_text(
                 "I'm currently restricting members after {} consecutive messages in {}.".format(
-                    limit, chat_name))
+                    limit, chat_name
+                )
+            )
         else:
             text = msg.reply_text(
                 "I'm currently restricting members after {} consecutive messages.".format(
@@ -328,7 +332,9 @@ Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks.
         if conn:
             text = msg.reply_text(
                 "Exceeding consecutive flood limit will result in {} in {}!".format(
-                    settypeflood, chat_name))
+                    settypeflood, chat_name
+                )
+            )
         else:
             text = msg.reply_text(
                 "Exceeding consecutive flood limit will result in {}!".format(
@@ -359,7 +365,9 @@ Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks.
         if conn:
             text = msg.reply_text(
                 "Sending more messages than flood limit will result in {} in {}.".format(
-                    settypeflood, chat_name))
+                    settypeflood, chat_name
+                )
+            )
         else:
             text = msg.reply_text(
                 "Sending more message than flood limit will result in {}.".format(

@@ -140,7 +140,8 @@ def send(update, message, keyboard, backup_message):
                     backup_message
                     + "\nNote: the current message has buttons which "
                     "use url protocols that are unsupported by "
-                    "telegram. Please update."),
+                    "telegram. Please update."
+                ),
                 parse_mode=ParseMode.MARKDOWN,
                 reply_to_message_id=reply,
             )
@@ -242,8 +243,8 @@ def new_member(update, context):
                 context.bot.send_message(
                     MESSAGE_DUMP,
                     "UserbotindoBot have been added to <pre>{}</pre> with ID: \n<pre>{}</pre>".format(
-                        chat.title,
-                        chat.id),
+                        chat.title, chat.id
+                    ),
                     parse_mode=ParseMode.HTML,
                 )
             else:
@@ -388,15 +389,21 @@ def new_member(update, context):
                             mention_html(user.id, new_mem.first_name)
                         )
                         msg.reply_text(
-                            "{}\nClick the button below to start talking.".format(new_join_mem),
+                            "{}\nClick the button below to start talking.".format(
+                                new_join_mem
+                            ),
                             reply_markup=InlineKeyboardMarkup(
                                 [
                                     [
                                         InlineKeyboardButton(
                                             text="Yus, I'm a human",
                                             callback_data="user_join_({})".format(
-                                                new_mem.id),
-                                        )]]),
+                                                new_mem.id
+                                            ),
+                                        )
+                                    ]
+                                ]
+                            ),
                             parse_mode=ParseMode.HTML,
                             reply_to_message_id=reply,
                         )
@@ -530,7 +537,9 @@ def welcome(update, context):
         )
         update.effective_message.reply_text(
             "This chat has it's welcome setting set to: `{}`.\n*The welcome message "
-            "(not filling the {{}}) is:*".format(pref), parse_mode=ParseMode.MARKDOWN, )
+            "(not filling the {{}}) is:*".format(pref),
+            parse_mode=ParseMode.MARKDOWN,
+        )
 
         buttons = sql.get_welc_buttons(chat.id)
         if (
@@ -609,7 +618,9 @@ def goodbye(update, context):
         pref, goodbye_m, goodbye_type = sql.get_gdbye_pref(chat.id)
         update.effective_message.reply_text(
             "This chat has it's goodbye setting set to: `{}`.\n*The goodbye  message "
-            "(not filling the {{}}) is:*".format(pref), parse_mode=ParseMode.MARKDOWN, )
+            "(not filling the {{}}) is:*".format(pref),
+            parse_mode=ParseMode.MARKDOWN,
+        )
 
         if goodbye_type == sql.Types.BUTTON_TEXT:
             buttons = sql.get_gdbye_buttons(chat.id)
@@ -955,7 +966,9 @@ WELC_HELP_TXT = (
     "remove it.\n"
     "If you're feeling fun, you can even set images/gifs/videos/voice messages as the welcome message by "
     "replying to the desired media, and calling /setwelcome.".format(
-        dispatcher.bot.username))
+        dispatcher.bot.username
+    )
+)
 
 
 @user_admin

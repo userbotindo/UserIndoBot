@@ -108,7 +108,8 @@ def get(bot, update, notename, show_none=True, no_format=False):
                     if excp.message == "Message to forward not found":
                         message.reply_text(
                             "This message seems to have been lost - I'll remove it "
-                            "from your notes list.")
+                            "from your notes list."
+                        )
                         sql.rm_note(chat_id, notename)
                     else:
                         raise
@@ -125,7 +126,8 @@ def get(bot, update, notename, show_none=True, no_format=False):
                             "Looks like the original sender of this note has deleted "
                             "their message - sorry! Get your bot admin to start using a "
                             "message dump to avoid this. I'll remove this note from "
-                            "your saved notes.")
+                            "your saved notes."
+                        )
                         sql.rm_note(chat_id, notename)
                     else:
                         raise
@@ -221,12 +223,14 @@ def get(bot, update, notename, show_none=True, no_format=False):
                     message.reply_text(
                         "Looks like you tried to mention someone I've never seen before. If you really "
                         "want to mention them, forward one of their messages to me, and I'll be able "
-                        "to tag them!")
+                        "to tag them!"
+                    )
                 elif FILE_MATCHER.match(note.value):
                     message.reply_text(
                         "This note was an incorrectly imported file from another bot - I can't use "
                         "it. If you really need it, you'll have to save it again. In "
-                        "the meantime, I'll remove it from your notes list.")
+                        "the meantime, I'll remove it from your notes list."
+                    )
                     sql.rm_note(chat_id, notename)
                 else:
                     message.reply_text(
@@ -302,8 +306,8 @@ def save(update, context):
 
     msg.reply_text(
         "Saved '`{note_name}`' in *{chat_name}*.\nGet it with `/get {note_name}`, or `#{note_name}`!".format(
-            note_name=note_name,
-            chat_name=chat_name),
+            note_name=note_name, chat_name=chat_name
+        ),
         parse_mode=ParseMode.MARKDOWN,
     )
 
@@ -471,13 +475,13 @@ def __import_data__(chat_id, data):
 
         if match:
             failures.append(notename)
-            notedata = notedata[match.end():].strip()
+            notedata = notedata[match.end() :].strip()
             if notedata:
                 sql.add_note_to_db(
                     chat_id, notename[1:], notedata, sql.Types.TEXT
                 )
         elif matchsticker:
-            content = notedata[matchsticker.end():].strip()
+            content = notedata[matchsticker.end() :].strip()
             if content:
                 sql.add_note_to_db(
                     chat_id,
@@ -487,7 +491,7 @@ def __import_data__(chat_id, data):
                     file=content,
                 )
         elif matchbtn:
-            parse = notedata[matchbtn.end():].strip()
+            parse = notedata[matchbtn.end() :].strip()
             notedata = parse.split("<###button###>")[0]
             buttons = parse.split("<###button###>")[1]
             buttons = ast.literal_eval(buttons)
@@ -500,7 +504,7 @@ def __import_data__(chat_id, data):
                     buttons=buttons,
                 )
         elif matchfile:
-            file = notedata[matchfile.end():].strip()
+            file = notedata[matchfile.end() :].strip()
             file = file.split("<###TYPESPLIT###>")
             notedata = file[1]
             content = file[0]
@@ -513,7 +517,7 @@ def __import_data__(chat_id, data):
                     file=content,
                 )
         elif matchphoto:
-            photo = notedata[matchphoto.end():].strip()
+            photo = notedata[matchphoto.end() :].strip()
             photo = photo.split("<###TYPESPLIT###>")
             notedata = photo[1]
             content = photo[0]
@@ -526,7 +530,7 @@ def __import_data__(chat_id, data):
                     file=content,
                 )
         elif matchaudio:
-            audio = notedata[matchaudio.end():].strip()
+            audio = notedata[matchaudio.end() :].strip()
             audio = audio.split("<###TYPESPLIT###>")
             notedata = audio[1]
             content = audio[0]
@@ -539,7 +543,7 @@ def __import_data__(chat_id, data):
                     file=content,
                 )
         elif matchvoice:
-            voice = notedata[matchvoice.end():].strip()
+            voice = notedata[matchvoice.end() :].strip()
             voice = voice.split("<###TYPESPLIT###>")
             notedata = voice[1]
             content = voice[0]
@@ -552,7 +556,7 @@ def __import_data__(chat_id, data):
                     file=content,
                 )
         elif matchvideo:
-            video = notedata[matchvideo.end():].strip()
+            video = notedata[matchvideo.end() :].strip()
             video = video.split("<###TYPESPLIT###>")
             notedata = video[1]
             content = video[0]
@@ -565,7 +569,7 @@ def __import_data__(chat_id, data):
                     file=content,
                 )
         elif matchvn:
-            video_note = notedata[matchvn.end():].strip()
+            video_note = notedata[matchvn.end() :].strip()
             video_note = video_note.split("<###TYPESPLIT###>")
             notedata = video_note[1]
             content = video_note[0]

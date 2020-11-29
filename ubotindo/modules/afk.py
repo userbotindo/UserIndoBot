@@ -119,7 +119,7 @@ def reply_afk(update, context):
 
             if ent.type == MessageEntity.MENTION:
                 user_id = get_user_id(
-                    message.text[ent.offset: ent.offset + ent.length]
+                    message.text[ent.offset : ent.offset + ent.length]
                 )
                 if not user_id:
                     # Should never happen, since for a user to become AFK they

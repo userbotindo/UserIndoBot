@@ -75,9 +75,13 @@ def get_id(update, context):
             user2 = update.effective_message.reply_to_message.forward_from
             update.effective_message.reply_text(
                 "The original sender, {}, has an ID of `{}`.\nThe forwarder, {}, has an ID of `{}`.".format(
-                    escape_markdown(
-                        user2.first_name), user2.id, escape_markdown(
-                        user1.first_name), user1.id, ), parse_mode=ParseMode.MARKDOWN, )
+                    escape_markdown(user2.first_name),
+                    user2.id,
+                    escape_markdown(user1.first_name),
+                    user1.id,
+                ),
+                parse_mode=ParseMode.MARKDOWN,
+            )
         else:
             user = context.bot.get_chat(user_id)
             update.effective_message.reply_text(
@@ -282,7 +286,9 @@ def gdpr(update, context):
         "[this](https://ico.org.uk/for-organisations/guide-to-the-general-data-protection-regulation-gdpr/individual-rights/right-to-erasure/), "
         "which clearly states that the right to erasure does not apply "
         '"for the performance of a task carried out in the public interest", as is '
-        "the case for the aforementioned pieces of data.", parse_mode=ParseMode.MARKDOWN, )
+        "the case for the aforementioned pieces of data.",
+        parse_mode=ParseMode.MARKDOWN,
+    )
 
 
 MARKDOWN_HELP = """
@@ -325,7 +331,8 @@ def markdown_help(update, context):
     update.effective_message.reply_text(
         "/save test This is a markdown test. _italics_, --underline--, *bold*, `code`, ~strike~ "
         "[URL](example.com) [button](buttonurl:github.com) "
-        "[button2](buttonurl://google.com:same)")
+        "[button2](buttonurl://google.com:same)"
+    )
 
 
 @typing_action
@@ -504,7 +511,7 @@ def stats(update, context):
 @typing_action
 def covid(update, context):
     message = update.effective_message
-    country = str(message.text[len(f"/covid "):])
+    country = str(message.text[len(f"/covid ") :])
     data = Covid(source="worldometers")
 
     if country == "":
@@ -541,7 +548,8 @@ def covid(update, context):
         f"<b>New Deaths :</b> <code>{format_integer(c_case['new_deaths'])}</code>\n"
         f"<b>Critical Cases :</b> <code>{format_integer(c_case['critical'])}</code>\n"
         f"<b>Total Tests :</b> <code>{total_tests}</code>\n\n"
-        f"Data provided by <a href='{link}'>Worldometer</a>")
+        f"Data provided by <a href='{link}'>Worldometer</a>"
+    )
 
     message.reply_text(
         output, parse_mode=ParseMode.HTML, disable_web_page_preview=True

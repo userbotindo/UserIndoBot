@@ -157,7 +157,9 @@ def connect_chat(update, context):
                     chat_name = conn_chat.title
                     send_message(
                         update.effective_message,
-                        "Successfully connected to *{}*. \nUse /helpconnect to check available commands.".format(chat_name),
+                        "Successfully connected to *{}*. \nUse /helpconnect to check available commands.".format(
+                            chat_name
+                        ),
                         parse_mode=ParseMode.MARKDOWN,
                     )
                     sql.add_history_conn(user.id, str(conn_chat.id), chat_name)
@@ -266,7 +268,9 @@ def connect_chat(update, context):
                     sql.add_history_conn(user.id, str(chat.id), chat_name)
                     context.bot.send_message(
                         update.effective_message.from_user.id,
-                        "You are connected to *{}*. \nUse `/helpconnect` to check available commands.".format(chat_name),
+                        "You are connected to *{}*. \nUse `/helpconnect` to check available commands.".format(
+                            chat_name
+                        ),
                         parse_mode="markdown",
                     )
                 except BadRequest:
@@ -406,7 +410,9 @@ def connect_button(update, context):
                 )
                 chat_name = conn_chat.title
                 query.message.edit_text(
-                    "Successfully connected to *{}*. \nUse `/helpconnect` to check available commands.".format(chat_name),
+                    "Successfully connected to *{}*. \nUse `/helpconnect` to check available commands.".format(
+                        chat_name
+                    ),
                     parse_mode=ParseMode.MARKDOWN,
                 )
                 sql.add_history_conn(user.id, str(conn_chat.id), chat_name)

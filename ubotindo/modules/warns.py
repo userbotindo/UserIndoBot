@@ -333,7 +333,8 @@ def warns(update, context):
         if reasons:
             if conn:
                 text = "This user has {}/{} warnings, in *{}* for the following reasons:".format(
-                    num_warns, limit, chat_name)
+                    num_warns, limit, chat_name
+                )
             else:
                 text = "This user has {}/{} warnings, for the following reasons:".format(
                     num_warns,
@@ -349,7 +350,10 @@ def warns(update, context):
         else:
             update.effective_message.reply_text(
                 "User has {}/{} warnings, but no reasons for any of them.".format(
-                    num_warns, limit), parse_mode="markdown", )
+                    num_warns, limit
+                ),
+                parse_mode="markdown",
+            )
     else:
         update.effective_message.reply_text(
             "This user hasn't got any warnings!"

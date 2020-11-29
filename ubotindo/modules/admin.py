@@ -168,7 +168,8 @@ def demote(update, context):
     except BadRequest:
         message.reply_text(
             "Failed to demote. I might not be admin, or the admin status was appointed by another "
-            "user, so I can't act upon them!")
+            "user, so I can't act upon them!"
+        )
         return ""
 
 
