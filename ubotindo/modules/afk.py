@@ -19,7 +19,7 @@ from time import sleep
 
 from telegram import MessageEntity
 from telegram.error import BadRequest
-from telegram.ext import Filters, MessageHandler, run_async
+from telegram.ext import Filters, MessageHandler
 
 import ubotindo.modules.helper_funcs.fun_strings as fun
 from ubotindo import dispatcher
@@ -34,9 +34,15 @@ AFK_GROUP = 7
 AFK_REPLY_GROUP = 8
 
 
-@run_async
 def afk(update, context):
     args = update.effective_message.text.split(None, 1)
+
+    if not update.effective_user.id:
+        return
+
+    if update.effective_user.id in (777000, 1087968824):
+        return
+
     notice = ""
     if len(args) >= 2:
         reason = args[1]
@@ -50,14 +56,12 @@ def afk(update, context):
     afkstr = random.choice(fun.AFK)
     msg = update.effective_message
     afksend = msg.reply_text(
-        afkstr.format(
-            update.effective_user.first_name,
-            notice))
+        afkstr.format(update.effective_user.first_name, notice)
+    )
     sleep(5)
     afksend.delete()
 
 
-@run_async
 def no_longer_afk(update, context):
     user = update.effective_user
     message = update.effective_message
@@ -83,14 +87,14 @@ def no_longer_afk(update, context):
             ]
             chosen_option = random.choice(options)
             unafk = update.effective_message.reply_text(
-                chosen_option.format(firstname))
+                chosen_option.format(firstname)
+            )
             sleep(10)
             unafk.delete()
         except BaseException:
             return
 
 
-@run_async
 def reply_afk(update, context):
     bot = context.bot
     message = update.effective_message
@@ -162,9 +166,11 @@ def check_afk(update, context, user_id, fst_name, userc_id):
             if int(userc_id) == int(user_id):
                 return
             res = "<b>{}</b> is away from keyboard! says it's because of <b>Reason:</b> <code>{}</code>".format(
-                fst_name, user.reason)
+                fst_name, user.reason
+            )
             replafk = update.effective_message.reply_text(
-                res, parse_mode="html")
+                res, parse_mode="html"
+            )
             sleep(10)
             replafk.delete()
 
@@ -181,13 +187,17 @@ When marked as AFK, any mentions will be replied to with a message to say you're
 """
 
 
-AFK_HANDLER = DisableAbleCommandHandler("afk", afk)
+AFK_HANDLER = DisableAbleCommandHandler("afk", afk, run_async=True)
 AFK_REGEX_HANDLER = DisableAbleMessageHandler(
-    Filters.regex("(?i)brb"), afk, friendly="afk"
+    Filters.regex("(?i)brb"), afk, friendly="afk", run_async=True
 )
-NO_AFK_HANDLER = MessageHandler(Filters.all & Filters.group, no_longer_afk)
+NO_AFK_HANDLER = MessageHandler(
+    Filters.all & Filters.group, no_longer_afk, run_async=True
+)
 AFK_REPLY_HANDLER = MessageHandler(
-    Filters.all & Filters.group & ~Filters.update.edited_message, reply_afk
+    Filters.all & Filters.group & ~Filters.update.edited_message,
+    reply_afk,
+    run_async=True,
 )
 
 

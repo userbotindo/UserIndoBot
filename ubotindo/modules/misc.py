@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import codecs
 import datetime
 import codecs
 import html
@@ -39,9 +40,8 @@ from telegram import (
     TelegramError,
 )
 from telegram.error import BadRequest
-from telegram.ext import CommandHandler, Filters, run_async
+from telegram.ext import CommandHandler, Filters
 from telegram.utils.helpers import escape_markdown, mention_html
-from tswift import Song
 
 from ubotindo import (
     DEV_USERS,
@@ -62,7 +62,6 @@ from ubotindo.modules.helper_funcs.filters import CustomFilters
 from ubotindo.modules.sql.afk_sql import is_afk
 
 
-@run_async
 @typing_action
 def get_id(update, context):
     args = context.args
@@ -83,17 +82,17 @@ def get_id(update, context):
             user = context.bot.get_chat(user_id)
             update.effective_message.reply_text(
                 "{}'s id is `{}`.".format(
-                    escape_markdown(
-                        user.first_name),
-                    user.id),
+                    escape_markdown(user.first_name), user.id
+                ),
                 parse_mode=ParseMode.MARKDOWN,
             )
     else:
         chat = update.effective_chat  # type: Optional[Chat]
         if chat.type == "private":
             update.effective_message.reply_text(
-                "Your id is `{}`.".format(
-                    chat.id), parse_mode=ParseMode.MARKDOWN)
+                "Your id is `{}`.".format(chat.id),
+                parse_mode=ParseMode.MARKDOWN,
+            )
 
         else:
             update.effective_message.reply_text(
@@ -102,7 +101,6 @@ def get_id(update, context):
             )
 
 
-@run_async
 @typing_action
 def info(update, context):
     args = context.args
@@ -153,7 +151,8 @@ def info(update, context):
         text += "\n<b>Username:</b> @{}".format(html.escape(user.username))
 
     text += "\n<b>Permanent user link:</b> {}".format(
-        mention_html(user.id, "link"))
+        mention_html(user.id, "link")
+    )
 
     text += "\n<b>Number of profile pics:</b> <code>{}</code>".format(
         context.bot.get_user_profile_photos(user.id).total_count
@@ -249,19 +248,16 @@ def info(update, context):
             photo=profile,
             caption=(text),
             parse_mode=ParseMode.HTML,
-            disable_web_page_preview=True,
         )
     except IndexError:
         context.bot.sendChatAction(chat.id, "typing")
         msg.reply_text(
-            text,
-            parse_mode=ParseMode.HTML,
-            disable_web_page_preview=True)
+            text, parse_mode=ParseMode.HTML, disable_web_page_preview=True
+        )
     finally:
         del_msg.delete()
 
 
-@run_async
 @typing_action
 def echo(update, context):
     args = update.effective_message.text.split(None, 1)
@@ -273,7 +269,6 @@ def echo(update, context):
     message.delete()
 
 
-@run_async
 @typing_action
 def gdpr(update, context):
     update.effective_message.reply_text("Deleting identifiable data...")
@@ -319,11 +314,11 @@ Keep in mind that your message <b>MUST</b> contain some text other than just a b
 )
 
 
-@run_async
 @typing_action
 def markdown_help(update, context):
     update.effective_message.reply_text(
-        MARKDOWN_HELP, parse_mode=ParseMode.HTML)
+        MARKDOWN_HELP, parse_mode=ParseMode.HTML
+    )
     update.effective_message.reply_text(
         "Try forwarding the following message to me, and you'll see!"
     )
@@ -333,7 +328,6 @@ def markdown_help(update, context):
         "[button2](buttonurl://google.com:same)")
 
 
-@run_async
 @typing_action
 def wiki(update, context):
     kueri = re.split(pattern="wiki", string=update.effective_message.text)
@@ -343,8 +337,16 @@ def wiki(update, context):
     else:
         try:
             pertama = update.effective_message.reply_text("🔄 Loading...")
-            keyboard = InlineKeyboardMarkup([[InlineKeyboardButton(
-                text="🔧 More Info...", url=wikipedia.page(kueri).url)]])
+            keyboard = InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(
+                            text="🔧 More Info...",
+                            url=wikipedia.page(kueri).url,
+                        )
+                    ]
+                ]
+            )
             context.bot.editMessageText(
                 chat_id=update.effective_chat.id,
                 message_id=pertama.message_id,
@@ -361,7 +363,6 @@ def wiki(update, context):
             )
 
 
-@run_async
 @typing_action
 def ud(update, context):
     msg = update.effective_message
@@ -375,13 +376,14 @@ def ud(update, context):
         return
     try:
         results = get(
-            f"http://api.urbandictionary.com/v0/define?term={text}").json()
-        reply_text = f'Word: {text}\nDefinition: {results["list"][0]["definition"]}'
+            f"http://api.urbandictionary.com/v0/define?term={text}"
+        ).json()
+        reply_text = (
+            f'Word: {text}\nDefinition: {results["list"][0]["definition"]}'
+        )
         reply_text += f'\n\nExample: {results["list"][0]["example"]}'
     except IndexError:
-        reply_text = (
-            f"Word: {text}\nResults: Sorry could not find any matching results!"
-        )
+        reply_text = f"Word: {text}\nResults: Sorry could not find any matching results!"
     ignore_chars = "[]"
     reply = reply_text
     for chars in ignore_chars:
@@ -394,7 +396,6 @@ def ud(update, context):
         msg.reply_text(f"Error! {err.message}")
 
 
-@run_async
 @typing_action
 def src(update, context):
     update.effective_message.reply_text(
@@ -404,39 +405,6 @@ def src(update, context):
     )
 
 
-@run_async
-@typing_action
-def lyrics(update, context):
-    msg = update.effective_message
-    args = context.args
-    query = " ".join(args)
-    song = ""
-    if not query:
-        msg.reply_text("You haven't specified which song to look for!")
-        return
-    else:
-        song = Song.find_song(query)
-        if song:
-            if song.lyrics:
-                reply = song.format()
-            else:
-                reply = "Couldn't find any lyrics for that song!"
-        else:
-            reply = "Song not found!"
-        if len(reply) > 4090:
-            with open("lyrics.txt", "w") as f:
-                f.write(reply)
-            with open("lyrics.txt", "rb") as f:
-                msg.reply_document(
-                    document=f,
-                    caption="Message length exceeded max limit! Sending as a text file.",
-                )
-            os.remove("lyrics.txt")
-        else:
-            msg.reply_text(reply)
-
-
-@run_async
 @send_action(ChatAction.UPLOAD_PHOTO)
 def wall(update, context):
     chat_id = update.effective_chat.id
@@ -483,7 +451,6 @@ def wall(update, context):
                 )
 
 
-@run_async
 @typing_action
 def getlink(update, context):
     args = context.args
@@ -501,9 +468,11 @@ def getlink(update, context):
                 invitelink = context.bot.exportChatInviteLink(chat_id)
                 links += str(chat_id) + ":\n" + invitelink + "\n"
             else:
-                links += (str(chat_id) +
-                          ":\nI don't have access to the invite link." +
-                          "\n")
+                links += (
+                    str(chat_id)
+                    + ":\nI don't have access to the invite link."
+                    + "\n"
+                )
         except BadRequest as excp:
             links += str(chat_id) + ":\n" + excp.message + "\n"
         except TelegramError as excp:
@@ -512,59 +481,6 @@ def getlink(update, context):
     message.reply_text(links)
 
 
-@run_async
-@send_action(ChatAction.UPLOAD_PHOTO)
-def rmemes(update, context):
-    msg = update.effective_message
-    chat = update.effective_chat
-
-    SUBREDS = [
-        "meirl",
-        "dankmemes",
-        "AdviceAnimals",
-        "memes",
-        "meme",
-        "memes_of_the_dank",
-        "PornhubComments",
-        "teenagers",
-        "memesIRL",
-        "insanepeoplefacebook",
-        "terriblefacebookmemes",
-    ]
-
-    subreddit = random.choice(SUBREDS)
-    res = r.get(f"https://meme-api.herokuapp.com/gimme/{subreddit}")
-
-    if res.status_code != 200:  # Like if api is down?
-        msg.reply_text("Sorry some error occurred :(")
-        return
-    else:
-        res = res.json()
-
-    rpage = res.get(str("subreddit"))  # Subreddit
-    title = res.get(str("title"))  # Post title
-    memeu = res.get(str("url"))  # meme pic url
-    plink = res.get(str("postLink"))
-
-    caps = f"× <b>Title</b>: {title}\n"
-    caps += f"× <b>Subreddit:</b> <pre>r/{rpage}</pre>"
-
-    keyb = [[InlineKeyboardButton(text="Subreddit Postlink 🔗", url=plink)]]
-    try:
-        context.bot.send_photo(
-            chat.id,
-            photo=memeu,
-            caption=(caps),
-            reply_markup=InlineKeyboardMarkup(keyb),
-            timeout=60,
-            parse_mode=ParseMode.HTML,
-        )
-
-    except BadRequest as excp:
-        return msg.reply_text(f"Error! {excp.message}")
-
-
-@run_async
 def staff_ids(update, context):
     sfile = "List of SUDO & SUPPORT users:\n"
     sfile += f"× DEV USER IDs; {DEV_USERS}\n"
@@ -579,14 +495,12 @@ def staff_ids(update, context):
         )
 
 
-@run_async
 def stats(update, context):
     update.effective_message.reply_text(
         "Current stats:\n" + "\n".join([mod.__stats__() for mod in STATS])
     )
 
 
-@run_async
 @typing_action
 def covid(update, context):
     message = update.effective_message
@@ -630,9 +544,8 @@ def covid(update, context):
         f"Data provided by <a href='{link}'>Worldometer</a>")
 
     message.reply_text(
-        output,
-        parse_mode=ParseMode.HTML,
-        disable_web_page_preview=True)
+        output, parse_mode=ParseMode.HTML, disable_web_page_preview=True
+    )
 
 
 def format_integer(number, thousand_separator="."):
@@ -655,13 +568,11 @@ def format_integer(number, thousand_separator="."):
     return result
 
 
-@run_async
 @typing_action
 def paste(update, context):
     msg = update.effective_message
 
     if msg.reply_to_message and msg.reply_to_message.document:
-        message = msg.reply_text("Pasting Text...")
         file = context.bot.get_file(msg.reply_to_message.document)
         file.download("file.txt")
         text = codecs.open("file.txt", "r+", encoding="utf-8")
@@ -669,12 +580,27 @@ def paste(update, context):
         link = (
             post(
                 "https://nekobin.com/api/documents",
-                json={
-                    "content": paste_text}) .json() .get("result") .get("key"))
-        message.edit_text(
-            "Pasted to Nekobin\n\n"
-            f"[Nekobin URL](https://nekobin.com/{link})\n"
-            f"[View RAW](https://nekobin.com/raw/{link})",
+                json={"content": paste_text},
+            )
+            .json()
+            .get("result")
+            .get("key")
+        )
+        text = f"**Pasted to Nekobin!!!**"
+        buttons = [
+            [
+                InlineKeyboardButton(
+                    text="View Link", url=f"https://nekobin.com/{link}"
+                ),
+                InlineKeyboardButton(
+                    text="View Raw",
+                    url=f"https://nekobin.com/raw/{link}",
+                ),
+            ]
+        ]
+        msg.reply_text(
+            text,
+            reply_markup=InlineKeyboardMarkup(buttons),
             parse_mode=ParseMode.MARKDOWN,
             disable_web_page_preview=True,
         )
@@ -690,47 +616,53 @@ An "odds and ends" module for small, simple commands which don't really fit anyw
  × /id: Get the current group id. If used by replying to a message, gets that user's id.
  × /info: Get information about a user.
  × /wiki : Search wikipedia articles.
- × /rmeme: Sends random meme scraped from reddit.
  × /ud <query> : Search stuffs in urban dictionary.
  × /wall <query> : Get random wallpapers directly from bot!
  × /reverse : Reverse searches image or stickers on google.
- × /lyrics <query> : You can either enter just the song name or both the artist and song name.
  × /covid <country name>: Give stats about COVID-19.
  × /paste : Paste any text file to Nekobin.
  × /gdpr: Deletes your information from the bot's database. Private chats only.
  × /markdownhelp: Quick summary of how markdown works in telegram - can only be called in private chats.
-*Last.FM*
- × /setuser <username>: sets your last.fm username.
- × /clearuser: removes your last.fm username from the bot's database.
- × /lastfm: returns what you're scrobbling on last.fm.
 """
 
 __mod_name__ = "Miscs"
 
-ID_HANDLER = DisableAbleCommandHandler("id", get_id, pass_args=True)
-INFO_HANDLER = DisableAbleCommandHandler("info", info, pass_args=True)
-ECHO_HANDLER = CommandHandler("echo", echo, filters=CustomFilters.sudo_filter)
+ID_HANDLER = DisableAbleCommandHandler(
+    "id", get_id, pass_args=True, run_async=True
+)
+INFO_HANDLER = DisableAbleCommandHandler(
+    "info", info, pass_args=True, run_async=True
+)
+ECHO_HANDLER = CommandHandler(
+    "echo", echo, filters=CustomFilters.sudo_filter, run_async=True
+)
 MD_HELP_HANDLER = CommandHandler(
-    "markdownhelp",
-    markdown_help,
-    filters=Filters.private)
+    "markdownhelp", markdown_help, filters=Filters.private, run_async=True
+)
 STATS_HANDLER = CommandHandler(
-    "stats", stats, filters=CustomFilters.dev_filter)
-GDPR_HANDLER = CommandHandler("gdpr", gdpr, filters=Filters.private)
-WIKI_HANDLER = DisableAbleCommandHandler("wiki", wiki)
-WALLPAPER_HANDLER = DisableAbleCommandHandler("wall", wall, pass_args=True)
-UD_HANDLER = DisableAbleCommandHandler("ud", ud)
-LYRICS_HANDLER = DisableAbleCommandHandler("lyrics", lyrics, pass_args=True)
+    "stats", stats, filters=CustomFilters.dev_filter, run_async=True
+)
+GDPR_HANDLER = CommandHandler(
+    "gdpr", gdpr, filters=Filters.private, run_async=True
+)
+WIKI_HANDLER = DisableAbleCommandHandler("wiki", wiki, run_async=True)
+WALLPAPER_HANDLER = DisableAbleCommandHandler(
+    "wall", wall, pass_args=True, run_async=True
+)
+UD_HANDLER = DisableAbleCommandHandler("ud", ud, run_async=True)
 GETLINK_HANDLER = CommandHandler(
-    "getlink", getlink, pass_args=True, filters=CustomFilters.dev_filter
+    "getlink",
+    getlink,
+    pass_args=True,
+    filters=CustomFilters.dev_filter,
+    run_async=True,
 )
 STAFFLIST_HANDLER = CommandHandler(
-    "staffids", staff_ids, filters=Filters.user(OWNER_ID)
+    "staffids", staff_ids, filters=Filters.user(OWNER_ID), run_async=True
 )
-REDDIT_MEMES_HANDLER = DisableAbleCommandHandler("rmeme", rmemes)
 # SRC_HANDLER = CommandHandler("source", src, filters=Filters.private)
-COVID_HANDLER = CommandHandler("covid", covid)
-PASTE_HANDLER = CommandHandler("paste", paste)
+COVID_HANDLER = CommandHandler("covid", covid, run_async=True)
+PASTE_HANDLER = CommandHandler("paste", paste, run_async=True)
 
 dispatcher.add_handler(WALLPAPER_HANDLER)
 dispatcher.add_handler(UD_HANDLER)
@@ -743,8 +675,6 @@ dispatcher.add_handler(GDPR_HANDLER)
 dispatcher.add_handler(WIKI_HANDLER)
 dispatcher.add_handler(GETLINK_HANDLER)
 dispatcher.add_handler(STAFFLIST_HANDLER)
-dispatcher.add_handler(REDDIT_MEMES_HANDLER)
 # dispatcher.add_handler(SRC_HANDLER)
-dispatcher.add_handler(LYRICS_HANDLER)
 dispatcher.add_handler(COVID_HANDLER)
 dispatcher.add_handler(PASTE_HANDLER)

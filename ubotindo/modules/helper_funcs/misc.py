@@ -56,10 +56,8 @@ def split_message(msg: str) -> List[str]:
 
 
 def paginate_modules(
-        page_n: int,
-        module_dict: Dict,
-        prefix,
-        chat=None) -> List:
+    page_n: int, module_dict: Dict, prefix, chat=None
+) -> List:
     if not chat:
         modules = sorted(
             [
@@ -85,8 +83,10 @@ def paginate_modules(
             ]
         )
 
-    pairs = [modules[i * 3: (i + 1) * 3]
-             for i in range((len(modules) + 3 - 1) // 3)]
+    pairs = [
+        modules[i * 3 : (i + 1) * 3]
+        for i in range((len(modules) + 3 - 1) // 3)
+    ]
     round_num = len(modules) / 3
     calc = len(modules) - round(round_num)
     if calc == 1:
@@ -113,7 +113,8 @@ def send_to_list(
         try:
             if markdown:
                 bot.send_message(
-                    user_id, message, parse_mode=ParseMode.MARKDOWN)
+                    user_id, message, parse_mode=ParseMode.MARKDOWN
+                )
             elif html:
                 bot.send_message(user_id, message, parse_mode=ParseMode.HTML)
             else:

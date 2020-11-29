@@ -18,7 +18,7 @@ import html
 
 from telegram import ParseMode
 from telegram.error import BadRequest
-from telegram.ext import CommandHandler, Filters, run_async
+from telegram.ext import CommandHandler, Filters
 from telegram.utils.helpers import mention_html
 
 from ubotindo import LOGGER, dispatcher
@@ -38,7 +38,6 @@ from ubotindo.modules.helper_funcs.string_handling import extract_time
 from ubotindo.modules.log_channel import loggable
 
 
-@run_async
 @bot_admin
 @can_restrict
 @user_admin
@@ -71,7 +70,8 @@ def ban(update, context):
 
     if is_user_ban_protected(chat, user_id, member):
         message.reply_text(
-            "I'm not gonna ban an admin, don't make fun of yourself!")
+            "I'm not gonna ban an admin, don't make fun of yourself!"
+        )
         return ""
 
     if user_id == context.bot.id:
@@ -124,7 +124,6 @@ def ban(update, context):
     return ""
 
 
-@run_async
 @bot_admin
 @can_restrict
 @user_admin
@@ -138,7 +137,8 @@ def temp_ban(update, context):
 
     if user_can_ban(chat, user, context.bot.id) is False:
         message.reply_text(
-            "You don't have enough rights to temporarily ban someone!")
+            "You don't have enough rights to temporarily ban someone!"
+        )
         return ""
 
     user_id, reason = extract_user_and_text(message, args)
@@ -166,7 +166,8 @@ def temp_ban(update, context):
 
     if not reason:
         message.reply_text(
-            "You haven't specified a time to ban this user for!")
+            "You haven't specified a time to ban this user for!"
+        )
         return ""
 
     split_reason = reason.split(None, 1)
@@ -203,7 +204,8 @@ def temp_ban(update, context):
         # context.bot.send_sticker(chat.id, BAN_STICKER)  # banhammer marie
         # sticker
         message.reply_text(
-            "Banned! User will be banned for {}.".format(time_val))
+            "Banned! User will be banned for {}.".format(time_val)
+        )
         return log
 
     except BadRequest as excp:
@@ -227,7 +229,6 @@ def temp_ban(update, context):
     return ""
 
 
-@run_async
 @bot_admin
 @can_restrict
 @user_admin
@@ -298,7 +299,6 @@ def kick(update, context):
     return ""
 
 
-@run_async
 @bot_admin
 @can_restrict
 @loggable
@@ -314,20 +314,22 @@ def banme(update, context):
     res = update.effective_chat.kick_member(user_id)
     if res:
         update.effective_message.reply_text("Yes, you're right! GTFO..")
-        log = ("<b>{}:</b>"
-               "\n#BANME"
-               "\n<b>User:</b> {}"
-               "\n<b>ID:</b> <code>{}</code>".format(html.escape(chat.title),
-                                                     mention_html(user.id,
-                                                                  user.first_name),
-                                                     user_id))
+        log = (
+            "<b>{}:</b>"
+            "\n#BANME"
+            "\n<b>User:</b> {}"
+            "\n<b>ID:</b> <code>{}</code>".format(
+                html.escape(chat.title),
+                mention_html(user.id, user.first_name),
+                user_id,
+            )
+        )
         return log
 
     else:
         update.effective_message.reply_text("Huh? I can't :/")
 
 
-@run_async
 @bot_admin
 @can_restrict
 @typing_action
@@ -335,18 +337,19 @@ def kickme(update, context):
     user_id = update.effective_message.from_user.id
     if is_user_admin(update.effective_chat, user_id):
         update.effective_message.reply_text(
-            "Yeahhh.. not gonna kick an admin.")
+            "Yeahhh.. not gonna kick an admin."
+        )
         return
 
     res = update.effective_chat.unban_member(
-        user_id)  # unban on current user = kick
+        user_id
+    )  # unban on current user = kick
     if res:
         update.effective_message.reply_text("Yeah, you're right Get Out!..")
     else:
         update.effective_message.reply_text("Huh? I can't :/")
 
 
-@run_async
 @bot_admin
 @can_restrict
 @user_admin
@@ -360,7 +363,8 @@ def unban(update, context):
 
     if user_can_ban(chat, user, context.bot.id) is False:
         message.reply_text(
-            "You don't have enough rights to unban people here!")
+            "You don't have enough rights to unban people here!"
+        )
         return ""
 
     user_id, reason = extract_user_and_text(message, args)
@@ -426,24 +430,28 @@ An example of temporarily banning someone:
 
 __mod_name__ = "Bans"
 
-BAN_HANDLER = CommandHandler("ban", ban, pass_args=True, filters=Filters.group)
+BAN_HANDLER = CommandHandler(
+    "ban", ban, pass_args=True, filters=Filters.group, run_async=True
+)
 TEMPBAN_HANDLER = CommandHandler(
-    ["tban", "tempban"], temp_ban, pass_args=True, filters=Filters.group
+    ["tban", "tempban"],
+    temp_ban,
+    pass_args=True,
+    filters=Filters.group,
+    run_async=True,
 )
 KICK_HANDLER = CommandHandler(
-    "kick",
-    kick,
-    pass_args=True,
-    filters=Filters.group)
+    "kick", kick, pass_args=True, filters=Filters.group, run_async=True
+)
 UNBAN_HANDLER = CommandHandler(
-    "unban",
-    unban,
-    pass_args=True,
-    filters=Filters.group)
+    "unban", unban, pass_args=True, filters=Filters.group, run_async=True
+)
 KICKME_HANDLER = DisableAbleCommandHandler(
-    "kickme", kickme, filters=Filters.group)
+    "kickme", kickme, filters=Filters.group, run_async=True
+)
 BANME_HANDLER = DisableAbleCommandHandler(
-    "banme", banme, filters=Filters.group)
+    "banme", banme, filters=Filters.group, run_async=True
+)
 
 dispatcher.add_handler(BAN_HANDLER)
 dispatcher.add_handler(TEMPBAN_HANDLER)

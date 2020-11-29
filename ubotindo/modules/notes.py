@@ -26,8 +26,12 @@ from telegram import (
     ParseMode,
 )
 from telegram.error import BadRequest
-from telegram.ext import CallbackQueryHandler, CommandHandler, Filters, MessageHandler
-from telegram.ext.dispatcher import run_async
+from telegram.ext import (
+    CallbackQueryHandler,
+    CommandHandler,
+    Filters,
+    MessageHandler,
+)
 from telegram.utils.helpers import mention_html
 
 import ubotindo.modules.sql.notes_sql as sql
@@ -35,7 +39,10 @@ from ubotindo import LOGGER, MESSAGE_DUMP, dispatcher
 from ubotindo.modules.connection import connected
 from ubotindo.modules.disable import DisableAbleCommandHandler
 from ubotindo.modules.helper_funcs.alternate import typing_action
-from ubotindo.modules.helper_funcs.chat_status import user_admin, user_admin_no_reply
+from ubotindo.modules.helper_funcs.chat_status import (
+    user_admin,
+    user_admin_no_reply,
+)
 from ubotindo.modules.helper_funcs.misc import build_keyboard, revert_buttons
 from ubotindo.modules.helper_funcs.msg_types import get_note_type
 from ubotindo.modules.helper_funcs.string_handling import (
@@ -139,7 +146,8 @@ def get(bot, update, notename, show_none=True, no_format=False):
                 text = valid_format.format(
                     first=escape(message.from_user.first_name),
                     last=escape(
-                        message.from_user.last_name or message.from_user.first_name
+                        message.from_user.last_name
+                        or message.from_user.first_name
                     ),
                     fullname=" ".join(
                         [
@@ -188,15 +196,25 @@ def get(bot, update, notename, show_none=True, no_format=False):
                         reply_markup=keyboard,
                     )
                 else:
-                    ENUM_FUNC_MAP[note.msgtype](
-                        update.effective_chat.id,
-                        note.file,
-                        caption=text,
-                        reply_to_message_id=reply_id,
-                        parse_mode=parseMode,
-                        disable_web_page_preview=True,
-                        reply_markup=keyboard,
-                    )
+                    if (
+                        ENUM_FUNC_MAP[note.msgtype]
+                        == dispatcher.bot.send_sticker
+                    ):
+                        ENUM_FUNC_MAP[note.msgtype](
+                            chat_id,
+                            note.file,
+                            reply_to_message_id=reply_id,
+                            reply_markup=keyboard,
+                        )
+                    else:
+                        ENUM_FUNC_MAP[note.msgtype](
+                            update.effective_chat.id,
+                            note.file,
+                            caption=text,
+                            reply_to_message_id=reply_id,
+                            parse_mode=parseMode,
+                            reply_markup=keyboard,
+                        )
 
             except BadRequest as excp:
                 if excp.message == "Entity_mention_user_invalid":
@@ -218,27 +236,31 @@ def get(bot, update, notename, show_none=True, no_format=False):
                     LOGGER.exception(
                         "Could not parse message #%s in chat %s",
                         notename,
-                        str(chat_id))
+                        str(chat_id),
+                    )
                     LOGGER.warning("Message was: %s", str(note.value))
         return
     elif show_none:
         message.reply_text("This note doesn't exist")
 
 
-@run_async
 @typing_action
 def cmd_get(update, context):
     args = context.args
     if len(args) >= 2 and args[1].lower() == "noformat":
-        get(context.bot, update, args[0].lower(),
-            show_none=True, no_format=True)
+        get(
+            context.bot,
+            update,
+            args[0].lower(),
+            show_none=True,
+            no_format=True,
+        )
     elif len(args) >= 1:
         get(context.bot, update, args[0].lower(), show_none=True)
     else:
         update.effective_message.reply_text("Get rekt")
 
 
-@run_async
 def hash_get(update, context):
     message = update.effective_message.text
     fst_word = message.split()[0]
@@ -246,7 +268,6 @@ def hash_get(update, context):
     get(context.bot, update, no_hash, show_none=False)
 
 
-@run_async
 @user_admin
 @typing_action
 def save(update, context):
@@ -287,7 +308,6 @@ def save(update, context):
     )
 
 
-@run_async
 @user_admin
 @typing_action
 def clear(update, context):
@@ -326,7 +346,6 @@ def clear(update, context):
             )
 
 
-@run_async
 @typing_action
 def list_notes(update, context):
     chat_id = update.effective_chat.id
@@ -352,7 +371,8 @@ def list_notes(update, context):
         note_name = " × `{}`\n".format(note.name.lower())
         if len(msg) + len(note_name) > MAX_MESSAGE_LENGTH:
             update.effective_message.reply_text(
-                msg, parse_mode=ParseMode.MARKDOWN)
+                msg, parse_mode=ParseMode.MARKDOWN
+            )
             msg = ""
         msg += note_name
 
@@ -370,7 +390,6 @@ def list_notes(update, context):
             )
 
 
-@run_async
 @user_admin
 def clear_notes(update, context):
     chat = update.effective_chat
@@ -390,12 +409,14 @@ def clear_notes(update, context):
                     [
                         [
                             InlineKeyboardButton(
-                                text="Yes I'm sure️", callback_data="rmnotes_true"
+                                text="Yes I'm sure️",
+                                callback_data="rmnotes_true",
                             )
                         ],
                         [
                             InlineKeyboardButton(
-                                text="⚠️ Cancel", callback_data="rmnotes_cancel"
+                                text="⚠️ Cancel",
+                                callback_data="rmnotes_cancel",
                             )
                         ],
                     ]
@@ -406,7 +427,6 @@ def clear_notes(update, context):
         msg.reply_text("This command can be only used by chat OWNER!")
 
 
-@run_async
 @user_admin_no_reply
 def rmbutton(update, context):
     query = update.callback_query
@@ -432,7 +452,8 @@ def rmbutton(update, context):
         for i in notelist:
             sql.rm_note(chat.id, i)
         query.message.edit_text(
-            f"Successfully cleaned {count} notes in {chat.title}.")
+            f"Successfully cleaned {count} notes in {chat.title}."
+        )
 
 
 def __import_data__(chat_id, data):
@@ -453,15 +474,18 @@ def __import_data__(chat_id, data):
             notedata = notedata[match.end():].strip()
             if notedata:
                 sql.add_note_to_db(
-                    chat_id, notename[1:], notedata, sql.Types.TEXT)
+                    chat_id, notename[1:], notedata, sql.Types.TEXT
+                )
         elif matchsticker:
             content = notedata[matchsticker.end():].strip()
             if content:
-                sql.add_note_to_db(chat_id,
-                                   notename[1:],
-                                   notedata,
-                                   sql.Types.STICKER,
-                                   file=content)
+                sql.add_note_to_db(
+                    chat_id,
+                    notename[1:],
+                    notedata,
+                    sql.Types.STICKER,
+                    file=content,
+                )
         elif matchbtn:
             parse = notedata[matchbtn.end():].strip()
             notedata = parse.split("<###button###>")[0]
@@ -481,66 +505,78 @@ def __import_data__(chat_id, data):
             notedata = file[1]
             content = file[0]
             if content:
-                sql.add_note_to_db(chat_id,
-                                   notename[1:],
-                                   notedata,
-                                   sql.Types.DOCUMENT,
-                                   file=content)
+                sql.add_note_to_db(
+                    chat_id,
+                    notename[1:],
+                    notedata,
+                    sql.Types.DOCUMENT,
+                    file=content,
+                )
         elif matchphoto:
             photo = notedata[matchphoto.end():].strip()
             photo = photo.split("<###TYPESPLIT###>")
             notedata = photo[1]
             content = photo[0]
             if content:
-                sql.add_note_to_db(chat_id,
-                                   notename[1:],
-                                   notedata,
-                                   sql.Types.PHOTO,
-                                   file=content)
+                sql.add_note_to_db(
+                    chat_id,
+                    notename[1:],
+                    notedata,
+                    sql.Types.PHOTO,
+                    file=content,
+                )
         elif matchaudio:
             audio = notedata[matchaudio.end():].strip()
             audio = audio.split("<###TYPESPLIT###>")
             notedata = audio[1]
             content = audio[0]
             if content:
-                sql.add_note_to_db(chat_id,
-                                   notename[1:],
-                                   notedata,
-                                   sql.Types.AUDIO,
-                                   file=content)
+                sql.add_note_to_db(
+                    chat_id,
+                    notename[1:],
+                    notedata,
+                    sql.Types.AUDIO,
+                    file=content,
+                )
         elif matchvoice:
             voice = notedata[matchvoice.end():].strip()
             voice = voice.split("<###TYPESPLIT###>")
             notedata = voice[1]
             content = voice[0]
             if content:
-                sql.add_note_to_db(chat_id,
-                                   notename[1:],
-                                   notedata,
-                                   sql.Types.VOICE,
-                                   file=content)
+                sql.add_note_to_db(
+                    chat_id,
+                    notename[1:],
+                    notedata,
+                    sql.Types.VOICE,
+                    file=content,
+                )
         elif matchvideo:
             video = notedata[matchvideo.end():].strip()
             video = video.split("<###TYPESPLIT###>")
             notedata = video[1]
             content = video[0]
             if content:
-                sql.add_note_to_db(chat_id,
-                                   notename[1:],
-                                   notedata,
-                                   sql.Types.VIDEO,
-                                   file=content)
+                sql.add_note_to_db(
+                    chat_id,
+                    notename[1:],
+                    notedata,
+                    sql.Types.VIDEO,
+                    file=content,
+                )
         elif matchvn:
             video_note = notedata[matchvn.end():].strip()
             video_note = video_note.split("<###TYPESPLIT###>")
             notedata = video_note[1]
             content = video_note[0]
             if content:
-                sql.add_note_to_db(chat_id,
-                                   notename[1:],
-                                   notedata,
-                                   sql.Types.VIDEO_NOTE,
-                                   file=content)
+                sql.add_note_to_db(
+                    chat_id,
+                    notename[1:],
+                    notedata,
+                    sql.Types.VIDEO_NOTE,
+                    file=content,
+                )
         else:
             sql.add_note_to_db(chat_id, notename[1:], notedata, sql.Types.TEXT)
 
@@ -559,7 +595,8 @@ def __import_data__(chat_id, data):
 
 def __stats__():
     return "× {} notes, across {} chats.".format(
-        sql.num_notes(), sql.num_chats())
+        sql.num_notes(), sql.num_chats()
+    )
 
 
 def __migrate__(old_chat_id, new_chat_id):
@@ -607,18 +644,24 @@ This will retrieve the note and send it without formatting it; getting you the r
 
 __mod_name__ = "Notes"
 
-GET_HANDLER = CommandHandler("get", cmd_get, pass_args=True)
-HASH_GET_HANDLER = MessageHandler(Filters.regex(r"^#[^\s]+"), hash_get)
+GET_HANDLER = CommandHandler("get", cmd_get, pass_args=True, run_async=True)
+HASH_GET_HANDLER = MessageHandler(
+    Filters.regex(r"^#[^\s]+"), hash_get, run_async=True
+)
 
-SAVE_HANDLER = CommandHandler("save", save)
-DELETE_HANDLER = CommandHandler("clear", clear, pass_args=True)
+SAVE_HANDLER = CommandHandler("save", save, run_async=True)
+DELETE_HANDLER = CommandHandler("clear", clear, pass_args=True, run_async=True)
 
 LIST_HANDLER = DisableAbleCommandHandler(
-    ["notes", "saved"], list_notes, admin_ok=True)
+    ["notes", "saved"], list_notes, admin_ok=True, run_async=True
+)
 CLEARALLNOTES_HANDLER = CommandHandler(
-    "rmallnotes", clear_notes, filters=Filters.group)
+    "rmallnotes", clear_notes, filters=Filters.group, run_async=True
+)
 
-RMBTN_HANDLER = CallbackQueryHandler(rmbutton, pattern=r"rmnotes_")
+RMBTN_HANDLER = CallbackQueryHandler(
+    rmbutton, pattern=r"rmnotes_", run_async=True
+)
 
 dispatcher.add_handler(GET_HANDLER)
 dispatcher.add_handler(SAVE_HANDLER)

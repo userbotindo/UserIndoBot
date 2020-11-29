@@ -20,7 +20,6 @@ from typing import Optional
 from telegram import Chat, ChatPermissions, Message, User
 from telegram.error import BadRequest
 from telegram.ext import CommandHandler, Filters
-from telegram.ext.dispatcher import run_async
 from telegram.utils.helpers import mention_html
 
 from ubotindo import LOGGER, dispatcher
@@ -32,12 +31,14 @@ from ubotindo.modules.helper_funcs.chat_status import (
     is_user_admin,
     user_admin,
 )
-from ubotindo.modules.helper_funcs.extraction import extract_user, extract_user_and_text
+from ubotindo.modules.helper_funcs.extraction import (
+    extract_user,
+    extract_user_and_text,
+)
 from ubotindo.modules.helper_funcs.string_handling import extract_time
 from ubotindo.modules.log_channel import loggable
 
 
-@run_async
 @bot_admin
 @user_admin
 @loggable
@@ -70,12 +71,15 @@ def mute(update, context):
     if member:
         if is_user_admin(chat, user_id, member=member):
             message.reply_text(
-                "Well i'm not gonna stop an admin from talking!")
+                "Well i'm not gonna stop an admin from talking!"
+            )
 
         elif member.can_send_messages is None or member.can_send_messages:
             context.bot.restrict_chat_member(
-                chat.id, user_id, permissions=ChatPermissions(
-                    can_send_messages=False))
+                chat.id,
+                user_id,
+                permissions=ChatPermissions(can_send_messages=False),
+            )
             message.reply_text("👍🏻 muted! 🤐")
             return (
                 "<b>{}:</b>"
@@ -96,7 +100,6 @@ def mute(update, context):
     return ""
 
 
-@run_async
 @bot_admin
 @user_admin
 @loggable
@@ -162,7 +165,6 @@ def unmute(update, context):
     return ""
 
 
-@run_async
 @bot_admin
 @can_restrict
 @user_admin
@@ -205,7 +207,8 @@ def temp_mute(update, context):
 
     if not reason:
         message.reply_text(
-            "You haven't specified a time to mute this user for!")
+            "You haven't specified a time to mute this user for!"
+        )
         return ""
 
     split_reason = reason.split(None, 1)
@@ -253,8 +256,8 @@ def temp_mute(update, context):
         if excp.message == "Reply message not found":
             # Do not reply
             message.reply_text(
-                "shut up! 🤐 Taped for {}!".format(time_val),
-                quote=False)
+                "shut up! 🤐 Taped for {}!".format(time_val), quote=False
+            )
             return log
         else:
             LOGGER.warning(update)
@@ -286,17 +289,17 @@ An example of temporarily mute someone:
 __mod_name__ = "Muting"
 
 MUTE_HANDLER = CommandHandler(
-    "mute",
-    mute,
-    pass_args=True,
-    filters=Filters.group)
+    "mute", mute, pass_args=True, filters=Filters.group, run_async=True
+)
 UNMUTE_HANDLER = CommandHandler(
-    "unmute",
-    unmute,
-    pass_args=True,
-    filters=Filters.group)
+    "unmute", unmute, pass_args=True, filters=Filters.group, run_async=True
+)
 TEMPMUTE_HANDLER = CommandHandler(
-    ["tmute", "tempmute"], temp_mute, pass_args=True, filters=Filters.group
+    ["tmute", "tempmute"],
+    temp_mute,
+    pass_args=True,
+    filters=Filters.group,
+    run_async=True,
 )
 
 dispatcher.add_handler(MUTE_HANDLER)

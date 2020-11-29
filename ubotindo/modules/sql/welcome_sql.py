@@ -1,28 +1,20 @@
-# UserindoBot
-# Copyright (C) 2020  UserindoBot Team, <https://github.com/MoveAngel/UserIndoBot.git>
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+import random
 import threading
 from typing import Union
-from sqlalchemy import Column, String, Boolean, UnicodeText, Integer, BigInteger
 
 from ubotindo.modules.helper_funcs.msg_types import Types
-from ubotindo.modules.sql import SESSION, BASE
+from ubotindo.modules.sql import BASE, SESSION
+from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    Column,
+    Integer,
+    String,
+    UnicodeText,
+)
 
-DEFAULT_WELCOME = "Hi {first}, how are you?"
-DEFAULT_GOODBYE = "{first} has left the game."
+DEFAULT_WELCOME = "Hey {first}, how are you?"
+DEFAULT_GOODBYE = "Nice knowing ya!"
 
 
 class Welcome(BASE):
@@ -32,10 +24,10 @@ class Welcome(BASE):
     should_goodbye = Column(Boolean, default=True)
     custom_content = Column(UnicodeText, default=None)
 
-    custom_welcome = Column(UnicodeText, default=DEFAULT_WELCOME)
+    custom_welcome = Column(UnicodeText, default=(DEFAULT_WELCOME))
     welcome_type = Column(Integer, default=Types.TEXT.value)
 
-    custom_leave = Column(UnicodeText, default=DEFAULT_GOODBYE)
+    custom_leave = Column(UnicodeText, default=(DEFAULT_GOODBYE))
     leave_type = Column(Integer, default=Types.TEXT.value)
 
     clean_welcome = Column(BigInteger)
@@ -151,8 +143,9 @@ def set_welcome_mutes(chat_id, welcomemutes):
 
 def set_human_checks(user_id, chat_id):
     with INSERTION_LOCK:
-        human_check = SESSION.query(
-            WelcomeMuteUsers).get((user_id, str(chat_id)))
+        human_check = SESSION.query(WelcomeMuteUsers).get(
+            (user_id, str(chat_id))
+        )
         if not human_check:
             human_check = WelcomeMuteUsers(user_id, str(chat_id), True)
 
@@ -167,14 +160,25 @@ def set_human_checks(user_id, chat_id):
 
 def get_human_checks(user_id, chat_id):
     try:
-        human_check = SESSION.query(
-            WelcomeMuteUsers).get((user_id, str(chat_id)))
+        human_check = SESSION.query(WelcomeMuteUsers).get(
+            (user_id, str(chat_id))
+        )
         if not human_check:
             return None
         human_check = human_check.human_check
         return human_check
     finally:
         SESSION.close()
+
+
+def get_welc_mutes_pref(chat_id):
+    welcomemutes = SESSION.query(WelcomeMute).get(str(chat_id))
+    SESSION.close()
+
+    if welcomemutes:
+        return welcomemutes.welcomemutes
+
+    return False
 
 
 def get_welc_pref(chat_id):
@@ -221,16 +225,6 @@ def get_clean_pref(chat_id):
 
     if welc:
         return welc.clean_welcome
-
-    return False
-
-
-def get_welc_mutes_pref(chat_id):
-    welcomemutes = SESSION.query(WelcomeMute).get(str(chat_id))
-    SESSION.close()
-
-    if welcomemutes:
-        return welcomemutes.welcomemutes
 
     return False
 

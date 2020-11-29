@@ -1,33 +1,16 @@
-# UserindoBot
-# Copyright (C) 2020  UserindoBot Team, <https://github.com/MoveAngel/UserIndoBot.git>
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 import threading
-
-from sqlalchemy import (
-    Column,
-    Integer,
-    UnicodeText,
-    String,
-    ForeignKey,
-    UniqueConstraint,
-    func,
-)
 
 from ubotindo import dispatcher
 from ubotindo.modules.sql import BASE, SESSION
+from sqlalchemy import (
+    Column,
+    ForeignKey,
+    Integer,
+    String,
+    UnicodeText,
+    UniqueConstraint,
+    func,
+)
 
 
 class Users(BASE):
@@ -71,10 +54,7 @@ class ChatMembers(BASE):
         nullable=False,
     )
     __table_args__ = (
-        UniqueConstraint(
-            "chat",
-            "user",
-            name="_chat_members_uc"),
+        UniqueConstraint("chat", "user", name="_chat_members_uc"),
     )
 
     def __init__(self, chat, user):
@@ -128,9 +108,13 @@ def update_user(user_id, username, chat_id=None, chat_name=None):
             chat.chat_name = chat_name
 
         member = (
-            SESSION.query(ChatMembers) .filter(
+            SESSION.query(ChatMembers)
+            .filter(
                 ChatMembers.chat == chat.chat_id,
-                ChatMembers.user == user.user_id) .first())
+                ChatMembers.user == user.user_id,
+            )
+            .first()
+        )
         if not member:
             chat_member = ChatMembers(chat.chat_id, user.user_id)
             SESSION.add(chat_member)
@@ -158,8 +142,11 @@ def get_name_by_userid(user_id):
 
 def get_chat_members(chat_id):
     try:
-        return SESSION.query(ChatMembers).filter(
-            ChatMembers.chat == str(chat_id)).all()
+        return (
+            SESSION.query(ChatMembers)
+            .filter(ChatMembers.chat == str(chat_id))
+            .all()
+        )
     finally:
         SESSION.close()
 
@@ -171,10 +158,32 @@ def get_all_chats():
         SESSION.close()
 
 
+def get_all_users():
+    try:
+        return SESSION.query(Users).all()
+    finally:
+        SESSION.close()
+
+
 def get_user_num_chats(user_id):
     try:
-        return (SESSION.query(ChatMembers).filter(
-            ChatMembers.user == int(user_id)).count())
+        return (
+            SESSION.query(ChatMembers)
+            .filter(ChatMembers.user == int(user_id))
+            .count()
+        )
+    finally:
+        SESSION.close()
+
+
+def get_user_com_chats(user_id):
+    try:
+        chat_members = (
+            SESSION.query(ChatMembers)
+            .filter(ChatMembers.user == int(user_id))
+            .all()
+        )
+        return [i.chat for i in chat_members]
     finally:
         SESSION.close()
 
@@ -198,9 +207,8 @@ def migrate_chat(old_chat_id, new_chat_id):
         chat = SESSION.query(Chats).get(str(old_chat_id))
         if chat:
             chat.chat_id = str(new_chat_id)
-            SESSION.add(chat)
 
-        SESSION.flush()
+        SESSION.commit()
 
         chat_members = (
             SESSION.query(ChatMembers)
@@ -209,7 +217,6 @@ def migrate_chat(old_chat_id, new_chat_id):
         )
         for member in chat_members:
             member.chat = str(new_chat_id)
-            SESSION.add(member)
 
         SESSION.commit()
 

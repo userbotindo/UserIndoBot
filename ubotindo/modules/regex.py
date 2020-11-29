@@ -18,7 +18,7 @@ import re
 import sre_constants
 
 import telegram
-from telegram.ext import Filters, run_async
+from telegram.ext import Filters
 
 from ubotindo import LOGGER, dispatcher
 from ubotindo.modules.disable import DisableAbleMessageHandler
@@ -86,7 +86,6 @@ def separate_sed(sed_string):
         return replace, replace_with, flags.lower()
 
 
-@run_async
 def sed(update, context):
     sed_result = separate_sed(update.effective_message.text)
     if sed_result and update.effective_message.reply_to_message:
@@ -115,11 +114,8 @@ def sed(update, context):
                 text = re.sub(repl, repl_with, to_fix, flags=re.I).strip()
             elif "i" in flags:
                 text = re.sub(
-                    repl,
-                    repl_with,
-                    to_fix,
-                    count=1,
-                    flags=re.I).strip()
+                    repl, repl_with, to_fix, count=1, flags=re.I
+                ).strip()
             elif "g" in flags:
                 text = re.sub(repl, repl_with, to_fix).strip()
             else:
@@ -128,7 +124,8 @@ def sed(update, context):
             LOGGER.warning(update.effective_message.text)
             LOGGER.exception("SRE constant error")
             update.effective_message.reply_text(
-                "Do you even sed? Apparently not.")
+                "Do you even sed? Apparently not."
+            )
             return
 
         # empty string errors -_-
@@ -141,7 +138,11 @@ def sed(update, context):
             update.effective_message.reply_to_message.reply_text(text)
 
 
-SED_HANDLER = DisableAbleMessageHandler(Filters.regex(
-    r"s([{}]).*?\1.*".format("".join(DELIMITERS))), sed, friendly="sed")
+SED_HANDLER = DisableAbleMessageHandler(
+    Filters.regex(r"s([{}]).*?\1.*".format("".join(DELIMITERS))),
+    sed,
+    friendly="sed",
+    run_async=True,
+)
 
 dispatcher.add_handler(SED_HANDLER)

@@ -17,8 +17,19 @@
 from functools import wraps
 from telegram import User, Chat, ChatMember
 
-from ubotindo import DEL_CMDS, DEV_USERS, SUDO_USERS, WHITELIST_USERS
-from ubotindo.mwt import MWT
+from ubotindo import (
+    DEL_CMDS,
+    DEV_USERS,
+    SUDO_USERS,
+    WHITELIST_USERS,
+    dispatcher,
+)
+from cachetools import TTLCache
+from threading import RLock
+
+# refresh cache 10m
+ADMIN_CACHE = TTLCache(maxsize=512, ttl=60 * 10)
+THREAD_LOCK = RLock()
 
 
 def can_delete(chat: Chat, bot_id: int) -> bool:
@@ -26,9 +37,8 @@ def can_delete(chat: Chat, bot_id: int) -> bool:
 
 
 def is_user_ban_protected(
-        chat: Chat,
-        user_id: int,
-        member: ChatMember = None) -> bool:
+    chat: Chat, user_id: int, member: ChatMember = None
+) -> bool:
     if (
         chat.type == "private"
         or user_id in DEV_USERS
@@ -44,7 +54,6 @@ def is_user_ban_protected(
     return member.status in ("administrator", "creator")
 
 
-@MWT(timeout=60 * 5)  # Cache admin status for 5 mins to avoid extra requests.
 def is_user_admin(chat: Chat, user_id: int, member: ChatMember = None) -> bool:
     if (
         chat.type == "private"
@@ -56,14 +65,26 @@ def is_user_admin(chat: Chat, user_id: int, member: ChatMember = None) -> bool:
         return True
 
     if not member:
-        member = chat.get_member(user_id)
-    return member.status in ("administrator", "creator")
+        with THREAD_LOCK:
+            # try to fetch from cache first.
+            try:
+                return user_id in ADMIN_CACHE[chat.id]
+            except KeyError:
+                # keyerror happend means cache is deleted,
+                # so query bot api again and return user status
+                # while saving it in cache for future useage...
+                chat_admins = dispatcher.bot.getChatAdministrators(chat.id)
+                admin_list = [x.user.id for x in chat_admins]
+                ADMIN_CACHE[chat.id] = admin_list
+
+                if user_id in admin_list:
+                    return True
+                return False
 
 
 def is_bot_admin(
-        chat: Chat,
-        bot_id: int,
-        bot_member: ChatMember = None) -> bool:
+    chat: Chat, bot_id: int, bot_member: ChatMember = None
+) -> bool:
     if chat.type == "private" or chat.all_members_are_administrators:
         return True
 
@@ -109,7 +130,8 @@ def can_promote(func):
     @wraps(func)
     def promote_rights(update, context, *args, **kwargs):
         if update.effective_chat.get_member(
-                context.bot.id).can_promote_members:
+            context.bot.id
+        ).can_promote_members:
             return func(update, context, *args, **kwargs)
         else:
             update.effective_message.reply_text(
@@ -124,7 +146,8 @@ def can_restrict(func):
     @wraps(func)
     def promote_rights(update, context, *args, **kwargs):
         if update.effective_chat.get_member(
-                context.bot.id).can_restrict_members:
+            context.bot.id
+        ).can_restrict_members:
             return func(update, context, *args, **kwargs)
         else:
             update.effective_message.reply_text(

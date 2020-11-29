@@ -22,14 +22,12 @@ from emoji import UNICODE_EMOJI
 from googletrans import Translator
 from gtts import gTTS
 from telegram import ChatAction
-from telegram.ext import run_async
 
 from ubotindo import dispatcher
 from ubotindo.modules.disable import DisableAbleCommandHandler
 from ubotindo.modules.helper_funcs.alternate import send_action, typing_action
 
 
-@run_async
 @typing_action
 def gtrans(update, context):
     msg = update.effective_message
@@ -38,7 +36,9 @@ def gtrans(update, context):
     if not lang:
         lang = "en"
     try:
-        translate_text = msg.reply_to_message.text or msg.reply_to_message.caption
+        translate_text = (
+            msg.reply_to_message.text or msg.reply_to_message.caption
+        )
     except AttributeError:
         return msg.reply_text("Give me the text to translate!")
 
@@ -53,13 +53,12 @@ def gtrans(update, context):
         trl = translated.src
         results = translated.text
         msg.reply_text(
-            "Translated from {} to {}.\n {}".format(
-                trl, lang, results))
+            "Translated from {} to {}.\n {}".format(trl, lang, results)
+        )
     except BaseException:
         msg.reply_text("Error! invalid language code.")
 
 
-@run_async
 @send_action(ChatAction.RECORD_AUDIO)
 def gtts(update, context):
     msg = update.effective_message
@@ -88,17 +87,14 @@ API_KEY = "6ae0c3a0-afdc-4532-a810-82ded0054236"
 URL = "http://services.gingersoftware.com/Ginger/correct/json/GingerTheText"
 
 
-@run_async
 @typing_action
 def spellcheck(update, context):
     if update.effective_message.reply_to_message:
         msg = update.effective_message.reply_to_message
 
         params = dict(
-            lang="US",
-            clientVersion="2.0",
-            apiKey=API_KEY,
-            text=msg.text)
+            lang="US", clientVersion="2.0", apiKey=API_KEY, text=msg.text
+        )
 
         res = requests.get(URL, params=params)
         changes = json.loads(res.text).get("LightGingerTheTextResult")
@@ -130,7 +126,14 @@ __help__ = """
 """
 __mod_name__ = "Translate"
 
-dispatcher.add_handler(DisableAbleCommandHandler(
-    ["tr", "tl"], gtrans, pass_args=True))
-dispatcher.add_handler(DisableAbleCommandHandler("tts", gtts, pass_args=True))
-dispatcher.add_handler(DisableAbleCommandHandler("spell", spellcheck))
+dispatcher.add_handler(
+    DisableAbleCommandHandler(
+        ["tr", "tl"], gtrans, pass_args=True, run_async=True
+    )
+)
+dispatcher.add_handler(
+    DisableAbleCommandHandler("tts", gtts, pass_args=True, run_async=True)
+)
+dispatcher.add_handler(
+    DisableAbleCommandHandler("spell", spellcheck, run_async=True)
+)

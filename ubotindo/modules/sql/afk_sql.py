@@ -100,7 +100,8 @@ def __load_afk_users():
     try:
         all_afk = SESSION.query(AFK).all()
         AFK_USERS = {
-            user.user_id: user.reason for user in all_afk if user.is_afk}
+            user.user_id: user.reason for user in all_afk if user.is_afk
+        }
     finally:
         SESSION.close()
 

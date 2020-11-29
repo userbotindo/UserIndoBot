@@ -19,7 +19,7 @@ import time
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
 from telegram.error import BadRequest, Unauthorized
-from telegram.ext import CallbackQueryHandler, CommandHandler, run_async
+from telegram.ext import CallbackQueryHandler, CommandHandler
 
 import ubotindo.modules.sql.connection_sql as sql
 from ubotindo import DEV_USERS, SUDO_USERS, dispatcher
@@ -30,7 +30,6 @@ user_admin = chat_status.user_admin
 
 
 @user_admin
-@run_async
 @typing_action
 def allow_connections(update, context) -> str:
 
@@ -73,11 +72,12 @@ def allow_connections(update, context) -> str:
                     parse_mode=ParseMode.MARKDOWN,
                 )
     else:
-        send_message(update.effective_message,
-                     "This command is for group only. Not in PM!")
+        send_message(
+            update.effective_message,
+            "This command is for group only. Not in PM!",
+        )
 
 
-@run_async
 @typing_action
 def connection_chat(update, context):
 
@@ -102,7 +102,6 @@ def connection_chat(update, context):
     send_message(update.effective_message, message, parse_mode="markdown")
 
 
-@run_async
 @typing_action
 def connect_chat(update, context):
 
@@ -152,7 +151,9 @@ def connect_chat(update, context):
                             update,
                             chat,
                             user.id,
-                            need_admin=False))
+                            need_admin=False,
+                        )
+                    )
                     chat_name = conn_chat.title
                     send_message(
                         update.effective_message,
@@ -162,12 +163,13 @@ def connect_chat(update, context):
                     sql.add_history_conn(user.id, str(conn_chat.id), chat_name)
                 else:
                     send_message(
-                        update.effective_message,
-                        "Connection failed!")
+                        update.effective_message, "Connection failed!"
+                    )
             else:
                 send_message(
                     update.effective_message,
-                    "Connection to this chat is not allowed!")
+                    "Connection to this chat is not allowed!",
+                )
         else:
             gethistory = sql.get_history_conn(user.id)
             if gethistory:
@@ -182,11 +184,8 @@ def connect_chat(update, context):
             else:
                 buttons = []
             conn = connected(
-                context.bot,
-                update,
-                chat,
-                user.id,
-                need_admin=False)
+                context.bot, update, chat, user.id, need_admin=False
+            )
             if conn:
                 connectedchat = dispatcher.bot.getChat(conn)
                 text = "You are currently connected to *{}* (`{}`)".format(
@@ -208,7 +207,10 @@ def connect_chat(update, context):
                 for x in sorted(gethistory.keys(), reverse=True):
                     htime = time.strftime("%d/%m/%Y", time.localtime(x))
                     text += "╞═「 *{}* 」\n│   `{}`\n│   `{}`\n".format(
-                        gethistory[x]["chat_name"], gethistory[x]["chat_id"], htime)
+                        gethistory[x]["chat_name"],
+                        gethistory[x]["chat_id"],
+                        htime,
+                    )
                     text += "│\n"
                     buttons.append(
                         [
@@ -276,14 +278,16 @@ def connect_chat(update, context):
         else:
             send_message(
                 update.effective_message,
-                "Connection to this chat is not allowed!")
+                "Connection to this chat is not allowed!",
+            )
 
 
 def disconnect_chat(update, context):
 
     if update.effective_chat.type == "private":
         disconnection_status = sql.disconnect(
-            update.effective_message.from_user.id)
+            update.effective_message.from_user.id
+        )
         if disconnection_status:
             sql.disconnected_chat = send_message(
                 update.effective_message, "Disconnected from chat!"
@@ -292,8 +296,8 @@ def disconnect_chat(update, context):
             send_message(update.effective_message, "You're not connected!")
     else:
         send_message(
-            update.effective_message,
-            "This command is only available in PM.")
+            update.effective_message, "This command is only available in PM."
+        )
 
 
 def connected(bot, update, chat, user_id, need_admin=True):
@@ -353,22 +357,19 @@ CONN_HELP = """
  • More in future!"""
 
 
-@run_async
 def help_connect_chat(update, context):
 
     if update.effective_message.chat.type != "private":
         send_message(
-            update.effective_message,
-            "PM me with that command to get help.")
+            update.effective_message, "PM me with that command to get help."
+        )
         return
     else:
         send_message(
-            update.effective_message,
-            CONN_HELP,
-            parse_mode="markdown")
+            update.effective_message, CONN_HELP, parse_mode="markdown"
+        )
 
 
-@run_async
 def connect_button(update, context):
 
     query = update.callback_query
@@ -383,7 +384,8 @@ def connect_button(update, context):
     if connect_match:
         target_chat = connect_match.group(1)
         getstatusadmin = context.bot.get_chat_member(
-            target_chat, query.from_user.id)
+            target_chat, query.from_user.id
+        )
         isadmin = getstatusadmin.status in ("administrator", "creator")
         ismember = getstatusadmin.status in ("member")
         isallow = sql.allow_connect_to_chat(target_chat)
@@ -399,11 +401,9 @@ def connect_button(update, context):
             if connection_status:
                 conn_chat = dispatcher.bot.getChat(
                     connected(
-                        context.bot,
-                        update,
-                        chat,
-                        user.id,
-                        need_admin=False))
+                        context.bot, update, chat, user.id, need_admin=False
+                    )
+                )
                 chat_name = conn_chat.title
                 query.message.edit_text(
                     "Successfully connected to *{}*. \nUse `/helpconnect` to check available commands.".format(chat_name),
@@ -414,12 +414,16 @@ def connect_button(update, context):
                 query.message.edit_text("Connection failed!")
         else:
             context.bot.answer_callback_query(
-                query.id, "Connection to this chat is not allowed!", show_alert=True)
+                query.id,
+                "Connection to this chat is not allowed!",
+                show_alert=True,
+            )
     elif disconnect_match:
         disconnection_status = sql.disconnect(query.from_user.id)
         if disconnection_status:
             sql.disconnected_chat = query.message.edit_text(
-                "Disconnected from chat!")
+                "Disconnected from chat!"
+            )
         else:
             context.bot.answer_callback_query(
                 query.id, "You're not connected!", show_alert=True
@@ -449,14 +453,24 @@ This allows you to connect to a chat's database, and add things to it without th
  × /allowconnect <yes/no>: allow a user to connect to a chat
 """
 
-CONNECT_CHAT_HANDLER = CommandHandler("connect", connect_chat, pass_args=True)
-CONNECTION_CHAT_HANDLER = CommandHandler("connection", connection_chat)
-DISCONNECT_CHAT_HANDLER = CommandHandler("disconnect", disconnect_chat)
-ALLOW_CONNECTIONS_HANDLER = CommandHandler(
-    "allowconnect", allow_connections, pass_args=True
+CONNECT_CHAT_HANDLER = CommandHandler(
+    "connect", connect_chat, pass_args=True, run_async=True
 )
-HELP_CONNECT_CHAT_HANDLER = CommandHandler("helpconnect", help_connect_chat)
-CONNECT_BTN_HANDLER = CallbackQueryHandler(connect_button, pattern=r"connect")
+CONNECTION_CHAT_HANDLER = CommandHandler(
+    "connection", connection_chat, run_async=True
+)
+DISCONNECT_CHAT_HANDLER = CommandHandler(
+    "disconnect", disconnect_chat, run_async=True
+)
+ALLOW_CONNECTIONS_HANDLER = CommandHandler(
+    "allowconnect", allow_connections, pass_args=True, run_async=True
+)
+HELP_CONNECT_CHAT_HANDLER = CommandHandler(
+    "helpconnect", help_connect_chat, run_async=True
+)
+CONNECT_BTN_HANDLER = CallbackQueryHandler(
+    connect_button, pattern=r"connect", run_async=True
+)
 
 dispatcher.add_handler(CONNECT_CHAT_HANDLER)
 dispatcher.add_handler(CONNECTION_CHAT_HANDLER)
