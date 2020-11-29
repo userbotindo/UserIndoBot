@@ -19,8 +19,8 @@ import os
 
 from telegram import ParseMode
 from telegram.error import BadRequest
-from telegram.ext import CommandHandler, Filters, MessageHandler
-from telegram.utils.helpers import mention_html, mention_markdown
+from telegram.ext import CommandHandler, Filters
+from telegram.utils.helpers import mention_html
 
 from ubotindo import dispatcher
 from ubotindo.modules.connection import connected

@@ -586,7 +586,7 @@ def paste(update, context):
             .get("result")
             .get("key")
         )
-        text = f"**Pasted to Nekobin!!!**"
+        text = "**Pasted to Nekobin!!!**"
         buttons = [
             [
                 InlineKeyboardButton(

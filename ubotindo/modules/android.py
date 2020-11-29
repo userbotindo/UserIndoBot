@@ -216,7 +216,7 @@ def los(update, context) -> str:
 
     if device == "":
         reply_text = (
-            f"*Please Type Your Device Codename*\nExample : `/los lavender`"
+            "*Please Type Your Device Codename*\nExample : `/los lavender`"
         )
         message.reply_text(
             reply_text,
