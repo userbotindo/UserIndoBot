@@ -126,7 +126,7 @@ def gban(update, context):
         )
         return
 
-    if user_id == int(777000, 1087968824):
+    if user_id in (777000, 1087968824):
         message.reply_text(
             "How can i ban someone that i don't know who is it."
         )
