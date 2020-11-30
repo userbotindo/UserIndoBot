@@ -61,7 +61,7 @@ def logs(update, context):
             chat_id=user.id,
             caption="This logs that I saved",
         )
-        update.effective_message.reply_text("Logs sent Via private message")
+        update.effective_message.reply_text("I am send log to your pm 💌")
 
 
 LOG_HANDLER = CommandHandler(
