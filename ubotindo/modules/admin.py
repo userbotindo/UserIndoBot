@@ -243,7 +243,9 @@ def unpin(update, context):
         if excp.message == "Chat_not_modified":
             pass
         elif excp.message == "Message to unpin not found":
-            message.reply_text("Message already Unpined!")
+            message.reply_text(
+                "I can't see pined message, Maybe already unpined, or pin Message to old 🙂"
+            )
         else:
             raise
 
