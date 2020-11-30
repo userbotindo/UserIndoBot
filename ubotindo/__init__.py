@@ -24,10 +24,12 @@ import telegram.ext as tg
 # enable logging
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler("ubotindo-log.txt"),
+        logging.StreamHandler(),
+    ],
     level=logging.INFO,
 )
-aps_logger = logging.getLogger("apscheduler")
-aps_logger.setLevel(logging.WARNING)
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.info("Starting ubotindo...")
