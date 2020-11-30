@@ -96,6 +96,7 @@ def send(update, message, keyboard, backup_message):
         except BadRequest:
             pass
         reply = False
+
     try:
         msg = update.effective_message.reply_text(
             message,
@@ -103,6 +104,8 @@ def send(update, message, keyboard, backup_message):
             reply_markup=keyboard,
             reply_to_message_id=reply,
         )
+    except BadRequest(message) == "Have no rights to send a message":
+        return
     except IndexError:
         msg = update.effective_message.reply_text(
             markdown_parser(

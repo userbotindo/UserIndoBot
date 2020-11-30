@@ -566,7 +566,10 @@ def __import_data__(chat_id, data):
 
 
 def __migrate__(old_chat_id, new_chat_id):
-    sql.migrate_chat(old_chat_id, new_chat_id)
+    try:
+        sql.migrate_chat(old_chat_id, new_chat_id)
+    except KeyError:
+        pass
 
 
 def __chat_settings__(chat_id, user_id):

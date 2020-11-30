@@ -324,9 +324,17 @@ def error_handler(update, context):
             .get("result")
             .get("key")
         )
-        url = f"https://nekobin.com/{key}.py"
         markup = InlineKeyboardMarkup(
-            [[InlineKeyboardButton("Nekobin", url=url)]]
+            [
+                [
+                    InlineKeyboardButton(
+                        "Nekobin Url", url=f"https://nekobin.com/{key}"
+                    ),
+                    InlineKeyboardButton(
+                        "Nekobin Raw", url=f"https://nekobin.com/raw/{key}"
+                    ),
+                ]
+            ]
         )
 
     # Finally, send the message
@@ -792,10 +800,10 @@ def main():
 
     else:
         LOGGER.info("Using long polling.")
-        updater.start_polling(timeout=15, read_latency=4)
+        updater.start_polling(timeout=15, read_latency=5)
         if MESSAGE_DUMP:
             updater.bot.send_message(
-                chat_id=MESSAGE_DUMP, text="Ubotindo Started..."
+                chat_id=MESSAGE_DUMP, text="System Started..."
             )
         client.run_until_disconnected()
 
