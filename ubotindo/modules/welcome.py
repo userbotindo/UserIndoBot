@@ -104,8 +104,6 @@ def send(update, message, keyboard, backup_message):
             reply_markup=keyboard,
             reply_to_message_id=reply,
         )
-    except BadRequest(message) == "Have no rights to send a message":
-        return
     except IndexError:
         msg = update.effective_message.reply_text(
             markdown_parser(
@@ -127,7 +125,14 @@ def send(update, message, keyboard, backup_message):
             reply_to_message_id=reply,
         )
     except BadRequest as excp:
-        if excp.message == "Button_url_invalid":
+        if excp.message == "Have no rights to send a message":
+            LOGGER.warn("can't send message on {}! leaving...".format(
+                update.effective_message.chat.id
+                )
+            )
+            dispatcher.bot.leaveChat(update.effective_message.chat.id)
+            return
+        elif excp.message == "Button_url_invalid":
             msg = update.effective_message.reply_text(
                 markdown_parser(
                     backup_message
@@ -244,12 +249,17 @@ def new_member(update, context):
 
             # Make bot greet admins
             elif new_mem.id == context.bot.id:
-                update.effective_message.reply_text(
-                    "Hey 😍 {}, I'm {}! Thank you for adding me to {}".format(
-                        user.first_name, context.bot.first_name, chat_name
-                    ),
-                    reply_to_message_id=reply,
-                )
+                try:
+                    update.effective_message.reply_text(
+                        "Hey 😍 {}, I'm {}! Thank you for adding me to {}".format(
+                            user.first_name, context.bot.first_name, chat_name
+                        ),
+                        reply_to_message_id=reply,
+                    )
+                except BadRequest as err:
+                    if err.message == "Have no rights to send a message":
+                        pass
+                    
 
                 context.bot.send_message(
                     MESSAGE_DUMP,
