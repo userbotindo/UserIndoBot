@@ -16,6 +16,7 @@
 
 from functools import wraps
 from telegram import error, ChatAction
+from ubotindo import LOGGER
 
 
 def send_message(message, text, *args, **kwargs):
@@ -32,10 +33,18 @@ def typing_action(func):
 
     @wraps(func)
     def command_func(update, context, *args, **kwargs):
-        context.bot.send_chat_action(
-            chat_id=update.effective_chat.id, action=ChatAction.TYPING
-        )
-        return func(update, context, *args, **kwargs)
+        try:
+            context.bot.send_chat_action(
+                chat_id=update.effective_chat.id, action=ChatAction.TYPING
+            )
+            return func(update, context, *args, **kwargs)
+        except error.BadRequest as err:
+            if str(err) == "Have no rights to send a message":
+                LOGGER.warning("Bot muted in {} {}".format(
+                        update.effective_message.chat.title,
+                        update.effective_message.chat.id
+                    )
+                )
 
     return command_func
 
