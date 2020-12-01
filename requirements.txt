@@ -9,7 +9,7 @@ emoji
 feedparser
 future
 git+https://github.com/TomyPrs/python-markdown2.git
-googletrans
+google_trans_new
 gtts
 hurry.filesize
 lxml

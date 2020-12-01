@@ -19,7 +19,7 @@ import os
 
 import requests
 from emoji import UNICODE_EMOJI
-from googletrans import Translator
+from google_trans_new import google_translator, LANGUAGES
 from gtts import gTTS
 from telegram import ChatAction
 
@@ -47,13 +47,15 @@ def gtrans(update, context):
         if emoji in translate_text:
             translate_text = translate_text.replace(emoji, "")
 
-    translator = Translator()
+    translator = google_translator()
     try:
-        translated = translator.translate(translate_text, dest=lang)
-        trl = translated.src
-        results = translated.text
+        translated = translator.translate(translate_text, lang_tgt=lang)
+        source_lan = translator.detect(translate_text)[1].title()
+        des_lan = LANGUAGES.get(lang).title()
         msg.reply_text(
-            "Translated from {} to {}.\n {}".format(trl, lang, results)
+            "Translated from {} to {}.\n {}".format(
+                source_lan, des_lan, translated
+            )
         )
     except BaseException:
         msg.reply_text("Error! invalid language code.")
