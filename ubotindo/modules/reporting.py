@@ -283,7 +283,7 @@ Note that the report commands do not work when admins use them; or when used to 
 admins don't need to report, or be reported!
 """
 REPORT_HANDLER = CommandHandler(
-    "report", report, filters=Filters.group, run_async=True
+    "report", report, filters=Filters.chat_type.groups, run_async=True
 )
 SETTING_HANDLER = CommandHandler(
     "reports", report_setting, pass_args=True, run_async=True

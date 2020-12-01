@@ -773,7 +773,7 @@ def main():
     migrate_handler = MessageHandler(
         Filters.status_update.migrate, migrate_chats
     )
-    is_chat_allowed_handler = MessageHandler(Filters.group, is_chat_allowed)
+    is_chat_allowed_handler = MessageHandler(Filters.chat_type.groups, is_chat_allowed)
 
     # dispatcher.add_handler(test_handler)
     dispatcher.add_handler(start_handler)

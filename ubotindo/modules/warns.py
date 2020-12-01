@@ -685,20 +685,20 @@ be a sentence, encompass it with quotes, as such: `/addwarn "very angry" This is
 __mod_name__ = "Warnings"
 
 WARN_HANDLER = CommandHandler(
-    "warn", warn_user, pass_args=True, filters=Filters.group, run_async=True
+    "warn", warn_user, pass_args=True, filters=Filters.chat_type.groups, run_async=True
 )
 RESET_WARN_HANDLER = CommandHandler(
     ["resetwarn", "resetwarns"],
     reset_warns,
     pass_args=True,
-    filters=Filters.group,
+    filters=Filters.chat_type.groups,
     run_async=True,
 )
 REMOVE_WARNS_HANDLER = CommandHandler(
     ["rmwarn", "unwarn"],
     remove_warns,
     pass_args=True,
-    filters=Filters.group,
+    filters=Filters.chat_type.groups,
     run_async=True,
 )
 CALLBACK_QUERY_HANDLER = CallbackQueryHandler(button, pattern=r"rm_warn")
@@ -716,7 +716,7 @@ LIST_WARN_HANDLER = DisableAbleCommandHandler(
     run_async=True,
 )
 WARN_FILTER_HANDLER = MessageHandler(
-    CustomFilters.has_text & Filters.group, reply_filter, run_async=True
+    CustomFilters.has_text & Filters.chat_type.groups, reply_filter, run_async=True
 )
 WARN_LIMIT_HANDLER = CommandHandler(
     "warnlimit", set_warn_limit, pass_args=True, run_async=True

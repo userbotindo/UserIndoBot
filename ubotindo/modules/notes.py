@@ -660,7 +660,7 @@ LIST_HANDLER = DisableAbleCommandHandler(
     ["notes", "saved"], list_notes, admin_ok=True, run_async=True
 )
 CLEARALLNOTES_HANDLER = CommandHandler(
-    "rmallnotes", clear_notes, filters=Filters.group, run_async=True
+    "rmallnotes", clear_notes, filters=Filters.chat_type.groups, run_async=True
 )
 
 RMBTN_HANDLER = CallbackQueryHandler(

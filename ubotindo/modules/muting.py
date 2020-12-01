@@ -290,16 +290,16 @@ An example of temporarily mute someone:
 __mod_name__ = "Muting"
 
 MUTE_HANDLER = CommandHandler(
-    "mute", mute, pass_args=True, filters=Filters.group, run_async=True
+    "mute", mute, pass_args=True, filters=Filters.chat_type.groups, run_async=True
 )
 UNMUTE_HANDLER = CommandHandler(
-    "unmute", unmute, pass_args=True, filters=Filters.group, run_async=True
+    "unmute", unmute, pass_args=True, filters=Filters.chat_type.groups, run_async=True
 )
 TEMPMUTE_HANDLER = CommandHandler(
     ["tmute", "tempmute"],
     temp_mute,
     pass_args=True,
-    filters=Filters.group,
+    filters=Filters.chat_type.groups,
     run_async=True,
 )
 

@@ -431,26 +431,26 @@ An example of temporarily banning someone:
 __mod_name__ = "Bans"
 
 BAN_HANDLER = CommandHandler(
-    "ban", ban, pass_args=True, filters=Filters.group, run_async=True
+    "ban", ban, pass_args=True, filters=Filters.chat_type.groups, run_async=True
 )
 TEMPBAN_HANDLER = CommandHandler(
     ["tban", "tempban"],
     temp_ban,
     pass_args=True,
-    filters=Filters.group,
+    filters=Filters.chat_type.groups,
     run_async=True,
 )
 KICK_HANDLER = CommandHandler(
-    "kick", kick, pass_args=True, filters=Filters.group, run_async=True
+    "kick", kick, pass_args=True, filters=Filters.chat_type.groups, run_async=True
 )
 UNBAN_HANDLER = CommandHandler(
-    "unban", unban, pass_args=True, filters=Filters.group, run_async=True
+    "unban", unban, pass_args=True, filters=Filters.chat_type.groups, run_async=True
 )
 KICKME_HANDLER = DisableAbleCommandHandler(
-    "kickme", kickme, filters=Filters.group, run_async=True
+    "kickme", kickme, filters=Filters.chat_type.groups, run_async=True
 )
 BANME_HANDLER = DisableAbleCommandHandler(
-    "banme", banme, filters=Filters.group, run_async=True
+    "banme", banme, filters=Filters.chat_type.groups, run_async=True
 )
 
 dispatcher.add_handler(BAN_HANDLER)

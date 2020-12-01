@@ -573,40 +573,40 @@ An example of promoting someone to admins:
 __mod_name__ = "Admin"
 
 PIN_HANDLER = CommandHandler(
-    "pin", pin, pass_args=True, filters=Filters.group, run_async=True
+    "pin", pin, pass_args=True, filters=Filters.chat_type.groups, run_async=True
 )
 UNPIN_HANDLER = CommandHandler(
-    "unpin", unpin, filters=Filters.group, run_async=True
+    "unpin", unpin, filters=Filters.chat_type.groups, run_async=True
 )
 INVITE_HANDLER = CommandHandler("invitelink", invite, run_async=True)
 CHAT_PIC_HANDLER = CommandHandler(
-    "setgpic", setchatpic, filters=Filters.group, run_async=True
+    "setgpic", setchatpic, filters=Filters.chat_type.groups, run_async=True
 )
 DEL_CHAT_PIC_HANDLER = CommandHandler(
-    "delgpic", rmchatpic, filters=Filters.group, run_async=True
+    "delgpic", rmchatpic, filters=Filters.chat_type.groups, run_async=True
 )
 SETCHAT_TITLE_HANDLER = CommandHandler(
-    "setgtitle", setchat_title, filters=Filters.group, run_async=True
+    "setgtitle", setchat_title, filters=Filters.chat_type.groups, run_async=True
 )
 SETSTICKET_HANDLER = CommandHandler(
-    "setsticker", set_sticker, filters=Filters.group, run_async=True
+    "setsticker", set_sticker, filters=Filters.chat_type.groups, run_async=True
 )
 SETDESC_HANDLER = CommandHandler(
-    "setdescription", set_desc, filters=Filters.group, run_async=True
+    "setdescription", set_desc, filters=Filters.chat_type.groups, run_async=True
 )
 
 PROMOTE_HANDLER = CommandHandler(
-    "promote", promote, pass_args=True, filters=Filters.group, run_async=True
+    "promote", promote, pass_args=True, filters=Filters.chat_type.groups, run_async=True
 )
 DEMOTE_HANDLER = CommandHandler(
-    "demote", demote, pass_args=True, filters=Filters.group, run_async=True
+    "demote", demote, pass_args=True, filters=Filters.chat_type.groups, run_async=True
 )
 
 SET_TITLE_HANDLER = DisableAbleCommandHandler(
     "settitle", set_title, pass_args=True, run_async=True
 )
 ADMINLIST_HANDLER = DisableAbleCommandHandler(
-    "adminlist", adminlist, filters=Filters.group, run_async=True
+    "adminlist", adminlist, filters=Filters.chat_type.groups, run_async=True
 )
 ADMIN_REFRESH_HANDLER = CommandHandler(
     "admincache", refresh_admin, run_async=True

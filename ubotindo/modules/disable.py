@@ -291,14 +291,14 @@ It'll also allow you to autodelete them, stopping people from bluetexting.
 
     DISABLE_HANDLER = CommandHandler(
         "disable", disable, pass_args=True, run_async=True
-    )  # , filters=Filters.group)
+    )  # , filters=Filters.chat_type.groups)
     ENABLE_HANDLER = CommandHandler(
         "enable", enable, pass_args=True, run_async=True
-    )  # , filters=Filters.group)
+    )  # , filters=Filters.chat_type.groups)
     COMMANDS_HANDLER = CommandHandler(
         ["cmds", "disabled"], commands, run_async=True
-    )  # , filters=Filters.group)
-    # , filters=Filters.group)
+    )  # , filters=Filters.chat_type.groups)
+    # , filters=Filters.chat_type.groups)
     TOGGLE_HANDLER = CommandHandler("listcmds", list_cmds, run_async=True)
 
     dispatcher.add_handler(DISABLE_HANDLER)

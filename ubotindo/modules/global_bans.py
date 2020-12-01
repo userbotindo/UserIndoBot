@@ -525,12 +525,12 @@ GBAN_STATUS = CommandHandler(
     "spamshield",
     gbanstat,
     pass_args=True,
-    filters=Filters.group,
+    filters=Filters.chat_type.groups,
     run_async=True,
 )
 
 GBAN_ENFORCER = MessageHandler(
-    Filters.all & Filters.group, enforce_gban, run_async=True
+    Filters.all & Filters.chat_type.groups, enforce_gban, run_async=True
 )
 
 dispatcher.add_handler(GBAN_HANDLER)
