@@ -1,21 +1,24 @@
-FROM userindobot/docker:ubotindo
+# set base image (host OS)
+FROM python:3.8
 
-RUN apt -qq update -y
+# set the working directory in the container
+WORKDIR /ubotindo/
 
-# Wokrking Dir
-WORKDIR /app/userindo/
+RUN apt -qq update && apt -qq upgrade
+RUN apt -qq install -y --no-install-recommends \
+    curl \
+    git \
+    gnupg2 \
+    wget \
 
-# requirements setup
+# copy the dependencies file to the working directory
 COPY requirements.txt .
 
-RUN pip install -U pip
+# install dependencies
 RUN pip install -r requirements.txt
 
-# Copy All resources
+# copy the content of the local src directory to the working directory
 COPY . .
 
-# set env path
-ENV PATH="/home/bot/bin:$PATH"
-
-# Run
-CMD ["python3", "-m", "ubotindo"]
+# command to run on container start
+CMD [ "bash", "./start" ]
