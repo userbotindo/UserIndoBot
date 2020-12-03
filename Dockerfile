@@ -18,4 +18,4 @@ COPY . .
 ENV PATH="/home/bot/bin:$PATH"
 
 # Run
-CMD ["python3", "-m*, "ubotindo"]
+CMD ["python3", "-m", "ubotindo"]
