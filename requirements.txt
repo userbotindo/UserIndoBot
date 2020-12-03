@@ -1,6 +1,4 @@
 alphabet_detector
-bleach
-bs4
 bs4
 cachetools
 covid
@@ -11,13 +9,11 @@ future
 git+https://github.com/TomyPrs/python-markdown2.git
 google_trans_new
 gtts
-hurry.filesize
 lxml
 pillow
 psutil
 psycopg2-binary
 python-telegram-bot==13.1
-pythonping
 pytz
 requests
 spamwatch
