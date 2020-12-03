@@ -37,30 +37,18 @@ from ubotindo.modules.helper_funcs.filters import CustomFilters
 
 @typing_action
 def leavechat(update, context):
+    bot = context.bot
     args = context.args
-    msg = update.effective_message
     if args:
-        chat_id = int(args[0])
-
+        chat_id = str(args[0])
+        del args[0]
+        try:
+            bot.leave_chat(int(chat_id))
+            update.effective_message.reply_text("Left the group successfully!")
+        except telegram.TelegramError:
+            update.effective_message.reply_text("Attempt failed.")
     else:
-        msg.reply_text("Bro.. Give Me ChatId And boom!!")
-    try:
-        titlechat = context.bot.get_chat(chat_id).title
-        context.bot.sendMessage(
-            chat_id,
-            "I'm here trying to survive, but this world is too cruel, goodbye everyone 😌",
-        )
-        context.bot.leaveChat(chat_id)
-        msg.reply_text("I have left the group {}".format(titlechat))
-
-    except BadRequest as excp:
-        if excp.message == "bot is not a member of the supergroup chat":
-            msg = update.effective_message.reply_text(
-                "I'Am not Joined The Group, Maybe You set wrong id or I Already Kicked out"
-            )
-
-        else:
-            return
+        update.effective_message.reply_text("Give me a valid chat id")
 
 
 @typing_action
