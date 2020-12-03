@@ -1,5 +1,6 @@
 alphabet_detector
 bs4
+bleach
 cachetools
 covid
 demjson
@@ -23,3 +24,4 @@ telegraph
 telethon==1.16.4
 wget
 wikipedia
+hurry.filesize
