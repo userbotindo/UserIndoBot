@@ -27,7 +27,6 @@ from telegram import (
 from telegram.error import BadRequest
 from telegram.ext import (
     CallbackQueryHandler,
-    CallbackContext,
     CommandHandler,
     Filters,
     MessageHandler,
@@ -188,7 +187,7 @@ def send(update, message, keyboard, backup_message):
 
 
 @loggable
-def new_member(update, context, CallbackContext):
+def new_member(update, context):
 
     bot, job_queue = context.bot, context.job_queue
 
