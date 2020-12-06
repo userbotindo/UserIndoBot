@@ -273,9 +273,7 @@ def new_member(update, context):
 
                 if cust_welcome:
                     if cust_welcome == sql.DEFAULT_WELCOME:
-                        cust_welcome = random.choice(
-                            sql.DEFAULT_WELCOME_MESSAGES
-                        ).format(first=escape_markdown(first_name))
+                        cust_welcome = sql.DEFAULT_WELCOME.format(first=escape_markdown(first_name))
 
                     if new_mem.last_name:
                         fullname = escape_markdown(f"{first_name} {new_mem.last_name}")
@@ -303,12 +301,12 @@ def new_member(update, context):
                     )
 
                 else:
-                    res = sql.DEFAULT_WELCOME_MESSAGES.format(
+                    res = sql.DEFAULT_WELCOME.format(
                         first=escape_markdown(first_name)
                     )
                     keyb = []
 
-                backup_message = random.choice(sql.DEFAULT_WELCOME_MESSAGES).format(
+                backup_message = sql.DEFAULT_WELCOME.format(
                     first=escape_markdown(first_name)
                 )
                 keyboard = InlineKeyboardMarkup(keyb)
