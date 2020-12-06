@@ -16,6 +16,7 @@
 
 from functools import wraps
 from telegram import User, Chat, ChatMember
+from telegram.error import BadRequest
 
 from ubotindo import (
     DEL_CMDS,
@@ -180,7 +181,10 @@ def user_admin(func):
             pass
 
         elif DEL_CMDS and " " not in update.effective_message.text:
-            update.effective_message.delete()
+            try:
+                update.effective_message.delete()
+            except BadRequest:
+                pass
 
         else:
             update.effective_message.reply_text(
