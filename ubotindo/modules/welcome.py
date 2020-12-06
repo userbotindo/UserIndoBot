@@ -303,7 +303,7 @@ def new_member(update, context):
                     )
 
                 else:
-                    res = random.choice(sql.DEFAULT_WELCOME_MESSAGES).format(
+                    res = sql.DEFAULT_WELCOME_MESSAGES.format(
                         first=escape_markdown(first_name)
                     )
                     keyb = []
