@@ -31,7 +31,7 @@ from telegram.ext import (
     Filters,
     MessageHandler,
 )
-from telegram.utils.helpers import mention_html
+from telegram.utils.helpers import mention_html, mention_markdown, escape_markdown
 
 import ubotindo.modules.sql.welcome_sql as sql
 from ubotindo import (
