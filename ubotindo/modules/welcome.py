@@ -17,6 +17,7 @@
 import re
 import time
 from html import escape
+from functools import partial
 
 from telegram import (
     ChatPermissions,
@@ -83,6 +84,8 @@ ENUM_FUNC_MAP = {
     sql.Types.VIDEO.value: dispatcher.bot.send_video,
 }
 
+
+VERIFIED_USER_WAITLIST = {}
 
 # do not async
 def send(update, message, keyboard, backup_message):
@@ -200,6 +203,7 @@ def new_member(update, context):
     human_checks = sql.get_human_checks(user.id, chat.id)
 
     new_members = update.effective_message.new_chat_members
+    chat_name = chat.title or chat.first or chat.username
 
     for new_mem in new_members:
 
@@ -233,7 +237,7 @@ def new_member(update, context):
                     "My Owner in the house Let's party 🎉", reply_to_message_id=reply
                 )
                 welcome_log = (
-                    f"{html.escape(chat.title)}\n"
+                    f"{escape(chat.title)}\n"
                     f"#USER_JOINED\n"
                     f"Bot Owner just joined the chat"
                 )
@@ -447,7 +451,7 @@ def new_member(update, context):
             return welcome_log
 
         return (
-            f"{html.escape(chat.title)}\n"
+            f"{escape(chat.title)}\n"
             f"#USER_JOINED\n"
             f"<b>User</b>: {mention_html(user.id, user.first_name)}\n"
             f"<b>ID</b>: <code>{user.id}</code>"
