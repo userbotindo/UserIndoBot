@@ -34,7 +34,11 @@ from ubotindo import (
     dispatcher,
     spamwtc,
 )
-from ubotindo.modules.helper_funcs.alternate import send_action, typing_action
+from ubotindo.modules.helper_funcs.alternate import (
+    send_action,
+    send_message,
+    typing_action,
+)
 from ubotindo.modules.helper_funcs.chat_status import is_user_admin, user_admin
 from ubotindo.modules.helper_funcs.extraction import (
     extract_user,
@@ -372,8 +376,10 @@ def check_and_ban(update, user_id, should_message=True):
                     banner = "@Spamwatch"
                     reason = f"<code>{spmban.reason}</code>"
 
-                update.effective_message.reply_text(
-                    f"#SPAM_SHIELD\n\nThis person has been detected as spambot by {banner} and has been removed!\nReason: {reason}",
+                send_message(
+                    update.effective_message,
+                    "#SPAM_SHIELD\n\nThis person has been detected as spambot"
+                    f"by {banner} and has been removed!\nReason: {reason}",
                     parse_mode=ParseMode.HTML,
                 )
                 return

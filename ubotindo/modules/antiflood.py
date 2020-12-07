@@ -181,13 +181,13 @@ def set_flood(update, context) -> str:
             else:
                 sql.set_flood(chat_id, amount)
                 if conn:
-                    text = message.reply_text(
+                    text = (
                         "Anti-flood has been set to {} in chat: {}".format(
                             amount, chat_name
                         )
                     )
                 else:
-                    text = message.reply_text(
+                    text = (
                         "Successfully updated anti-flood limit to {}!".format(
                             amount
                         )
