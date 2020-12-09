@@ -20,7 +20,7 @@ from telegram import Bot, InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.error import BadRequest, Unauthorized
 from telegram.ext import CallbackQueryHandler, CommandHandler
 
-import ubotindo.modules.sql.global_bans_sql as gban_sql
+import ubotindo.utils.gban_utils as gban_db
 import ubotindo.modules.sql.users_sql as user_sql
 from ubotindo import DEV_USERS, dispatcher
 from ubotindo.modules.helper_funcs.filters import CustomFilters
@@ -73,7 +73,7 @@ def get_invalid_chats(bot: Bot, update: Update, remove: bool = False):
 
 
 def get_invalid_gban(bot: Bot, update: Update, remove: bool = False):
-    banned = gban_sql.get_gban_list()
+    banned = gban_db.get_gban_list()
     ungbanned_users = 0
     ungban_list = []
 
@@ -93,7 +93,7 @@ def get_invalid_gban(bot: Bot, update: Update, remove: bool = False):
     else:
         for user_id in ungban_list:
             sleep(0.5)
-            gban_sql.ungban_user(user_id)
+            gban_db.ungban_user(user_id)
         return ungbanned_users
 
 
