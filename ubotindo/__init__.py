@@ -116,7 +116,7 @@ if ENV:
     CERT_PATH = os.environ.get("CERT_PATH")
 
     DB_URI = os.environ.get("DATABASE_URL")
-    MONGO_URI = os.environ.get("MONGO_URI")
+    MONGO_URI = os.environ.get("MONGO_DB_URI")
     DONATION_LINK = os.environ.get("DONATION_LINK")
     LOAD = os.environ.get("LOAD", "").split()
     NO_LOAD = os.environ.get("NO_LOAD", "").split()
