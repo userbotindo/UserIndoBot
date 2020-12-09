@@ -4,6 +4,7 @@ bleach
 cachetools
 covid
 demjson
+dnspython
 emoji
 feedparser
 future
@@ -14,6 +15,7 @@ lxml
 pillow
 psutil
 psycopg2-binary
+pymongo[srv]
 python-telegram-bot==13.1
 pytz
 requests
