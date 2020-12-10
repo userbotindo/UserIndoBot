@@ -228,14 +228,14 @@ def pin(update, context):
 @user_admin
 @loggable
 @typing_action
-def unpinall(update, context) -> str:
-    if user_can_pin(chat, user, context.bot.id) is False:
-        message.reply_text("You are missing rights to unpin a message!")
-        return ""
-        
+def unpinall(update, context) -> str:    
     bot = context.bot
     chat = update.effective_chat
     user = update.effective_user  # type: Optional[User]
+
+    if user_can_pin(chat, user, context.bot.id) is False:
+        message.reply_text("You are missing rights to unpin a message!")
+        return ""
 
     try:
         bot.unpinAllChatMessages(chat.id)
@@ -269,6 +269,7 @@ def unpin(update, context):
 
     try:
         context.bot.unpinChatMessage(chat.id)
+        update.effective_message.reply_text("Successfully unpinned messages!")
     except BadRequest as excp:
         if excp.message == "Chat_not_modified":
             pass
