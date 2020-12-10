@@ -177,6 +177,7 @@ def new_member(update, context):
     chat = update.effective_chat
     user = update.effective_user
     msg = update.effective_message
+    keyboard = None
 
     should_welc, cust_welcome, cust_content, welc_type = sql.get_welc_pref(
         chat.id
