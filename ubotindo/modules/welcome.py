@@ -51,6 +51,7 @@ from ubotindo.modules.helper_funcs.alternate import send_message, typing_action
 from ubotindo.modules.helper_funcs.chat_status import (
     is_user_ban_protected,
     user_admin,
+    can_restrict,
 )
 from ubotindo.modules.helper_funcs.misc import (
     build_keyboard,
@@ -111,7 +112,14 @@ def send(update, message, keyboard, backup_message):
             reply_to_message_id=reply,
         )
     except BadRequest as excp:
-        if excp.message == "Button_url_invalid":
+        if excp.message == "Reply message not found":
+            msg = update.effective_message.reply_text(
+                message,
+                parse_mode=ParseMode.MARKDOWN,
+                reply_markup=keyboard,
+                quote=False
+            )
+        elif excp.message == "Button_url_invalid":
             msg = update.effective_message.reply_text(
                 markdown_parser(
                     backup_message
@@ -240,6 +248,7 @@ def new_member(update, context):
                 except BadRequest as err:
                     if err.message == "Have no rights to send a message":
                         pass
+                        continue
 
             else:
                 buttons = sql.get_welc_buttons(chat.id)
@@ -462,6 +471,7 @@ def check_not_bot(member, chat_id, message_id, context):
                 "**This User Not Verify in 120sec**\nKicked Now!!!",
                 chat_id=chat_id,
                 message_id=message_id,
+                parse_mode=ParseMode.MARKDOWN,
             )
         except:
             pass
@@ -792,6 +802,7 @@ def reset_goodbye(update, context) -> str:
 
 
 @user_admin
+@can_restrict
 @loggable
 @typing_action
 def welcomemute(update, context) -> str:
@@ -950,14 +961,18 @@ def user_button(update, context):
     chat = update.effective_chat
     user = update.effective_user
     query = update.callback_query
+    bot = context.bot
     match = re.match(r"user_join_\((.+?)\)", query.data)
     message = update.effective_message
-    db_checks = sql.set_human_checks(user.id, chat.id)
     join_user = int(match.group(1))
 
     if join_user == user.id:
-        query.answer(text="Yus! You're a human, Unmuted!")
-        context.bot.restrict_chat_member(
+        member_dict = VERIFIED_USER_WAITLIST.pop(user.id)
+        member_dict["status"] = True
+        VERIFIED_USER_WAITLIST.update({user.id: member_dict})
+        query.answer(text="Yeet! You're a human, unmuted!")
+        sql.set_human_checks(user.id, chat.id)
+        bot.restrict_chat_member(
             chat.id,
             user.id,
             permissions=ChatPermissions(
@@ -971,8 +986,37 @@ def user_button(update, context):
                 can_add_web_page_previews=True,
             ),
         )
-        context.bot.deleteMessage(chat.id, message.message_id)
-        db_checks
+        try:
+            bot.deleteMessage(chat.id, message.message_id)
+        except:
+            pass
+        if member_dict["should_welc"]:
+            if member_dict["media_wel"]:
+                sent = ENUM_FUNC_MAP[member_dict["welc_type"]](
+                    member_dict["chat_id"],
+                    member_dict["cust_content"],
+                    caption=member_dict["res"],
+                    reply_markup=member_dict["keyboard"],
+                    parse_mode="markdown",
+                )
+            else:
+                sent = send(
+                    member_dict["update"],
+                    member_dict["res"],
+                    member_dict["keyboard"],
+                    member_dict["backup_message"],
+                )
+
+            prev_welc = sql.get_clean_pref(chat.id)
+            if prev_welc:
+                try:
+                    bot.delete_message(chat.id, prev_welc)
+                except BadRequest:
+                    pass
+
+                if sent:
+                    sql.set_clean_welcome(chat.id, sent.message_id)
+
     else:
         query.answer(text="You're not allowed to do this!")
 
