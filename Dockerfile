@@ -5,11 +5,7 @@ FROM python:3.8
 WORKDIR /ubotindo/
 
 RUN apt -qq update && apt -qq upgrade -y
-RUN apt -qq install -y --no-install-recommends \
-    curl \
-    git \
-    gnupg2 \
-    wget 
+# RUN apt -qq install -y --no-install-recommends \
 
 # copy the dependencies file to the working directory
 COPY requirements.txt .
