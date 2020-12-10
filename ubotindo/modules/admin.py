@@ -563,11 +563,26 @@ done easily using the bot.
  × /setgtitle <newtitle>: Sets new chat title in your group.
  × /setsticker: As a reply to some sticker to set it as group sticker set!
  × /setdescription: <description> Sets new chat description in group.
+ × /antiarabic <on/off>: turn antiarabic module on/off ( off by default )
+ × /antiarabic: get status of AntiArabicScript module in chat
 
+ 
 *Note*: To set group sticker set chat must needs to have min 100 members.
 
 An example of promoting someone to admins:
 `/promote @username`; this promotes a user to admins.
+
+AntiArabicScript Module is used to delete messages.
+Containing characters from one of the following automatically:
+ × Arabic
+ × Arabic Supplement
+ × Arabic Extended-A
+ × Arabic Presentation Forms-A
+ × Arabic Presentation Forms-B
+ × Rumi Numeral Symbols
+ × Arabic Mathematical Alphabetic Symbols
+
+*NOTE:* AntiArabicScript module doesn't affect messages sent by admins.
 """
 
 __mod_name__ = "Admin"
