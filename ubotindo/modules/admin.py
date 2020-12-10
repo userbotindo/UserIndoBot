@@ -229,8 +229,10 @@ def pin(update, context):
 @loggable
 @typing_action
 def unpinall(update, context) -> str:
-    if not check_perms(update, 2):
-        return
+    if user_can_pin(chat, user, context.bot.id) is False:
+        message.reply_text("You are missing rights to unpin a message!")
+        return ""
+        
     bot = context.bot
     chat = update.effective_chat
     user = update.effective_user  # type: Optional[User]
@@ -293,7 +295,6 @@ def invite(update, context):
     user = update.effective_user
     msg = update.effective_message
     chat = update.effective_chat
-    context.args
 
     conn = connected(context.bot, update, chat, user.id, need_admin=True)
     if conn:
