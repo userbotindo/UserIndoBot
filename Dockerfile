@@ -4,12 +4,12 @@ FROM python:3.8
 # set the working directory in the container
 WORKDIR /ubotindo/
 
-RUN apt -qq update && apt -qq upgrade
+RUN apt -qq update && apt -qq upgrade -y
 RUN apt -qq install -y --no-install-recommends \
     curl \
     git \
     gnupg2 \
-    wget \
+    wget 
 
 # copy the dependencies file to the working directory
 COPY requirements.txt .
