@@ -21,7 +21,7 @@ from telegram import ParseMode, error
 from telegram.ext import CommandHandler
 
 from ubotindo import LASTFM_API_KEY, dispatcher
-from ubotindo.utils import get_collection
+from ubotindo.modules.no_sql import get_collection
 from ubotindo.modules.disable import DisableAbleCommandHandler
 from ubotindo.modules.helper_funcs.alternate import typing_action
 

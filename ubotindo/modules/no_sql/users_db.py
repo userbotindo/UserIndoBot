@@ -16,7 +16,7 @@
 """User database utils."""
 
 from ubotindo import dispatcher
-from ubotindo.utils import get_collection
+from ubotindo.modules.no_sql import get_collection
 
 
 USERS_DB = get_collection("USERS")

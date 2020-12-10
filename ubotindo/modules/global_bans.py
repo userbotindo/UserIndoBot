@@ -23,7 +23,7 @@ from telegram.error import BadRequest, TelegramError
 from telegram.ext import CommandHandler, Filters, MessageHandler
 from telegram.utils.helpers import mention_html
 
-import ubotindo.utils.gban_utils as gban_db
+import ubotindo.modules.no_sql.gban_db as gban_db
 from ubotindo import STRICT_GBAN  # LOGGER,
 from ubotindo import (
     DEV_USERS,
