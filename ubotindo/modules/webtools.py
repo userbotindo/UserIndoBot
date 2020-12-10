@@ -46,7 +46,7 @@ def leavechat(update, context):
         try:
             bot.leave_chat(int(chat_id))
             update.effective_message.reply_text("Left the group successfully!")
-        except telegram.TelegramError:
+        except BadRequest:
             update.effective_message.reply_text("Attempt failed.")
     else:
         update.effective_message.reply_text("Give me a valid chat id")
