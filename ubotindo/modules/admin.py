@@ -228,6 +228,34 @@ def pin(update, context):
 @user_admin
 @loggable
 @typing_action
+def unpinall(update, context) -> str:
+    if not check_perms(update, 2):
+        return
+    bot = context.bot
+    chat = update.effective_chat
+    user = update.effective_user  # type: Optional[User]
+
+    try:
+        bot.unpinAllChatMessages(chat.id)
+        update.effective_message.reply_text(
+            "Successfully unpinned all messages!")
+    except BadRequest as excp:
+        if excp.message == "Chat_not_modified":
+            pass
+        else:
+            raise
+
+    return "<b>{}:</b>" \
+           "\n#UNPINNED" \
+           "\n<b>Admin:</b> {}".format(html.escape(chat.title),
+                                       mention_html(user.id, user.first_name))
+    
+
+@bot_admin
+@can_pin
+@user_admin
+@loggable
+@typing_action
 def unpin(update, context):
     chat = update.effective_chat
     user = update.effective_user
@@ -554,6 +582,7 @@ done easily using the bot.
 *Admin only:*
  × /pin: Silently pins the message replied to - add `loud`, `notify` or `violent` to give notificaton to users.
  × /unpin: Unpins the currently pinned message.
+ × /unpinall: Unpins all pinned message in group.
  × /invitelink: Gets private chat's invitelink.
  × /promote: Promotes the user replied to.
  × /demote: Demotes the user replied to.
@@ -590,6 +619,10 @@ __mod_name__ = "Admin"
 PIN_HANDLER = CommandHandler(
     "pin", pin, pass_args=True, filters=Filters.chat_type.groups, run_async=True
 )
+UNPINALL_HANDLER = CommandHandler("unpinall",
+                                  unpinall,
+                                  filters=Filters.chat_type.groups,
+                                  run_async=True)
 UNPIN_HANDLER = CommandHandler(
     "unpin", unpin, filters=Filters.chat_type.groups, run_async=True
 )
@@ -629,6 +662,7 @@ ADMIN_REFRESH_HANDLER = CommandHandler(
 
 
 dispatcher.add_handler(PIN_HANDLER)
+dispatcher.add_handler(UNPINALL_HANDLER)
 dispatcher.add_handler(UNPIN_HANDLER)
 dispatcher.add_handler(INVITE_HANDLER)
 dispatcher.add_handler(PROMOTE_HANDLER)
