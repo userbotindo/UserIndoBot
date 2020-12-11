@@ -65,7 +65,7 @@ from ubotindo.modules.helper_funcs.string_handling import (
     markdown_to_html,
 )
 from ubotindo.modules.log_channel import loggable
-from ubotindo.utils.gban_utils import is_user_gbanned
+from ubotindo.modules.no_sql.gban_db import is_user_gbanned
 
 VALID_WELCOME_FORMATTERS = [
     "first",

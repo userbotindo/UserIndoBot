@@ -20,7 +20,7 @@ from telegram import Bot, InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.error import BadRequest, Unauthorized
 from telegram.ext import CallbackQueryHandler, CommandHandler
 
-import ubotindo.utils.gban_utils as gban_db
+from ubotindo.modules.no_sql import gban_db
 import ubotindo.modules.sql.users_sql as user_sql
 from ubotindo import DEV_USERS, dispatcher
 from ubotindo.modules.helper_funcs.filters import CustomFilters
