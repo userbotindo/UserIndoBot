@@ -28,7 +28,7 @@ if is_module_loaded(FILENAME):
 
     from ubotindo import LOGGER, dispatcher
     from ubotindo.modules.helper_funcs.chat_status import user_admin
-    from ubotindo.modules.sql import log_channel_sql as sql
+    from ubotindo.modules.no_sql import log_channel_db as db
 
     def loggable(func):
         @wraps(func)
@@ -44,12 +44,12 @@ if is_module_loaded(FILENAME):
                             chat.username, message.message_id
                         )
                     )
-                log_chat = sql.get_chat_log_channel(chat.id)
+                log_chat = db.get_chat_log_channel(chat.id)
                 if log_chat:
                     try:
                         send_log(context.bot, log_chat, chat.id, result)
                     except Unauthorized:
-                        sql.stop_chat_logging(chat.id)
+                        db.stop_chat_logging(chat.id)
 
             elif result == "":
                 pass
@@ -72,7 +72,7 @@ if is_module_loaded(FILENAME):
                     orig_chat_id,
                     "This log channel has been deleted - unsetting.",
                 )
-                sql.stop_chat_logging(orig_chat_id)
+                db.stop_chat_logging(orig_chat_id)
             else:
                 LOGGER.warning(excp.message)
                 LOGGER.warning(result)
@@ -89,7 +89,7 @@ if is_module_loaded(FILENAME):
         message = update.effective_message
         chat = update.effective_chat
 
-        log_channel = sql.get_chat_log_channel(chat.id)
+        log_channel = db.get_chat_log_channel(chat.id)
         if log_channel:
             log_channel_info = context.bot.get_chat(log_channel)
             message.reply_text(
@@ -112,7 +112,7 @@ if is_module_loaded(FILENAME):
             )
 
         elif message.forward_from_chat:
-            sql.set_chat_log_channel(chat.id, message.forward_from_chat.id)
+            db.set_chat_log_channel(chat.id, message.forward_from_chat.id)
             try:
                 message.delete()
             except BadRequest as excp:
@@ -156,7 +156,7 @@ if is_module_loaded(FILENAME):
         message = update.effective_message
         chat = update.effective_chat
 
-        log_channel = sql.stop_chat_logging(chat.id)
+        log_channel = db.stop_chat_logging(chat.id)
         if log_channel:
             context.bot.send_message(
                 log_channel,
@@ -168,13 +168,13 @@ if is_module_loaded(FILENAME):
             message.reply_text("No log channel has been set yet!")
 
     def __stats__():
-        return "× {} log channels have been set.".format(sql.num_logchannels())
+        return "× {} log channels have been set.".format(db.num_logchannels())
 
     def __migrate__(old_chat_id, new_chat_id):
-        sql.migrate_chat(old_chat_id, new_chat_id)
+        db.migrate_chat(old_chat_id, new_chat_id)
 
     def __chat_settings__(chat_id, user_id):
-        log_channel = sql.get_chat_log_channel(chat_id)
+        log_channel = db.get_chat_log_channel(chat_id)
         if log_channel:
             log_channel_info = dispatcher.bot.get_chat(log_channel)
             return "This group has all it's logs sent to: {} (`{}`)".format(
