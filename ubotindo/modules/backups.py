@@ -24,7 +24,7 @@ from telegram.error import BadRequest
 from telegram.ext import CommandHandler
 
 # from ubotindo.modules.sql import warns_sql as warnssql
-import ubotindo.modules.sql.blacklist_sql as blacklistsql
+from ubotindo.modules.no_sql import blacklist_db
 
 # from ubotindo.modules.sql import cust_filters_sql as filtersql
 # import ubotindo.modules.sql.welcome_sql as welcsql
@@ -262,7 +262,7 @@ def export_data(update, context):
     # Rules
     rules = chat_rules(chat_id)
     # Blacklist
-    bl = list(blacklistsql.get_chat_blacklist(chat_id))
+    bl = list(blacklist_db.get_chat_blacklist(chat_id))
     # Disabled command
     disabledcmd = list(disable_db.get_all_disabled(chat_id))
     # Filters (TODO)
