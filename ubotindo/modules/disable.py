@@ -35,7 +35,7 @@ if is_module_loaded(FILENAME):
         is_user_admin,
         user_admin,
     )
-    from ubotindo.modules.sql import disable_sql as sql
+    from ubotindo.modules.no_sql import disable_db
 
     DISABLE_CMDS = []
     DISABLE_OTHER = []
@@ -79,7 +79,7 @@ if is_module_loaded(FILENAME):
                             chat = update.effective_chat
                             user = update.effective_user
                             # disabled, admincmd, user admin
-                            if sql.is_command_disabled(
+                            if disable_db.is_command_disabled(
                                 chat.id, command[0].lower()
                             ):
                                 # check if command was disabled
@@ -106,7 +106,7 @@ if is_module_loaded(FILENAME):
         def check_update(self, update):
             if isinstance(update, Update) and update.effective_message:
                 chat = update.effective_chat
-                return self.filters(update) and not sql.is_command_disabled(
+                return self.filters(update) and not disable_db.is_command_disabled(
                     chat.id, self.friendly
                 )
 
@@ -137,7 +137,7 @@ if is_module_loaded(FILENAME):
                 disable_cmd = disable_cmd[1:]
 
             if disable_cmd in set(DISABLE_CMDS + DISABLE_OTHER):
-                sql.disable_command(chat.id, disable_cmd)
+                disable_db.disable_command(chat.id, disable_cmd)
                 if conn:
                     text = "Disabled the use of `{}` command in *{}*!".format(
                         disable_cmd, chat_name
@@ -186,7 +186,7 @@ if is_module_loaded(FILENAME):
             if enable_cmd.startswith(CMD_STARTERS):
                 enable_cmd = enable_cmd[1:]
 
-            if sql.enable_command(chat.id, enable_cmd):
+            if disable_db.enable_command(chat.id, enable_cmd):
                 if conn:
                     text = "Enabled the use of `{}` command in *{}*!".format(
                         enable_cmd, chat_name
@@ -224,7 +224,7 @@ if is_module_loaded(FILENAME):
 
     # do not async
     def build_curr_disabled(chat_id: Union[str, int]) -> str:
-        disabled = sql.get_all_disabled(chat_id)
+        disabled = disable_db.get_all_disabled(chat_id)
         if not disabled:
             return "No commands are disabled!"
 
@@ -259,15 +259,15 @@ if is_module_loaded(FILENAME):
     def __import_data__(chat_id, data):
         disabled = data.get("disabled", {})
         for disable_cmd in disabled:
-            sql.disable_command(chat_id, disable_cmd)
+            disable_db.disable_command(chat_id, disable_cmd)
 
     def __stats__():
         return "× {} disabled items, across {} chats.".format(
-            sql.num_disabled(), sql.num_chats()
+            disable_db.num_disabled(), disable_db.num_chats()
         )
 
     def __migrate__(old_chat_id, new_chat_id):
-        sql.migrate_chat(old_chat_id, new_chat_id)
+        disable_db.migrate_chat(old_chat_id, new_chat_id)
 
     def __chat_settings__(chat_id, user_id):
         return build_curr_disabled(chat_id)

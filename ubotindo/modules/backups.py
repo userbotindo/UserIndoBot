@@ -38,7 +38,7 @@ from ubotindo.__main__ import DATA_IMPORT
 from ubotindo.modules.connection import connected
 from ubotindo.modules.helper_funcs.alternate import typing_action
 from ubotindo.modules.helper_funcs.chat_status import user_admin
-from ubotindo.modules.sql import disable_sql as disabledsql
+from ubotindo.modules.no_sql import disable_db
 
 
 @user_admin
@@ -264,7 +264,7 @@ def export_data(update, context):
     # Blacklist
     bl = list(blacklistsql.get_chat_blacklist(chat_id))
     # Disabled command
-    disabledcmd = list(disabledsql.get_all_disabled(chat_id))
+    disabledcmd = list(disable_db.get_all_disabled(chat_id))
     # Filters (TODO)
     """
 	all_filters = list(filtersql.get_chat_triggers(chat_id))
@@ -415,10 +415,10 @@ __help__ = """
 
 """
 
-# IMPORT_HANDLER = CommandHandler("import", import_data, run_async=True)
-# EXPORT_HANDLER = CommandHandler(
-#    "export", export_data, pass_chat_data=True, run_async=True
-# )
+IMPORT_HANDLER = CommandHandler("import", import_data, run_async=True)
+EXPORT_HANDLER = CommandHandler(
+   "export", export_data, pass_chat_data=True, run_async=True
+)
 
-# dispatcher.add_handler(IMPORT_HANDLER)
-# dispatcher.add_handler(EXPORT_HANDLER)
+dispatcher.add_handler(IMPORT_HANDLER)
+dispatcher.add_handler(EXPORT_HANDLER)
