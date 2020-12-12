@@ -45,7 +45,7 @@ from ubotindo.modules.helper_funcs.extraction import (
     extract_user_and_text,
 )
 from ubotindo.modules.helper_funcs.filters import CustomFilters
-from ubotindo.modules.sql.users_sql import get_all_chats
+from ubotindo.modules.no_sql.users_db import get_all_chats
 
 GBAN_ENFORCE_GROUP = 6
 
@@ -289,7 +289,7 @@ def ungban(update, context):
 
     chats = get_all_chats()
     for chat in chats:
-        chat_id = chat.chat_id
+        chat_id = chat["chat_id"]
 
         # Check if this group has disabled gbans
         if not gban_db.does_chat_gban(chat_id):
