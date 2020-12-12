@@ -59,7 +59,7 @@ from ubotindo.modules.global_bans import check_cas
 from ubotindo.modules.helper_funcs.alternate import send_action, typing_action
 from ubotindo.modules.helper_funcs.extraction import extract_user
 from ubotindo.modules.helper_funcs.filters import CustomFilters
-from ubotindo.modules.sql.afk_sql import is_afk
+from ubotindo.modules.no_sql.afk_db import is_afk
 
 
 @typing_action
