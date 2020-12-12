@@ -18,7 +18,7 @@ from io import BytesIO
 from time import sleep
 
 from telegram import TelegramError
-from telegram.error import BadRequest, TimedOut
+from telegram.error import BadRequest, TimedOut, Unauthorized
 from telegram.ext import CommandHandler, Filters, MessageHandler
 
 from ubotindo.modules.no_sql import users_db
@@ -128,7 +128,7 @@ def chat_checker(update, context):
             is False
         ):
             context.bot.leaveChat(update.effective_message.chat.id)
-    except TimedOut:
+    except (TimedOut, Unauthorized, BadRequest):
         pass
 
 

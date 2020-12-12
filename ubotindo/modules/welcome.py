@@ -186,8 +186,11 @@ def new_member(update, context):
         res = None
         sent = None
         should_mute = True
-        welcome_bool = True
         media_wel = False
+        welcome_bool = False
+        keyboard = None
+        backup_message = None
+        reply = None
 
         if spamwtc != None:
             sw = spamwtc.get_ban(new_mem.id)
@@ -298,13 +301,6 @@ def new_member(update, context):
                     first=escape_markdown(first_name)
                 )
                 keyboard = InlineKeyboardMarkup(keyb)
-
-        else:
-            welcome_bool = False
-            res = None
-            keyboard = None
-            backup_message = None
-            reply = None
 
         # User exceptions from welcomemutes
         if (
