@@ -78,7 +78,7 @@ def get_invalid_gban(bot: Bot, update: Update, remove: bool = False):
     ungban_list = []
 
     for user in banned:
-        user_id = user["user_id"]
+        user_id = user["_id"]
         sleep(0.5)
         try:
             bot.get_chat(user_id)
