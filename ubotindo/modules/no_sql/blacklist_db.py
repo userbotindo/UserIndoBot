@@ -41,7 +41,7 @@ def add_to_blacklist(chat_id, trigger):
 
 def rm_from_blacklist(chat_id, trigger) -> bool:
     data = BL.find_one_and_delete(
-        {'chat_id': str(chat_id), 'trigger': trigger}
+        {'chat_id': chat_id, 'trigger': trigger}
         )
     if data:
         if trigger in CHAT_BLACKLISTS.get(str(chat_id), set()):
@@ -50,7 +50,7 @@ def rm_from_blacklist(chat_id, trigger) -> bool:
     return False
 
 
-def get_chat_blacklist(chat_id) -> str:
+def get_chat_blacklist(chat_id) -> set:
     return CHAT_BLACKLISTS.get(str(chat_id), set())
 
 
@@ -101,13 +101,13 @@ def get_blacklist_setting(chat_id) -> [int, str]:
 
 def __load_chat_blacklists():
     global CHAT_BLACKLISTS
-    for chat in BL.distinct('chat_id'):
-        CHAT_BLACKLISTS[chat] = []
+    for chat in BL.find():
+        CHAT_BLACKLISTS[chat["chat_id"]] = []
     
     for x in BL.find():
         CHAT_BLACKLISTS[x["chat_id"]] += [x["trigger"]]
 
-    CHAT_BLACKLISTS = {x: set(y) for x, y in CHAT_BLACKLISTS.items()}
+    CHAT_BLACKLISTS = {str(x): set(y) for x, y in CHAT_BLACKLISTS.items()}
 
 
 def __load_chat_settings_blacklists():
