@@ -20,11 +20,15 @@ from typing import Optional
 from telegram import MAX_MESSAGE_LENGTH, Message, ParseMode, User
 from telegram.utils.helpers import escape_markdown
 
-import ubotindo.modules.sql.userinfo_sql as sql
 from ubotindo import DEV_USERS, dispatcher
 from ubotindo.modules.disable import DisableAbleCommandHandler
+from ubotindo.modules.no_sql import get_collection
 from ubotindo.modules.helper_funcs.alternate import typing_action
 from ubotindo.modules.helper_funcs.extraction import extract_user
+
+
+USER_INFO = get_collection("USER_INFO")
+USER_BIO = get_collection("USER_BIO")
 
 
 @typing_action
@@ -38,7 +42,7 @@ def about_me(update, context):
     else:
         user = message.from_user
 
-    info = sql.get_user_me_info(user.id)
+    info = USER_INFO.find_one({'_id': user.id})["info"]
 
     if info:
         update.effective_message.reply_text(
@@ -72,7 +76,10 @@ def set_about_me(update, context):
     )  # use python's maxsplit to only remove the cmd, hence keeping newlines.
     if len(info) == 2:
         if len(info[1]) < MAX_MESSAGE_LENGTH // 4:
-            sql.set_user_me_info(user_id, info[1])
+            USER_INFO.update_one(
+                {'_id': user_id},
+                {"$set": {'info': info[1]}},
+                upsert=True)
             message.reply_text("Your bio has been saved successfully")
         else:
             message.reply_text(
@@ -93,7 +100,7 @@ def about_bio(update, context):
     else:
         user = message.from_user
 
-    info = sql.get_user_bio(user.id)
+    info = USER_BIO.find_one({'_id': user.id})["bio"]
 
     if info:
         update.effective_message.reply_text(
@@ -135,7 +142,10 @@ def set_about_bio(update, context):
         bio = text.split(None, 1)
         if len(bio) == 2:
             if len(bio[1]) < MAX_MESSAGE_LENGTH // 4:
-                sql.set_user_bio(user_id, bio[1])
+                USER_BIO.update_one(
+                    {'_id': user_id},
+                    {"$set": {'bio': bio[1]}},
+                    upsert=True)
                 message.reply_text(
                     "{} bio has been successfully saved!".format(
                         repl_message.from_user.first_name
@@ -154,16 +164,21 @@ def set_about_bio(update, context):
 
 
 def __user_info__(user_id):
-    bio = html.escape(sql.get_user_bio(user_id) or "")
-    me = html.escape(sql.get_user_me_info(user_id) or "")
-    if bio and me:
+    bdata = USER_BIO.find_one({'_id': user_id})
+    if bdata:
+        bio = html.escape(bdata["bio"])
+    idata = USER_INFO.find_one({'_id': user_id})
+    if idata:
+        me = html.escape(idata["info"])
+
+    if bdata and idata:
         return "<b>About user:</b>\n{me}\n\n<b>What others say:</b>\n{bio}".format(
             me=me, bio=bio
         )
-    elif bio:
-        return "<b>What others say:</b>\n{bio}\n".format(me=me, bio=bio)
-    elif me:
-        return "<b>About user:</b>\n{me}" "".format(me=me, bio=bio)
+    elif bdata:
+        return "<b>What others say:</b>\n{}\n".format(bio)
+    elif idata:
+        return "<b>About user:</b>\n{}".format(me)
     else:
         return ""
 

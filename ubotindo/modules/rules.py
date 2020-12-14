@@ -27,11 +27,14 @@ from telegram.error import BadRequest
 from telegram.ext import CommandHandler, Filters
 from telegram.utils.helpers import escape_markdown
 
-import ubotindo.modules.sql.rules_sql as sql
 from ubotindo import dispatcher
+from ubotindo.modules.no_sql import get_collection
 from ubotindo.modules.helper_funcs.alternate import typing_action
 from ubotindo.modules.helper_funcs.chat_status import user_admin
 from ubotindo.modules.helper_funcs.string_handling import markdown_parser
+
+
+RULES_DATA = get_collection("RULES")
 
 
 @typing_action
@@ -57,7 +60,7 @@ def send_rules(update, chat_id, from_pm=False):
         else:
             raise
 
-    rules = sql.get_rules(chat_id)
+    rules = chat_rules(chat_id)
     text = "The rules for *{}* are:\n\n{}".format(
         escape_markdown(chat.title), rules
     )
@@ -109,7 +112,10 @@ def set_rules(update, context):
             txt, entities=msg.parse_entities(), offset=offset
         )
 
-        sql.set_rules(chat_id, markdown_rules)
+        RULES_DATA.find_one_and_update(
+            {'_id': chat_id},
+            {"$set": {'rules': markdown_rules}},
+            upsert=True)
         update.effective_message.reply_text(
             "Successfully set rules for this group."
         )
@@ -119,27 +125,42 @@ def set_rules(update, context):
 @typing_action
 def clear_rules(update, context):
     chat_id = update.effective_chat.id
-    sql.set_rules(chat_id, "")
+    RULES_DATA.delete_one({'_id': chat_id})
     update.effective_message.reply_text("Successfully cleared rules!")
 
 
+def chat_rules(chat_id):
+    data = RULES_DATA.find_one({'_id': int(chat_id)})  # ensure integer
+    if data:
+        return data["rules"]
+    else:
+        return False
+
+
 def __stats__():
-    return "× {} chats have rules set.".format(sql.num_chats())
+    count = RULES_DATA.count_documents({})
+    return "× {} chats have rules set.".format(count)
 
 
 def __import_data__(chat_id, data):
     # set chat rules
     rules = data.get("info", {}).get("rules", "")
-    sql.set_rules(chat_id, rules)
+    RULES_DATA.find_one_and_update(
+        {'_id': chat_id},
+        {"$set": {'rules': rules}},
+        upsert=True)
 
 
 def __migrate__(old_chat_id, new_chat_id):
-    sql.migrate_chat(old_chat_id, new_chat_id)
+    rules = RULES_DATA.find_one_and_delete({'_id':old_chat_id})
+    if rules:
+        RULES_DATA.insert_one(
+            {'_id': new_chat_id, 'rules': rules["rules"]})
 
 
 def __chat_settings__(chat_id, user_id):
     return "This chat has had it's rules set: `{}`".format(
-        bool(sql.get_rules(chat_id))
+        bool(chat_rules(chat_id))
     )
 
 

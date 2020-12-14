@@ -27,7 +27,7 @@ from ubotindo.modules.disable import (
     DisableAbleCommandHandler,
     DisableAbleMessageHandler,
 )
-from ubotindo.modules.sql import afk_sql as sql
+from ubotindo.modules.no_sql import afk_db
 from ubotindo.modules.users import get_user_id
 
 AFK_GROUP = 7
@@ -52,7 +52,7 @@ def afk(update, context):
     else:
         reason = ""
 
-    sql.set_afk(update.effective_user.id, reason)
+    afk_db.set_afk(update.effective_user.id, reason)
     afkstr = random.choice(fun.AFK)
     msg = update.effective_message
     afksend = msg.reply_text(
@@ -72,7 +72,7 @@ def no_longer_afk(update, context):
     if not user:  # ignore channels
         return
 
-    res = sql.rm_afk(user.id)
+    res = afk_db.rm_afk(user.id)
     if res:
         if message.new_chat_members:  # dont say msg
             return
@@ -156,9 +156,9 @@ def reply_afk(update, context):
 
 
 def check_afk(update, context, user_id, fst_name, userc_id):
-    if sql.is_afk(user_id):
-        user = sql.check_afk_status(user_id)
-        if not user.reason:
+    if afk_db.is_afk(user_id):
+        user = afk_db.check_afk_status(user_id)
+        if not user["reason"]:
             if int(userc_id) == int(user_id):
                 return
             res = "{} is afk".format(fst_name)
@@ -167,7 +167,7 @@ def check_afk(update, context, user_id, fst_name, userc_id):
             if int(userc_id) == int(user_id):
                 return
             res = "<b>{}</b> is away from keyboard! says it's because of <b>Reason:</b> <code>{}</code>".format(
-                fst_name, user.reason
+                fst_name, user["reason"]
             )
             replafk = update.effective_message.reply_text(
                 res, parse_mode="html"
@@ -180,7 +180,7 @@ def check_afk(update, context, user_id, fst_name, userc_id):
 
 
 def __gdpr__(user_id):
-    sql.rm_afk(user_id)
+    afk_db.rm_afk(user_id)
 
 
 __help__ = """

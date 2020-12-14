@@ -18,10 +18,10 @@ from io import BytesIO
 from time import sleep
 
 from telegram import TelegramError
-from telegram.error import BadRequest, TimedOut
+from telegram.error import BadRequest, TimedOut, Unauthorized
 from telegram.ext import CommandHandler, Filters, MessageHandler
 
-import ubotindo.modules.sql.users_sql as sql
+from ubotindo.modules.no_sql import users_db
 from ubotindo import LOGGER, OWNER_ID, dispatcher
 from ubotindo.modules.helper_funcs.filters import CustomFilters
 
@@ -37,18 +37,18 @@ def get_user_id(username):
     if username.startswith("@"):
         username = username[1:]
 
-    users = sql.get_userid_by_name(username)
+    users = users_db.get_userid_by_name(username)
 
     if not users:
         return None
 
     elif len(users) == 1:
-        return users[0].user_id
+        return users[0]["_id"]
 
     else:
         for user_obj in users:
             try:
-                userdat = dispatcher.bot.get_chat(user_obj.user_id)
+                userdat = dispatcher.bot.get_chat(user_obj["_id"])
                 if userdat.username == username:
                     return userdat.id
 
@@ -64,18 +64,18 @@ def get_user_id(username):
 def broadcast(update, context):
     to_send = update.effective_message.text.split(None, 1)
     if len(to_send) >= 2:
-        chats = sql.get_all_chats() or []
+        chats = users_db.get_all_chats() or []
         failed = 0
         for chat in chats:
             try:
-                context.bot.sendMessage(int(chat.chat_id), to_send[1])
+                context.bot.sendMessage(int(chat["chat_id"]), to_send[1])
                 sleep(0.1)
             except TelegramError:
                 failed += 1
                 LOGGER.warning(
                     "Couldn't send broadcast to %s, group name %s",
-                    str(chat.chat_id),
-                    str(chat.chat_name),
+                    str(chat["chat_id"]),
+                    str(chat["chat_name"]),
                 )
 
         update.effective_message.reply_text(
@@ -88,12 +88,12 @@ def log_user(update, context):
     chat = update.effective_chat
     msg = update.effective_message
 
-    sql.update_user(
+    users_db.update_user(
         msg.from_user.id, msg.from_user.username, chat.id, chat.title
     )
 
     if msg.reply_to_message:
-        sql.update_user(
+        users_db.update_user(
             msg.reply_to_message.from_user.id,
             msg.reply_to_message.from_user.username,
             chat.id,
@@ -101,14 +101,14 @@ def log_user(update, context):
         )
 
     if msg.forward_from:
-        sql.update_user(msg.forward_from.id, msg.forward_from.username)
+        users_db.update_user(msg.forward_from.id, msg.forward_from.username)
 
 
 def chats(update, context):
-    all_chats = sql.get_all_chats() or []
+    all_chats = users_db.get_all_chats() or []
     chatfile = "List of chats.\n"
     for chat in all_chats:
-        chatfile += "{} - ({})\n".format(chat.chat_name, chat.chat_id)
+        chatfile += "{} - ({})\n".format(chat["chat_name"], chat["chat_id"])
 
     with BytesIO(str.encode(chatfile)) as output:
         output.name = "chatlist.txt"
@@ -128,14 +128,14 @@ def chat_checker(update, context):
             is False
         ):
             context.bot.leaveChat(update.effective_message.chat.id)
-    except TimedOut:
+    except (TimedOut, Unauthorized, BadRequest):
         pass
 
 
 def __user_info__(user_id):
     if user_id == dispatcher.bot.id:
         return """I've seen them in... Wow. Are they stalking me? They're in all the same places I am... oh. It's me."""
-    num_chats = sql.get_user_num_chats(user_id)
+    num_chats = users_db.get_user_num_chats(user_id)
     return """I've seen them in <code>{}</code> chats in total.""".format(
         num_chats
     )
@@ -143,12 +143,12 @@ def __user_info__(user_id):
 
 def __stats__():
     return "× {} users, across {} chats".format(
-        sql.num_users(), sql.num_chats()
+        users_db.num_users(), users_db.num_chats()
     )
 
 
 def __migrate__(old_chat_id, new_chat_id):
-    sql.migrate_chat(old_chat_id, new_chat_id)
+    users_db.migrate_chat(old_chat_id, new_chat_id)
 
 
 __help__ = ""  # no help string

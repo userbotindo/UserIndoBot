@@ -116,6 +116,7 @@ if ENV:
     CERT_PATH = os.environ.get("CERT_PATH")
 
     DB_URI = os.environ.get("DATABASE_URL")
+    MONGO_URI = os.environ.get("MONGO_DB_URI")
     DONATION_LINK = os.environ.get("DONATION_LINK")
     LOAD = os.environ.get("LOAD", "").split()
     NO_LOAD = os.environ.get("NO_LOAD", "").split()
@@ -131,6 +132,7 @@ if ENV:
     TELETHON_ID = int(os.environ.get("TL_APP_ID", None))
     TELETHON_HASH = os.environ.get("TL_HASH", None)
     SPAMWATCH = os.environ.get("SPAMWATCH_API", None)
+    LASTFM_API_KEY = os.environ.get("LASTFM_API_KEY", None)
 
 else:
     from ubotindo.config import Development as Config
@@ -189,6 +191,7 @@ else:
     CERT_PATH = Config.CERT_PATH
 
     DB_URI = Config.SQLALCHEMY_DATABASE_URI
+    MONGO_URI = Config.MONGO_DB_URI
     DONATION_LINK = Config.DONATION_LINK
     LOAD = Config.LOAD
     NO_LOAD = Config.NO_LOAD
@@ -203,6 +206,7 @@ else:
     TELETHON_HASH = Config.TELETHON_HASH
     TELETHON_ID = Config.TELETHON_ID
     SPAMWATCH = Config.SPAMWATCH_API
+    LASTFM_API_KEY = Config.LASTFM_API_KEY
 
 DEV_USERS.add(OWNER_ID)
 

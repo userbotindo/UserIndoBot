@@ -20,15 +20,15 @@ from telegram import Bot, InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.error import BadRequest, Unauthorized
 from telegram.ext import CallbackQueryHandler, CommandHandler
 
-import ubotindo.modules.sql.global_bans_sql as gban_sql
-import ubotindo.modules.sql.users_sql as user_sql
+from ubotindo.modules.no_sql import gban_db
+from ubotindo.modules.no_sql import users_db
 from ubotindo import DEV_USERS, dispatcher
 from ubotindo.modules.helper_funcs.filters import CustomFilters
 
 
 def get_invalid_chats(bot: Bot, update: Update, remove: bool = False):
     chat_id = update.effective_chat.id
-    chats = user_sql.get_all_chats()
+    chats = users_db.get_all_chats()
     kicked_chats, progress = 0, 0
     chat_list = []
     progress_message = None
@@ -48,7 +48,7 @@ def get_invalid_chats(bot: Bot, update: Update, remove: bool = False):
                 progress_message = bot.sendMessage(chat_id, progress_bar)
             progress += 5
 
-        cid = chat.chat_id
+        cid = chat["chat_id"]
         sleep(0.5)
         try:
             bot.get_chat(cid, timeout=120)
@@ -68,12 +68,12 @@ def get_invalid_chats(bot: Bot, update: Update, remove: bool = False):
     else:
         for muted_chat in chat_list:
             sleep(0.5)
-            user_sql.rem_chat(muted_chat)
+            users_db.rem_chat(muted_chat)
         return kicked_chats
 
 
 def get_invalid_gban(bot: Bot, update: Update, remove: bool = False):
-    banned = gban_sql.get_gban_list()
+    banned = gban_db.get_gban_list()
     ungbanned_users = 0
     ungban_list = []
 
@@ -93,7 +93,7 @@ def get_invalid_gban(bot: Bot, update: Update, remove: bool = False):
     else:
         for user_id in ungban_list:
             sleep(0.5)
-            gban_sql.ungban_user(user_id)
+            gban_db.ungban_user(user_id)
         return ungbanned_users
 
 
@@ -120,7 +120,7 @@ def dbcleanup(update, context):
 
 def get_muted_chats(bot: Bot, update: Update, leave: bool = False):
     chat_id = update.effective_chat.id
-    chats = user_sql.get_all_chats()
+    chats = users_db.get_all_chats()
     muted_chats, progress = 0, 0
     chat_list = []
     progress_message = None
@@ -140,7 +140,7 @@ def get_muted_chats(bot: Bot, update: Update, leave: bool = False):
                 progress_message = bot.sendMessage(chat_id, progress_bar)
             progress += 5
 
-        cid = chat.chat_id
+        cid = chat["chat_id"]
         sleep(0.5)
 
         try:
@@ -165,7 +165,7 @@ def get_muted_chats(bot: Bot, update: Update, leave: bool = False):
                 bot.leaveChat(muted_chat, timeout=120)
             except BaseException:
                 pass
-            user_sql.rem_chat(muted_chat)
+            users_db.rem_chat(muted_chat)
         return muted_chats
 
 

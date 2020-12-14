@@ -41,9 +41,12 @@ from ubotindo.modules.helper_funcs.chat_status import (
     user_not_admin,
 )
 from ubotindo.modules.log_channel import loggable
-from ubotindo.modules.sql import reporting_sql as sql
+from ubotindo.modules.no_sql import get_collection
 
 REPORT_GROUP = 5
+
+USER_REPORT_SETTINGS = get_collection("USER_REPORT_SETTINGS")
+CHAT_REPORT_SETTINGS = get_collection("CHAT_REPORT_SETTINGS")
 
 
 @user_admin
@@ -55,43 +58,55 @@ def report_setting(update, context):
 
     if chat.type == chat.PRIVATE:
         if len(args) >= 1:
-            if args[0] in ("yes", "on"):
-                sql.set_user_setting(chat.id, True)
+            if args[0] in ("yes", "on", "true"):
+                USER_REPORT_SETTINGS.update_one(
+                    {'user_id': int(chat.id)},
+                    {"$set": {'should_report': True}},
+                    upsert=True)
                 msg.reply_text(
                     "Turned on reporting! You'll be notified whenever anyone reports something."
                 )
 
-            elif args[0] in ("no", "off"):
-                sql.set_user_setting(chat.id, False)
+            elif args[0] in ("no", "off", "false"):
+                USER_REPORT_SETTINGS.update_one(
+                    {'user_id': int(chat.id)},
+                    {"$set": {'should_report': False}},
+                    upsert=True)
                 msg.reply_text(
                     "Turned off reporting! You wont get any reports."
                 )
         else:
             msg.reply_text(
                 "Your current report preference is: `{}`".format(
-                    sql.user_should_report(chat.id)
+                    user_should_report(chat.id)
                 ),
                 parse_mode=ParseMode.MARKDOWN,
             )
 
     else:
         if len(args) >= 1:
-            if args[0] in ("yes", "on"):
-                sql.set_chat_setting(chat.id, True)
+            if args[0] in ("yes", "on", "true"):
+                CHAT_REPORT_SETTINGS.update_one(
+                    {'chat_id': int(chat.id)},
+                    {"$set": {'should_report': True}},
+                    upsert=True)
                 msg.reply_text(
                     "Turned on reporting! Admins who have turned on reports will be notified when /report "
                     "or @admin are called."
                 )
 
-            elif args[0] in ("no", "off"):
-                sql.set_chat_setting(chat.id, False)
+            elif args[0] in ("no", "off", "false"):
+                CHAT_REPORT_SETTINGS.update_one(
+                    {'chat_id': int(chat.id)},
+                    {"$set": {'should_report': False}},
+                    upsert=True)
                 msg.reply_text(
                     "Turned off reporting! No admins will be notified on /report or @admin."
                 )
         else:
             msg.reply_text(
                 "This chat's current setting is: `{}`".format(
-                    sql.chat_should_report(chat.id)
+                    chat_should_report(chat.id)
                 ),
                 parse_mode=ParseMode.MARKDOWN,
             )
@@ -105,7 +120,7 @@ def report(update, context) -> str:
     chat = update.effective_chat  # type: Optional[Chat]
     user = update.effective_user  # type: Optional[User]
 
-    if chat and message.reply_to_message and sql.chat_should_report(chat.id):
+    if chat and message.reply_to_message and chat_should_report(chat.id):
         # type: Optional[User]
         reported_user = message.reply_to_message.from_user
         chat_name = chat.title or chat.first or chat.username
@@ -169,7 +184,7 @@ def report(update, context) -> str:
             if admin.user.is_bot:  # can't message bots
                 continue
 
-            if sql.user_should_report(admin.user.id):
+            if user_should_report(admin.user.id):
                 try:
                     context.bot.send_message(
                         admin.user.id,
@@ -245,19 +260,36 @@ def report_buttons(update, context):
             query.answer("⚠️ Failed to delete message!")
 
 
+def user_should_report(user_id: int) -> bool:
+    setting = USER_REPORT_SETTINGS.find_one({'user_id': user_id})
+    if not setting:
+        return True
+    return setting["should_report"]
+
+
+def chat_should_report(chat_id: int) -> bool:
+    setting = CHAT_REPORT_SETTINGS.find_one({'chat_id': chat_id})
+    if not setting:
+        return True
+    return setting["should_report"]
+
+
 def __migrate__(old_chat_id, new_chat_id):
-    sql.migrate_chat(old_chat_id, new_chat_id)
+    CHAT_REPORT_SETTINGS.update_many(
+        {'chat_id': old_chat_id},
+        {"$set": {'chat_id': new_chat_id}}
+    )
 
 
 def __chat_settings__(chat_id, user_id):
     return "This chat is setup to send user reports to admins, via /report and @admin: `{}`".format(
-        sql.chat_should_report(chat_id)
+        chat_should_report(chat_id)
     )
 
 
 def __user_settings__(user_id):
     return "You receive reports from chats you're admin in: `{}`.\nToggle this with /reports in PM.".format(
-        sql.user_should_report(user_id)
+        user_should_report(user_id)
     )
 
 

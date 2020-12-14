@@ -24,7 +24,7 @@ from telegram.error import BadRequest
 from telegram.ext import CommandHandler
 
 # from ubotindo.modules.sql import warns_sql as warnssql
-import ubotindo.modules.sql.blacklist_sql as blacklistsql
+from ubotindo.modules.no_sql import blacklist_db
 
 # from ubotindo.modules.sql import cust_filters_sql as filtersql
 # import ubotindo.modules.sql.welcome_sql as welcsql
@@ -32,13 +32,13 @@ import ubotindo.modules.sql.locks_sql as locksql
 import ubotindo.modules.sql.notes_sql as sql
 
 # from ubotindo.modules.rules import get_rules
-import ubotindo.modules.sql.rules_sql as rulessql
+from ubotindo.modules.rules import chat_rules
 from ubotindo import DEV_USERS, LOGGER, MESSAGE_DUMP, OWNER_ID, dispatcher
 from ubotindo.__main__ import DATA_IMPORT
 from ubotindo.modules.connection import connected
 from ubotindo.modules.helper_funcs.alternate import typing_action
 from ubotindo.modules.helper_funcs.chat_status import user_admin
-from ubotindo.modules.sql import disable_sql as disabledsql
+from ubotindo.modules.no_sql import disable_db
 
 
 @user_admin
@@ -260,11 +260,11 @@ def export_data(update, context):
             "#{}".format(namacat.split("<###splitter###>")[x])
         ] = "{}".format(isicat.split("<###splitter###>")[x])
     # Rules
-    rules = rulessql.get_rules(chat_id)
+    rules = chat_rules(chat_id)
     # Blacklist
-    bl = list(blacklistsql.get_chat_blacklist(chat_id))
+    bl = list(blacklist_db.get_chat_blacklist(chat_id))
     # Disabled command
-    disabledcmd = list(disabledsql.get_all_disabled(chat_id))
+    disabledcmd = list(disable_db.get_all_disabled(chat_id))
     # Filters (TODO)
     """
 	all_filters = list(filtersql.get_chat_triggers(chat_id))
@@ -415,10 +415,10 @@ __help__ = """
 
 """
 
-# IMPORT_HANDLER = CommandHandler("import", import_data, run_async=True)
-# EXPORT_HANDLER = CommandHandler(
-#    "export", export_data, pass_chat_data=True, run_async=True
-# )
+IMPORT_HANDLER = CommandHandler("import", import_data, run_async=True)
+EXPORT_HANDLER = CommandHandler(
+   "export", export_data, pass_chat_data=True, run_async=True
+)
 
-# dispatcher.add_handler(IMPORT_HANDLER)
-# dispatcher.add_handler(EXPORT_HANDLER)
+dispatcher.add_handler(IMPORT_HANDLER)
+dispatcher.add_handler(EXPORT_HANDLER)
