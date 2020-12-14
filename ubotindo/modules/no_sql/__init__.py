@@ -29,4 +29,4 @@ _DB = DB_CLIENT["UbotIndo"]
 
 def get_collection(name: str) -> collection:
     """Get the collection from database."""
-    return _DB[name] 
+    return _DB[name]

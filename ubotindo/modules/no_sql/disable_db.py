@@ -23,28 +23,22 @@ DISABLED = {}
 
 
 def disable_command(chat_id, disable) -> bool:
-    data = DISABLED_COMMANDS.find_one(
-        {'chat_id': chat_id, 'command': disable})
+    data = DISABLED_COMMANDS.find_one({"chat_id": chat_id, "command": disable})
     if not data:
         DISABLED.setdefault(str(chat_id), set()).add(disable)
 
-        DISABLED_COMMANDS.insert_one(
-            {'chat_id': chat_id, 'command': disable})
+        DISABLED_COMMANDS.insert_one({"chat_id": chat_id, "command": disable})
         return True
     return False
 
 
 def enable_command(chat_id, enable) -> bool:
-    data = DISABLED_COMMANDS.find_one(
-        {'chat_id': chat_id, 'command':  enable}
-    )
+    data = DISABLED_COMMANDS.find_one({"chat_id": chat_id, "command": enable})
     if data:
         if enable in DISABLED.get(str(chat_id)):  # sanity check
             DISABLED.setdefault(str(chat_id), set()).remove(enable)
 
-        DISABLED_COMMANDS.delete_one(
-            {'chat_id': chat_id, 'command': enable}
-        )
+        DISABLED_COMMANDS.delete_one({"chat_id": chat_id, "command": enable})
         return True
     return False
 
@@ -58,7 +52,7 @@ def get_all_disabled(chat_id) -> dict:
 
 
 def num_chats() -> int:
-    chats = DISABLED_COMMANDS.distinct('chat_id')
+    chats = DISABLED_COMMANDS.distinct("chat_id")
     return len(chats)
 
 
@@ -68,7 +62,7 @@ def num_disabled() -> int:
 
 def migrate_chat(old_chat_id, new_chat_id) -> None:
     DISABLED_COMMANDS.update_many(
-        {'chat_id': old_chat_id}, {"$set": {'chat_id': new_chat_id}}
+        {"chat_id": old_chat_id}, {"$set": {"chat_id": new_chat_id}}
     )
 
     if str(old_chat_id) in DISABLED:

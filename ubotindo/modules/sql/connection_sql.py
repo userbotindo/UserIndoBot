@@ -63,8 +63,7 @@ class ConnectionHistory(BASE):
 
     def __repr__(self):
         return "<connection user {} history {}>".format(
-            self.user_id, self.chat_id
-        )
+            self.user_id, self.chat_id)
 
 
 ChatAccessConnectionSettings.__table__.create(checkfirst=True)
@@ -80,9 +79,8 @@ HISTORY_CONNECT = {}
 
 def allow_connect_to_chat(chat_id: Union[str, int]) -> bool:
     try:
-        chat_setting = SESSION.query(ChatAccessConnectionSettings).get(
-            str(chat_id)
-        )
+        chat_setting = SESSION.query(
+            ChatAccessConnectionSettings).get(str(chat_id))
         if chat_setting:
             return chat_setting.allow_connect_to_chat
         return False
@@ -92,9 +90,8 @@ def allow_connect_to_chat(chat_id: Union[str, int]) -> bool:
 
 def set_allow_connect_to_chat(chat_id: Union[int, str], setting: bool):
     with CHAT_ACCESS_LOCK:
-        chat_setting = SESSION.query(ChatAccessConnectionSettings).get(
-            str(chat_id)
-        )
+        chat_setting = SESSION.query(
+            ChatAccessConnectionSettings).get(str(chat_id))
         if not chat_setting:
             chat_setting = ChatAccessConnectionSettings(chat_id, setting)
 
@@ -176,13 +173,11 @@ def add_history_conn(user_id, chat_id, chat_name):
         else:
             HISTORY_CONNECT[int(user_id)] = {}
         delold = SESSION.query(ConnectionHistory).get(
-            (int(user_id), str(chat_id))
-        )
+            (int(user_id), str(chat_id)))
         if delold:
             SESSION.delete(delold)
         history = ConnectionHistory(
-            int(user_id), str(chat_id), chat_name, conn_time
-        )
+            int(user_id), str(chat_id), chat_name, conn_time)
         SESSION.add(history)
         SESSION.commit()
         HISTORY_CONNECT[int(user_id)][conn_time] = {
@@ -203,8 +198,7 @@ def clear_history_conn(user_id):
     for x in todel:
         chat_old = HISTORY_CONNECT[int(user_id)][x]["chat_id"]
         delold = SESSION.query(ConnectionHistory).get(
-            (int(user_id), str(chat_old))
-        )
+            (int(user_id), str(chat_old)))
         if delold:
             SESSION.delete(delold)
             HISTORY_CONNECT[int(user_id)].pop(x)

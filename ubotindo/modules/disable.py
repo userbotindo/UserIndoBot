@@ -69,8 +69,7 @@ if is_module_loaded(FILENAME):
 
                         if not (
                             command[0].lower() in self.command
-                            and command[1].lower()
-                            == message.bot.username.lower()
+                            and command[1].lower() == message.bot.username.lower()
                         ):
                             return None
 
@@ -85,9 +84,7 @@ if is_module_loaded(FILENAME):
                                 # check if command was disabled
                                 is_disabled = command[
                                     0
-                                ] in ADMIN_CMDS and is_user_admin(
-                                    chat, user.id
-                                )
+                                ] in ADMIN_CMDS and is_user_admin(chat, user.id)
                                 if not is_disabled:
                                     return None
                                 else:
@@ -107,8 +104,7 @@ if is_module_loaded(FILENAME):
             if isinstance(update, Update) and update.effective_message:
                 chat = update.effective_chat
                 return self.filters(update) and not disable_db.is_command_disabled(
-                    chat.id, self.friendly
-                )
+                    chat.id, self.friendly)
 
     @user_admin
     @typing_action
@@ -144,8 +140,7 @@ if is_module_loaded(FILENAME):
                     )
                 else:
                     text = "Disabled the use of `{}` command!".format(
-                        disable_cmd
-                    )
+                        disable_cmd)
                 send_message(
                     update.effective_message,
                     text,
@@ -153,8 +148,8 @@ if is_module_loaded(FILENAME):
                 )
             else:
                 send_message(
-                    update.effective_message, "This command can't be disabled"
-                )
+                    update.effective_message,
+                    "This command can't be disabled")
 
         else:
             send_message(update.effective_message, "What should I disable?")
@@ -193,8 +188,7 @@ if is_module_loaded(FILENAME):
                     )
                 else:
                     text = "Enabled the use of `{}` command!".format(
-                        enable_cmd
-                    )
+                        enable_cmd)
                 send_message(
                     update.effective_message,
                     text,
@@ -202,8 +196,8 @@ if is_module_loaded(FILENAME):
                 )
             else:
                 send_message(
-                    update.effective_message, "Is that even disabled?"
-                )
+                    update.effective_message,
+                    "Is that even disabled?")
 
         else:
             send_message(update.effective_message, "What should I enable?")
@@ -232,8 +226,7 @@ if is_module_loaded(FILENAME):
         for cmd in disabled:
             result += " - `{}`\n".format(escape_markdown(cmd))
         return "The following commands are currently restricted:\n{}".format(
-            result
-        )
+            result)
 
     @typing_action
     def commands(update, context):
@@ -252,9 +245,8 @@ if is_module_loaded(FILENAME):
             chat = update.effective_chat
 
         text = build_curr_disabled(chat.id)
-        send_message(
-            update.effective_message, text, parse_mode=ParseMode.MARKDOWN
-        )
+        send_message(update.effective_message, text,
+                     parse_mode=ParseMode.MARKDOWN)
 
     def __import_data__(chat_id, data):
         disabled = data.get("disabled", {})

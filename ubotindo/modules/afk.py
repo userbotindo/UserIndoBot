@@ -56,8 +56,9 @@ def afk(update, context):
     afkstr = random.choice(fun.AFK)
     msg = update.effective_message
     afksend = msg.reply_text(
-        afkstr.format(update.effective_user.first_name, notice)
-    )
+        afkstr.format(
+            update.effective_user.first_name,
+            notice))
     sleep(5)
     try:
         afksend.delete()
@@ -90,8 +91,7 @@ def no_longer_afk(update, context):
             ]
             chosen_option = random.choice(options)
             unafk = update.effective_message.reply_text(
-                chosen_option.format(firstname)
-            )
+                chosen_option.format(firstname))
             sleep(10)
             unafk.delete()
         except BaseException:
@@ -122,7 +122,7 @@ def reply_afk(update, context):
 
             if ent.type == MessageEntity.MENTION:
                 user_id = get_user_id(
-                    message.text[ent.offset : ent.offset + ent.length]
+                    message.text[ent.offset: ent.offset + ent.length]
                 )
                 if not user_id:
                     # Should never happen, since for a user to become AFK they
@@ -167,11 +167,9 @@ def check_afk(update, context, user_id, fst_name, userc_id):
             if int(userc_id) == int(user_id):
                 return
             res = "<b>{}</b> is away from keyboard! says it's because of <b>Reason:</b> <code>{}</code>".format(
-                fst_name, user["reason"]
-            )
+                fst_name, user["reason"])
             replafk = update.effective_message.reply_text(
-                res, parse_mode="html"
-            )
+                res, parse_mode="html")
         sleep(10)
         try:
             replafk.delete()

@@ -75,19 +75,16 @@ def get_id(update, context):
             user2 = update.effective_message.reply_to_message.forward_from
             update.effective_message.reply_text(
                 "The original sender, {}, has an ID of `{}`.\nThe forwarder, {}, has an ID of `{}`.".format(
-                    escape_markdown(user2.first_name),
-                    user2.id,
-                    escape_markdown(user1.first_name),
-                    user1.id,
-                ),
-                parse_mode=ParseMode.MARKDOWN,
-            )
+                    escape_markdown(
+                        user2.first_name), user2.id, escape_markdown(
+                        user1.first_name), user1.id, ), parse_mode=ParseMode.MARKDOWN, )
         else:
             user = context.bot.get_chat(user_id)
             update.effective_message.reply_text(
                 "{}'s id is `{}`.".format(
-                    escape_markdown(user.first_name), user.id
-                ),
+                    escape_markdown(
+                        user.first_name),
+                    user.id),
                 parse_mode=ParseMode.MARKDOWN,
             )
     else:
@@ -155,8 +152,7 @@ def info(update, context):
         text += "\n<b>Username:</b> @{}".format(html.escape(user.username))
 
     text += "\n<b>Permanent user link:</b> {}".format(
-        mention_html(user.id, "link")
-    )
+        mention_html(user.id, "link"))
 
     text += "\n<b>Number of profile pics:</b> <code>{}</code>".format(
         context.bot.get_user_profile_photos(user.id).total_count
@@ -256,8 +252,9 @@ def info(update, context):
     except IndexError:
         context.bot.sendChatAction(chat.id, "typing")
         msg.reply_text(
-            text, parse_mode=ParseMode.HTML, disable_web_page_preview=True
-        )
+            text,
+            parse_mode=ParseMode.HTML,
+            disable_web_page_preview=True)
     finally:
         del_msg.delete()
 
@@ -286,9 +283,7 @@ def gdpr(update, context):
         "[this](https://ico.org.uk/for-organisations/guide-to-the-general-data-protection-regulation-gdpr/individual-rights/right-to-erasure/), "
         "which clearly states that the right to erasure does not apply "
         '"for the performance of a task carried out in the public interest", as is '
-        "the case for the aforementioned pieces of data.",
-        parse_mode=ParseMode.MARKDOWN,
-    )
+        "the case for the aforementioned pieces of data.", parse_mode=ParseMode.MARKDOWN, )
 
 
 MARKDOWN_HELP = """
@@ -323,16 +318,14 @@ Keep in mind that your message <b>MUST</b> contain some text other than just a b
 @typing_action
 def markdown_help(update, context):
     update.effective_message.reply_text(
-        MARKDOWN_HELP, parse_mode=ParseMode.HTML
-    )
+        MARKDOWN_HELP, parse_mode=ParseMode.HTML)
     update.effective_message.reply_text(
         "Try forwarding the following message to me, and you'll see!"
     )
     update.effective_message.reply_text(
         "/save test This is a markdown test. _italics_, --underline--, *bold*, `code`, ~strike~ "
         "[URL](example.com) [button](buttonurl:github.com) "
-        "[button2](buttonurl://google.com:same)"
-    )
+        "[button2](buttonurl://google.com:same)")
 
 
 @typing_action
@@ -383,14 +376,13 @@ def ud(update, context):
         return
     try:
         results = get(
-            f"http://api.urbandictionary.com/v0/define?term={text}"
-        ).json()
-        reply_text = (
-            f'Word: {text}\nDefinition: {results["list"][0]["definition"]}'
-        )
+            f"http://api.urbandictionary.com/v0/define?term={text}").json()
+        reply_text = f'Word: {text}\nDefinition: {results["list"][0]["definition"]}'
         reply_text += f'\n\nExample: {results["list"][0]["example"]}'
     except IndexError:
-        reply_text = f"Word: {text}\nResults: Sorry could not find any matching results!"
+        reply_text = (
+            f"Word: {text}\nResults: Sorry could not find any matching results!"
+        )
     ignore_chars = "[]"
     reply = reply_text
     for chars in ignore_chars:
@@ -475,11 +467,9 @@ def getlink(update, context):
                 invitelink = context.bot.exportChatInviteLink(chat_id)
                 links += str(chat_id) + ":\n" + invitelink + "\n"
             else:
-                links += (
-                    str(chat_id)
-                    + ":\nI don't have access to the invite link."
-                    + "\n"
-                )
+                links += (str(chat_id) +
+                          ":\nI don't have access to the invite link." +
+                          "\n")
         except BadRequest as excp:
             links += str(chat_id) + ":\n" + excp.message + "\n"
         except TelegramError as excp:
@@ -511,7 +501,7 @@ def stats(update, context):
 @typing_action
 def covid(update, context):
     message = update.effective_message
-    country = str(message.text[len(f"/covid ") :])
+    country = str(message.text[len(f"/covid "):])
     data = Covid(source="worldometers")
 
     if country == "":
@@ -548,12 +538,12 @@ def covid(update, context):
         f"<b>New Deaths :</b> <code>{format_integer(c_case['new_deaths'])}</code>\n"
         f"<b>Critical Cases :</b> <code>{format_integer(c_case['critical'])}</code>\n"
         f"<b>Total Tests :</b> <code>{total_tests}</code>\n\n"
-        f"Data provided by <a href='{link}'>Worldometer</a>"
-    )
+        f"Data provided by <a href='{link}'>Worldometer</a>")
 
     message.reply_text(
-        output, parse_mode=ParseMode.HTML, disable_web_page_preview=True
-    )
+        output,
+        parse_mode=ParseMode.HTML,
+        disable_web_page_preview=True)
 
 
 def format_integer(number, thousand_separator="."):
@@ -636,11 +626,9 @@ An "odds and ends" module for small, simple commands which don't really fit anyw
 __mod_name__ = "Miscs"
 
 ID_HANDLER = DisableAbleCommandHandler(
-    "id", get_id, pass_args=True, run_async=True
-)
+    "id", get_id, pass_args=True, run_async=True)
 INFO_HANDLER = DisableAbleCommandHandler(
-    "info", info, pass_args=True, run_async=True
-)
+    "info", info, pass_args=True, run_async=True)
 ECHO_HANDLER = CommandHandler(
     "echo", echo, filters=CustomFilters.sudo_filter, run_async=True
 )
@@ -651,8 +639,10 @@ STATS_HANDLER = CommandHandler(
     "stats", stats, filters=CustomFilters.dev_filter, run_async=True
 )
 GDPR_HANDLER = CommandHandler(
-    "gdpr", gdpr, filters=Filters.private, run_async=True
-)
+    "gdpr",
+    gdpr,
+    filters=Filters.private,
+    run_async=True)
 WIKI_HANDLER = DisableAbleCommandHandler("wiki", wiki, run_async=True)
 WALLPAPER_HANDLER = DisableAbleCommandHandler(
     "wall", wall, pass_args=True, run_async=True

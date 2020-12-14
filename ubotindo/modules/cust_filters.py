@@ -211,9 +211,7 @@ def filters(update, context):
             text_to_parsing, entities=msg.parse_entities(), offset=offset
         )
         text = text.strip()
-        if (
-            msg.reply_to_message.text or msg.reply_to_message.caption
-        ) and not text:
+        if (msg.reply_to_message.text or msg.reply_to_message.caption) and not text:
             send_message(
                 update.effective_message,
                 "There is no note message - You can't JUST have buttons, you need a message to go with it!",
@@ -225,8 +223,13 @@ def filters(update, context):
         return
 
     add = addnew_filter(
-        update, chat_id, keyword, text, file_type, file_id, buttons
-    )
+        update,
+        chat_id,
+        keyword,
+        text,
+        file_type,
+        file_id,
+        buttons)
     # This is an old method
     # sql.add_filter(chat_id, keyword, content, is_sticker, is_document, is_image, is_audio, is_voice, is_video, buttons)
 
@@ -273,9 +276,7 @@ def stop_filter(update, context):
             sql.remove_filter(chat_id, args[1])
             send_message(
                 update.effective_message,
-                "Okay, I'll stop replying to that filter in *{}*.".format(
-                    chat_name
-                ),
+                "Okay, I'll stop replying to that filter in *{}*.".format(chat_name),
                 parse_mode=telegram.ParseMode.MARKDOWN,
             )
             raise DispatcherHandlerStop
@@ -373,8 +374,7 @@ def reply_filter(update, context):
                                 )
                             except BadRequest as excp:
                                 LOGGER.exception(
-                                    "Error in filters: " + excp.message
-                                )
+                                    "Error in filters: " + excp.message)
                                 send_message(
                                     update.effective_message,
                                     get_exception(excp, filt, chat),
@@ -390,10 +390,7 @@ def reply_filter(update, context):
                                     "Failed to send message: " + excp.message
                                 )
                 else:
-                    if (
-                        ENUM_FUNC_MAP[filt.file_type]
-                        == dispatcher.bot.send_sticker
-                    ):
+                    if ENUM_FUNC_MAP[filt.file_type] == dispatcher.bot.send_sticker:
                         ENUM_FUNC_MAP[filt.file_type](
                             chat.id,
                             filt.file_id,
@@ -446,8 +443,7 @@ def reply_filter(update, context):
                                 )
                             except BadRequest as excp:
                                 LOGGER.exception(
-                                    "Error in filters: " + excp.message
-                                )
+                                    "Error in filters: " + excp.message)
                         elif excp.message == "Reply message not found":
                             try:
                                 context.bot.send_message(
@@ -458,8 +454,7 @@ def reply_filter(update, context):
                                 )
                             except BadRequest as excp:
                                 LOGGER.exception(
-                                    "Error in filters: " + excp.message
-                                )
+                                    "Error in filters: " + excp.message)
                         else:
                             try:
                                 send_message(
@@ -468,8 +463,7 @@ def reply_filter(update, context):
                                 )
                             except BadRequest as excp:
                                 LOGGER.exception(
-                                    "Error in filters: " + excp.message
-                                )
+                                    "Error in filters: " + excp.message)
                             LOGGER.warning(
                                 "Message %s could not be parsed",
                                 str(filt.reply),
@@ -533,9 +527,7 @@ def get_exception(excp, filt, chat):
             str(filt.keyword),
             str(chat.id),
         )
-        return (
-            "This data could not be sent because it is incorrectly formatted."
-        )
+        return "This data could not be sent because it is incorrectly formatted."
 
 
 # NOT ASYNC NOT A HANDLER
@@ -554,8 +546,7 @@ def addnew_filter(update, chat_id, keyword, text, file_type, file_id, buttons):
 
 def __stats__():
     return "× {} filters, across {} chats.".format(
-        sql.num_filters(), sql.num_chats()
-    )
+        sql.num_filters(), sql.num_chats())
 
 
 def __import_data__(chat_id, data):
@@ -600,8 +591,10 @@ __mod_name__ = "Filters"
 FILTER_HANDLER = CommandHandler("filter", filters)
 STOP_HANDLER = CommandHandler("stop", stop_filter)  # Don't Use async for this
 RMALLFILTER_HANDLER = CommandHandler(
-    "rmallfilter", rmall_filters, filters=Filters.chat_type.groups, run_async=True
-)
+    "rmallfilter",
+    rmall_filters,
+    filters=Filters.chat_type.groups,
+    run_async=True)
 LIST_HANDLER = DisableAbleCommandHandler(
     "filters", list_handlers, admin_ok=True, run_async=True
 )

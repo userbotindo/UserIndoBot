@@ -36,12 +36,13 @@ def set_user(update, context):
     if args:
         user = update.effective_user.id
         username = " ".join(args)
-        if LASTFM_USER.find_one({'_id': user}):
+        if LASTFM_USER.find_one({"_id": user}):
             LASTFM_USER.find_one_and_update(
-                {'_id': user}, {"$set": {'username': username}})
+                {"_id": user}, {"$set": {"username": username}}
+            )
             del_msg = msg.reply_text(f"Username updated to {username}!")
         else:
-            LASTFM_USER.insert_one({'_id': user, 'username': username})
+            LASTFM_USER.insert_one({"_id": user, "username": username})
             del_msg = msg.reply_text(f"Username set as {username}!")
 
     else:
@@ -58,7 +59,7 @@ def set_user(update, context):
 @typing_action
 def clear_user(update, context):
     user = update.effective_user.id
-    LASTFM_USER.delete_one({'_id': user})
+    LASTFM_USER.delete_one({"_id": user})
     clear = update.effective_message.reply_text(
         "Last.fm username successfully cleared from my database!"
     )
@@ -71,7 +72,7 @@ def last_fm(update, context):
     msg = update.effective_message
     user = update.effective_user.first_name
     user_id = update.effective_user.id
-    data = LASTFM_USER.find_one({'_id': user_id})
+    data = LASTFM_USER.find_one({"_id": user_id})
     if data is None:
         msg.reply_text("You haven't set your username yet!")
         return
@@ -131,10 +132,14 @@ def last_fm(update, context):
         return
 
 
-SET_USER_HANDLER = CommandHandler("setuser", set_user, pass_args=True, run_async=True)
+SET_USER_HANDLER = CommandHandler(
+    "setuser",
+    set_user,
+    pass_args=True,
+    run_async=True)
 CLEAR_USER_HANDLER = CommandHandler("clearuser", clear_user, run_async=True)
 LASTFM_HANDLER = DisableAbleCommandHandler("lastfm", last_fm, run_async=True)
 
 dispatcher.add_handler(SET_USER_HANDLER)
 dispatcher.add_handler(CLEAR_USER_HANDLER)
-dispatcher.add_handler(LASTFM_HANDLER) 
+dispatcher.add_handler(LASTFM_HANDLER)

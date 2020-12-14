@@ -70,8 +70,7 @@ def ban(update, context):
 
     if is_user_ban_protected(chat, user_id, member):
         message.reply_text(
-            "I'm not gonna ban an admin, don't make fun of yourself!"
-        )
+            "I'm not gonna ban an admin, don't make fun of yourself!")
         return ""
 
     if user_id == context.bot.id:
@@ -137,8 +136,7 @@ def temp_ban(update, context):
 
     if user_can_ban(chat, user, context.bot.id) is False:
         message.reply_text(
-            "You don't have enough rights to temporarily ban someone!"
-        )
+            "You don't have enough rights to temporarily ban someone!")
         return ""
 
     user_id, reason = extract_user_and_text(message, args)
@@ -166,8 +164,7 @@ def temp_ban(update, context):
 
     if not reason:
         message.reply_text(
-            "You haven't specified a time to ban this user for!"
-        )
+            "You haven't specified a time to ban this user for!")
         return ""
 
     split_reason = reason.split(None, 1)
@@ -204,8 +201,7 @@ def temp_ban(update, context):
         # context.bot.send_sticker(chat.id, BAN_STICKER)  # banhammer marie
         # sticker
         message.reply_text(
-            "Banned! User will be banned for {}.".format(time_val)
-        )
+            "Banned! User will be banned for {}.".format(time_val))
         return log
 
     except BadRequest as excp:
@@ -337,13 +333,11 @@ def kickme(update, context):
     user_id = update.effective_message.from_user.id
     if is_user_admin(update.effective_chat, user_id):
         update.effective_message.reply_text(
-            "Yeahhh.. not gonna kick an admin."
-        )
+            "Yeahhh.. not gonna kick an admin.")
         return
 
     res = update.effective_chat.unban_member(
-        user_id
-    )  # unban on current user = kick
+        user_id)  # unban on current user = kick
     if res:
         update.effective_message.reply_text("Yeah, you're right Get Out!..")
     else:
@@ -363,8 +357,7 @@ def unban(update, context):
 
     if user_can_ban(chat, user, context.bot.id) is False:
         message.reply_text(
-            "You don't have enough rights to unban people here!"
-        )
+            "You don't have enough rights to unban people here!")
         return ""
 
     user_id, reason = extract_user_and_text(message, args)
@@ -431,8 +424,11 @@ An example of temporarily banning someone:
 __mod_name__ = "Bans"
 
 BAN_HANDLER = CommandHandler(
-    "ban", ban, pass_args=True, filters=Filters.chat_type.groups, run_async=True
-)
+    "ban",
+    ban,
+    pass_args=True,
+    filters=Filters.chat_type.groups,
+    run_async=True)
 TEMPBAN_HANDLER = CommandHandler(
     ["tban", "tempban"],
     temp_ban,
@@ -441,11 +437,17 @@ TEMPBAN_HANDLER = CommandHandler(
     run_async=True,
 )
 KICK_HANDLER = CommandHandler(
-    "kick", kick, pass_args=True, filters=Filters.chat_type.groups, run_async=True
-)
+    "kick",
+    kick,
+    pass_args=True,
+    filters=Filters.chat_type.groups,
+    run_async=True)
 UNBAN_HANDLER = CommandHandler(
-    "unban", unban, pass_args=True, filters=Filters.chat_type.groups, run_async=True
-)
+    "unban",
+    unban,
+    pass_args=True,
+    filters=Filters.chat_type.groups,
+    run_async=True)
 KICKME_HANDLER = DisableAbleCommandHandler(
     "kickme", kickme, filters=Filters.chat_type.groups, run_async=True
 )

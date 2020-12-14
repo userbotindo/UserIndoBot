@@ -24,29 +24,28 @@ GBANSTAT_LIST = set()
 
 
 def gban_user(user_id, name, reason=None) -> None:
-    GBAN_USER.insert_one({
-        '_id': user_id,
-        'name': name,
-        'reason': reason,
-        })
+    GBAN_USER.insert_one(
+        {
+            "_id": user_id,
+            "name": name,
+            "reason": reason,
+        }
+    )
     __load_gbanned_userid_list()
 
 
 def update_gban_reason(user_id, name, reason) -> str:
-    user = GBAN_USER.find_one({'_id': user_id})
+    user = GBAN_USER.find_one({"_id": user_id})
     if not user:
         return None
     old_reason = user["reason"]
-    GBAN_USER.update_one(
-        {'_id': user_id},
-        {"$set": {'name': name, 'reason': reason}},
-        upsert=True)
+    GBAN_USER.update_one({"_id": user_id}, {
+        "$set": {"name": name, "reason": reason}}, upsert=True)
     return old_reason
 
 
-
 def ungban_user(user_id) -> None:
-    GBAN_USER.delete_one({'_id': user_id})
+    GBAN_USER.delete_one({"_id": user_id})
     __load_gbanned_userid_list()
 
 
@@ -55,7 +54,7 @@ def is_user_gbanned(user_id):
 
 
 def get_gbanned_user(user_id):
-    return GBAN_USER.find_one({'_id': user_id})
+    return GBAN_USER.find_one({"_id": user_id})
 
 
 def get_gban_list() -> dict:
@@ -73,12 +72,12 @@ def disable_gbans(chat_id) -> None:
     GBANSTAT_LIST.add(str(chat_id))
 
 
-def __gban_setting(chat_id, setting: bool=True) -> None:
-    if GBAN_SETTINGS.find_one({'_id': chat_id}):
+def __gban_setting(chat_id, setting: bool = True) -> None:
+    if GBAN_SETTINGS.find_one({"_id": chat_id}):
         GBAN_SETTINGS.update_one(
-            {'_id': chat_id}, {"$set": {'setting': setting}})
+            {"_id": chat_id}, {"$set": {"setting": setting}})
     else:
-        GBAN_SETTINGS.insert_one({'_id': chat_id, 'setting': setting})
+        GBAN_SETTINGS.insert_one({"_id": chat_id, "setting": setting})
 
 
 def does_chat_gban(chat_id) -> bool:
@@ -96,16 +95,13 @@ def __load_gbanned_userid_list() -> None:
 
 def __load_gban_stat_list() -> None:
     global GBANSTAT_LIST
-    GBANSTAT_LIST = {
-        str(i["_id"])
-        for i in GBAN_SETTINGS.find()
-        if not i["setting"]
-    }
+    GBANSTAT_LIST = {str(i["_id"])
+                     for i in GBAN_SETTINGS.find() if not i["setting"]}
 
 
 def migrate_chat(old_chat_id, new_chat_id) -> None:
-    old = GBAN_SETTINGS.find_one_and_delete({'_id': old_chat_id})
-    GBAN_SETTINGS.insert_one({'_id': new_chat_id, 'setting': old['setting']})
+    old = GBAN_SETTINGS.find_one_and_delete({"_id": old_chat_id})
+    GBAN_SETTINGS.insert_one({"_id": new_chat_id, "setting": old["setting"]})
 
 
 # Create in memory userid to avoid disk access

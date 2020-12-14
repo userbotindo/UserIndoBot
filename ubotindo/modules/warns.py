@@ -59,9 +59,7 @@ from ubotindo.modules.log_channel import loggable
 from ubotindo.modules.sql import warns_sql as sql
 
 WARN_HANDLER_GROUP = 9
-CURRENT_WARNING_FILTER_STRING = (
-    "<b>Current warning filters in this chat:</b>\n"
-)
+CURRENT_WARNING_FILTER_STRING = "<b>Current warning filters in this chat:</b>\n"
 
 
 # Not async
@@ -153,8 +151,9 @@ def warn(
 
     try:
         message.reply_text(
-            reply, reply_markup=keyboard, parse_mode=ParseMode.HTML
-        )
+            reply,
+            reply_markup=keyboard,
+            parse_mode=ParseMode.HTML)
     except BadRequest as excp:
         if excp.message == "Reply message not found":
             # Do not reply
@@ -195,9 +194,7 @@ def button(update, context):
                 "\n<b>User:</b> {} (<code>{}</code>)".format(
                     html.escape(chat.title),
                     mention_html(user.id, user.first_name),
-                    mention_html(
-                        user_member.user.id, user_member.user.first_name
-                    ),
+                    mention_html(user_member.user.id, user_member.user.first_name),
                     user_member.user.id,
                 )
             )
@@ -233,9 +230,8 @@ def warn_user(update, context):
                 warner,
             )
         else:
-            return warn(
-                chat.get_member(user_id).user, chat, reason, message, warner
-            )
+            return warn(chat.get_member(user_id).user,
+                        chat, reason, message, warner)
     else:
         message.reply_text("No user was designated!")
     return ""
@@ -333,12 +329,13 @@ def warns(update, context):
         if reasons:
             if conn:
                 text = "This user has {}/{} warnings, in *{}* for the following reasons:".format(
-                    num_warns, limit, chat_name
-                )
+                    num_warns, limit, chat_name)
             else:
-                text = "This user has {}/{} warnings, for the following reasons:".format(
-                    num_warns,
-                    limit,
+                text = (
+                    "This user has {}/{} warnings, for the following reasons:".format(
+                        num_warns,
+                        limit,
+                    )
                 )
             for reason in reasons:
                 text += "\n {}. {}".format(num, reason)
@@ -350,14 +347,10 @@ def warns(update, context):
         else:
             update.effective_message.reply_text(
                 "User has {}/{} warnings, but no reasons for any of them.".format(
-                    num_warns, limit
-                ),
-                parse_mode="markdown",
-            )
+                    num_warns, limit), parse_mode="markdown", )
     else:
         update.effective_message.reply_text(
-            "This user hasn't got any warnings!"
-        )
+            "This user hasn't got any warnings!")
 
 
 # Dispatcher handler stop - do not async
@@ -472,8 +465,7 @@ def list_warn_filters(update, context):
 
     if not all_handlers:
         update.effective_message.reply_text(
-            "No warning filters are active here!"
-        )
+            "No warning filters are active here!")
         return
 
     filter_list = CURRENT_WARNING_FILTER_STRING
@@ -481,16 +473,14 @@ def list_warn_filters(update, context):
         entry = " - {}\n".format(html.escape(keyword))
         if len(entry) + len(filter_list) > telegram.MAX_MESSAGE_LENGTH:
             update.effective_message.reply_text(
-                filter_list, parse_mode=ParseMode.HTML
-            )
+                filter_list, parse_mode=ParseMode.HTML)
             filter_list = entry
         else:
             filter_list += entry
 
     if not filter_list == CURRENT_WARNING_FILTER_STRING:
         update.effective_message.reply_text(
-            filter_list, parse_mode=ParseMode.HTML
-        )
+            filter_list, parse_mode=ParseMode.HTML)
 
 
 @loggable
@@ -560,8 +550,8 @@ def set_warn_limit(update, context) -> str:
         limit, _ = sql.get_warn_setting(chat_id)
 
         msg.reply_text(
-            "The current warn in {} limit is {}".format(chat_name, limit)
-        )
+            "The current warn in {} limit is {}".format(
+                chat_name, limit))
     return ""
 
 
@@ -685,8 +675,11 @@ be a sentence, encompass it with quotes, as such: `/addwarn "very angry" This is
 __mod_name__ = "Warnings"
 
 WARN_HANDLER = CommandHandler(
-    "warn", warn_user, pass_args=True, filters=Filters.chat_type.groups, run_async=True
-)
+    "warn",
+    warn_user,
+    pass_args=True,
+    filters=Filters.chat_type.groups,
+    run_async=True)
 RESET_WARN_HANDLER = CommandHandler(
     ["resetwarn", "resetwarns"],
     reset_warns,
@@ -716,8 +709,9 @@ LIST_WARN_HANDLER = DisableAbleCommandHandler(
     run_async=True,
 )
 WARN_FILTER_HANDLER = MessageHandler(
-    CustomFilters.has_text & Filters.chat_type.groups, reply_filter, run_async=True
-)
+    CustomFilters.has_text & Filters.chat_type.groups,
+    reply_filter,
+    run_async=True)
 WARN_LIMIT_HANDLER = CommandHandler(
     "warnlimit", set_warn_limit, pass_args=True, run_async=True
 )

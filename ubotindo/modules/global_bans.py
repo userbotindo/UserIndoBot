@@ -107,8 +107,7 @@ def gban(update, context):
 
     if int(user_id) in DEV_USERS:
         message.reply_text(
-            "Whatt... How can i gban someone that take care of me +_+"
-        )
+            "Whatt... How can i gban someone that take care of me +_+")
         return
 
     if int(user_id) in SUDO_USERS:
@@ -125,20 +124,17 @@ def gban(update, context):
 
     if user_id in (777000, 1087968824):
         message.reply_text(
-            "How can i ban someone that i don't know who is it."
-        )
+            "How can i ban someone that i don't know who is it.")
         return
 
     if user_id == context.bot.id:
         message.reply_text(
-            "-_- So funny, lets gban myself why don't I? Nice try."
-        )
+            "-_- So funny, lets gban myself why don't I? Nice try.")
         return
 
     if not reason:
         message.reply_text(
-            "Please Specified a reason. I won't allow a bare gban :)"
-        )
+            "Please Specified a reason. I won't allow a bare gban :)")
         return
 
     try:
@@ -153,8 +149,7 @@ def gban(update, context):
 
     if user_chat.first_name == "":
         message.reply_text(
-            "This is a deleted account! no point to gban them..."
-        )
+            "This is a deleted account! no point to gban them...")
         return
 
     if gban_db.is_user_gbanned(user_id):
@@ -173,7 +168,9 @@ def gban(update, context):
             banner = update.effective_user
             bannerid = banner.id
             bannername = banner.first_name
-            new_reason = f"{new_reason} // GBanned by {bannername} banner id: {bannerid}"
+            new_reason = (
+                f"{new_reason} // GBanned by {bannername} banner id: {bannerid}"
+            )
 
             context.bot.sendMessage(
                 GBAN_LOGS,
@@ -245,7 +242,10 @@ def gban(update, context):
         if excp.message in GBAN_ERRORS:
             pass
 
-    gban_db.gban_user(user_id, user_chat.username or user_chat.first_name, reason)
+    gban_db.gban_user(
+        user_id,
+        user_chat.username or user_chat.first_name,
+        reason)
 
 
 @typing_action
@@ -305,8 +305,7 @@ def ungban(update, context):
                 pass
             else:
                 message.reply_text(
-                    "Could not un-gban due to: {}".format(excp.message)
-                )
+                    "Could not un-gban due to: {}".format(excp.message))
                 context.bot.send_message(
                     OWNER_ID,
                     "Could not un-gban due to: {}".format(excp.message),
@@ -406,9 +405,7 @@ def enforce_gban(update, context):
     # Not using @restrict handler to avoid spamming - just ignore if cant gban.
     if (
         gban_db.does_chat_gban(update.effective_chat.id)
-        and update.effective_chat.get_member(
-            context.bot.id
-        ).can_restrict_members
+        and update.effective_chat.get_member(context.bot.id).can_restrict_members
     ):
         user = update.effective_user
         chat = update.effective_chat
@@ -437,23 +434,22 @@ def gbanstat(update, context):
             gban_db.enable_gbans(update.effective_chat.id)
             update.effective_message.reply_text(
                 "I've enabled Spam Shield in this group. This will help protect you "
-                "from spammers, unsavoury characters, and the biggest trolls."
-            )
+                "from spammers, unsavoury characters, and the biggest trolls.")
         elif args[0].lower() in ["off", "no"]:
             gban_db.disable_gbans(update.effective_chat.id)
             update.effective_message.reply_text(
                 "I've disabled Spam shield in this group. SpamShield wont affect your users "
                 "anymore. You'll be less protected from any trolls and spammers "
-                "though!"
-            )
+                "though!")
     else:
         update.effective_message.reply_text(
             "Give me some arguments to choose a setting! on/off, yes/no!\n\n"
             "Your current setting is: {}\n"
             "When True, Any Spam Shield that happen will also happen in your group. "
             "When False, they won't, leaving you at the possible mercy of "
-            "spammers.".format(gban_db.does_chat_gban(update.effective_chat.id))
-        )
+            "spammers.".format(
+                gban_db.does_chat_gban(
+                    update.effective_chat.id)))
 
 
 def __stats__():

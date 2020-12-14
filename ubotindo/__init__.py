@@ -62,28 +62,26 @@ if ENV:
 
     try:
         DEV_USERS = set(
-            int(x) for x in os.environ.get("DEV_USERS", "").split()
-        )
+            int(x) for x in os.environ.get(
+                "DEV_USERS", "").split())
     except ValueError:
         raise Exception("Your dev users list does not contain valid integers.")
 
     try:
         SUDO_USERS = set(
-            int(x) for x in os.environ.get("SUDO_USERS", "").split()
-        )
+            int(x) for x in os.environ.get(
+                "SUDO_USERS", "").split())
     except ValueError:
         raise Exception(
-            "Your sudo users list does not contain valid integers."
-        )
+            "Your sudo users list does not contain valid integers.")
 
     try:
         SUPPORT_USERS = set(
-            int(x) for x in os.environ.get("SUPPORT_USERS", "").split()
-        )
+            int(x) for x in os.environ.get(
+                "SUPPORT_USERS", "").split())
     except ValueError:
         raise Exception(
-            "Your support users list does not contain valid integers."
-        )
+            "Your support users list does not contain valid integers.")
 
     try:
         WHITELIST_USERS = set(
@@ -91,24 +89,21 @@ if ENV:
         )
     except ValueError:
         raise Exception(
-            "Your whitelisted users list does not contain valid integers."
-        )
+            "Your whitelisted users list does not contain valid integers.")
     try:
         WHITELIST_CHATS = set(
             int(x) for x in os.environ.get("WHITELIST_CHATS", "").split()
         )
     except ValueError:
         raise Exception(
-            "Your whitelisted users list does not contain valid integers."
-        )
+            "Your whitelisted users list does not contain valid integers.")
     try:
         BLACKLIST_CHATS = set(
             int(x) for x in os.environ.get("BLACKLIST_CHATS", "").split()
         )
     except ValueError:
         raise Exception(
-            "Your whitelisted users list does not contain valid integers."
-        )
+            "Your whitelisted users list does not contain valid integers.")
 
     WEBHOOK = bool(os.environ.get("WEBHOOK", False))
     URL = os.environ.get("URL", "")  # Does not contain token
@@ -124,8 +119,8 @@ if ENV:
     STRICT_GBAN = bool(os.environ.get("STRICT_GBAN", False))
     WORKERS = int(os.environ.get("WORKERS", 8))
     BAN_STICKER = os.environ.get(
-        "BAN_STICKER", "CAADAgADOwADPPEcAXkko5EB3YGYAg"
-    )
+        "BAN_STICKER",
+        "CAADAgADOwADPPEcAXkko5EB3YGYAg")
     CUSTOM_CMD = os.environ.get("CUSTOM_CMD", False)
     API_WEATHER = os.environ.get("API_OPENWEATHER", None)
     WALL_API = os.environ.get("WALL_API", None)
@@ -156,34 +151,29 @@ else:
         SUDO_USERS = set(int(x) for x in Config.SUDO_USERS or [])
     except ValueError:
         raise Exception(
-            "Your sudo users list does not contain valid integers."
-        )
+            "Your sudo users list does not contain valid integers.")
 
     try:
         SUPPORT_USERS = set(int(x) for x in Config.SUPPORT_USERS or [])
     except ValueError:
         raise Exception(
-            "Your support users list does not contain valid integers."
-        )
+            "Your support users list does not contain valid integers.")
 
     try:
         WHITELIST_USERS = set(int(x) for x in Config.WHITELIST_USERS or [])
     except ValueError:
         raise Exception(
-            "Your whitelisted users list does not contain valid integers."
-        )
+            "Your whitelisted users list does not contain valid integers.")
     try:
         WHITELIST_CHATS = set(int(x) for x in Config.WHITELIST_CHATS or [])
     except ValueError:
         raise Exception(
-            "Your whitelisted users list does not contain valid integers."
-        )
+            "Your whitelisted users list does not contain valid integers.")
     try:
         BLACKLIST_CHATS = set(int(x) for x in Config.BLACKLIST_CHATS or [])
     except ValueError:
         raise Exception(
-            "Your whitelisted users list does not contain valid integers."
-        )
+            "Your whitelisted users list does not contain valid integers.")
 
     WEBHOOK = Config.WEBHOOK
     URL = Config.URL

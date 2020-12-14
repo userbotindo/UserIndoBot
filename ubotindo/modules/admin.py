@@ -67,10 +67,7 @@ def promote(update, context):
         return ""
 
     user_member = chat.get_member(user_id)
-    if (
-        user_member.status == "administrator"
-        or user_member.status == "creator"
-    ):
+    if user_member.status == "administrator" or user_member.status == "creator":
         message.reply_text("This person is already an admin...!")
         return ""
 
@@ -168,8 +165,7 @@ def demote(update, context):
     except BadRequest:
         message.reply_text(
             "Failed to demote. I might not be admin, or the admin status was appointed by another "
-            "user, so I can't act upon them!"
-        )
+            "user, so I can't act upon them!")
         return ""
 
 
@@ -297,8 +293,7 @@ def invite(update, context):
 def adminlist(update, context):
     administrators = update.effective_chat.get_administrators()
     text = "Admins in <b>{}</b>:".format(
-        update.effective_chat.title or "this chat"
-    )
+        update.effective_chat.title or "this chat")
     for admin in administrators:
         user = admin.user
         status = admin.status
@@ -363,8 +358,7 @@ def set_title(update, context):
 
     try:
         context.bot.set_chat_administrator_custom_title(
-            chat.id, user_id, title
-        )
+            chat.id, user_id, title)
         message.reply_text(
             "Sucessfully set title for <b>{}</b> to <code>{}</code>!".format(
                 user_member.user.first_name or user_id, title[:16]
@@ -374,8 +368,7 @@ def set_title(update, context):
 
     except BadRequest:
         message.reply_text(
-            "I can't set custom title for admins that I didn't promote!"
-        )
+            "I can't set custom title for admins that I didn't promote!")
 
 
 @bot_admin
@@ -483,8 +476,7 @@ def set_sticker(update, context):
         try:
             context.bot.set_chat_sticker_set(chat.id, stkr)
             msg.reply_text(
-                f"Successfully set new group stickers in {chat.title}!"
-            )
+                f"Successfully set new group stickers in {chat.title}!")
         except BadRequest as excp:
             if excp.message == "Participants_too_few":
                 return msg.reply_text(
@@ -493,8 +485,7 @@ def set_sticker(update, context):
             msg.reply_text(f"Error! {excp.message}.")
     else:
         msg.reply_text(
-            "You need to reply to some sticker to set chat sticker set!"
-        )
+            "You need to reply to some sticker to set chat sticker set!")
 
 
 @bot_admin
@@ -516,12 +507,10 @@ def set_desc(update, context):
     try:
         if len(desc) > 255:
             return msg.reply_text(
-                "Description must needs to be under 255 characters!"
-            )
+                "Description must needs to be under 255 characters!")
         context.bot.set_chat_description(chat.id, desc)
         msg.reply_text(
-            f"Successfully updated chat description in {chat.title}!"
-        )
+            f"Successfully updated chat description in {chat.title}!")
     except BadRequest as excp:
         msg.reply_text(f"Error! {excp.message}.")
 
@@ -573,8 +562,11 @@ An example of promoting someone to admins:
 __mod_name__ = "Admin"
 
 PIN_HANDLER = CommandHandler(
-    "pin", pin, pass_args=True, filters=Filters.chat_type.groups, run_async=True
-)
+    "pin",
+    pin,
+    pass_args=True,
+    filters=Filters.chat_type.groups,
+    run_async=True)
 UNPIN_HANDLER = CommandHandler(
     "unpin", unpin, filters=Filters.chat_type.groups, run_async=True
 )
@@ -586,21 +578,31 @@ DEL_CHAT_PIC_HANDLER = CommandHandler(
     "delgpic", rmchatpic, filters=Filters.chat_type.groups, run_async=True
 )
 SETCHAT_TITLE_HANDLER = CommandHandler(
-    "setgtitle", setchat_title, filters=Filters.chat_type.groups, run_async=True
-)
+    "setgtitle",
+    setchat_title,
+    filters=Filters.chat_type.groups,
+    run_async=True)
 SETSTICKET_HANDLER = CommandHandler(
     "setsticker", set_sticker, filters=Filters.chat_type.groups, run_async=True
 )
 SETDESC_HANDLER = CommandHandler(
-    "setdescription", set_desc, filters=Filters.chat_type.groups, run_async=True
-)
+    "setdescription",
+    set_desc,
+    filters=Filters.chat_type.groups,
+    run_async=True)
 
 PROMOTE_HANDLER = CommandHandler(
-    "promote", promote, pass_args=True, filters=Filters.chat_type.groups, run_async=True
-)
+    "promote",
+    promote,
+    pass_args=True,
+    filters=Filters.chat_type.groups,
+    run_async=True)
 DEMOTE_HANDLER = CommandHandler(
-    "demote", demote, pass_args=True, filters=Filters.chat_type.groups, run_async=True
-)
+    "demote",
+    demote,
+    pass_args=True,
+    filters=Filters.chat_type.groups,
+    run_async=True)
 
 SET_TITLE_HANDLER = DisableAbleCommandHandler(
     "settitle", set_title, pass_args=True, run_async=True
@@ -609,8 +611,7 @@ ADMINLIST_HANDLER = DisableAbleCommandHandler(
     "adminlist", adminlist, filters=Filters.chat_type.groups, run_async=True
 )
 ADMIN_REFRESH_HANDLER = CommandHandler(
-    "admincache", refresh_admin, run_async=True
-)
+    "admincache", refresh_admin, run_async=True)
 
 
 dispatcher.add_handler(PIN_HANDLER)

@@ -62,8 +62,7 @@ def send_rules(update, chat_id, from_pm=False):
 
     rules = chat_rules(chat_id)
     text = "The rules for *{}* are:\n\n{}".format(
-        escape_markdown(chat.title), rules
-    )
+        escape_markdown(chat.title), rules)
 
     if from_pm and rules:
         bot.send_message(user.id, text, parse_mode=ParseMode.MARKDOWN)
@@ -81,9 +80,7 @@ def send_rules(update, chat_id, from_pm=False):
                     [
                         InlineKeyboardButton(
                             text="Rules",
-                            url="t.me/{}?start={}".format(
-                                bot.username, chat_id
-                            ),
+                            url="t.me/{}?start={}".format(bot.username, chat_id),
                         )
                     ]
                 ]
@@ -113,24 +110,22 @@ def set_rules(update, context):
         )
 
         RULES_DATA.find_one_and_update(
-            {'_id': chat_id},
-            {"$set": {'rules': markdown_rules}},
-            upsert=True)
-        update.effective_message.reply_text(
-            "Successfully set rules for this group."
+            {"_id": chat_id}, {"$set": {"rules": markdown_rules}}, upsert=True
         )
+        update.effective_message.reply_text(
+            "Successfully set rules for this group.")
 
 
 @user_admin
 @typing_action
 def clear_rules(update, context):
     chat_id = update.effective_chat.id
-    RULES_DATA.delete_one({'_id': chat_id})
+    RULES_DATA.delete_one({"_id": chat_id})
     update.effective_message.reply_text("Successfully cleared rules!")
 
 
 def chat_rules(chat_id):
-    data = RULES_DATA.find_one({'_id': int(chat_id)})  # ensure integer
+    data = RULES_DATA.find_one({"_id": int(chat_id)})  # ensure integer
     if data:
         return data["rules"]
     else:
@@ -146,22 +141,19 @@ def __import_data__(chat_id, data):
     # set chat rules
     rules = data.get("info", {}).get("rules", "")
     RULES_DATA.find_one_and_update(
-        {'_id': chat_id},
-        {"$set": {'rules': rules}},
-        upsert=True)
+        {"_id": chat_id}, {"$set": {"rules": rules}}, upsert=True
+    )
 
 
 def __migrate__(old_chat_id, new_chat_id):
-    rules = RULES_DATA.find_one_and_delete({'_id':old_chat_id})
+    rules = RULES_DATA.find_one_and_delete({"_id": old_chat_id})
     if rules:
-        RULES_DATA.insert_one(
-            {'_id': new_chat_id, 'rules': rules["rules"]})
+        RULES_DATA.insert_one({"_id": new_chat_id, "rules": rules["rules"]})
 
 
 def __chat_settings__(chat_id, user_id):
     return "This chat has had it's rules set: `{}`".format(
-        bool(chat_rules(chat_id))
-    )
+        bool(chat_rules(chat_id)))
 
 
 __help__ = """

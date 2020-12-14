@@ -60,21 +60,22 @@ def report_setting(update, context):
         if len(args) >= 1:
             if args[0] in ("yes", "on", "true"):
                 USER_REPORT_SETTINGS.update_one(
-                    {'user_id': int(chat.id)},
-                    {"$set": {'should_report': True}},
-                    upsert=True)
+                    {"user_id": int(chat.id)},
+                    {"$set": {"should_report": True}},
+                    upsert=True,
+                )
                 msg.reply_text(
                     "Turned on reporting! You'll be notified whenever anyone reports something."
                 )
 
             elif args[0] in ("no", "off", "false"):
                 USER_REPORT_SETTINGS.update_one(
-                    {'user_id': int(chat.id)},
-                    {"$set": {'should_report': False}},
-                    upsert=True)
-                msg.reply_text(
-                    "Turned off reporting! You wont get any reports."
+                    {"user_id": int(chat.id)},
+                    {"$set": {"should_report": False}},
+                    upsert=True,
                 )
+                msg.reply_text(
+                    "Turned off reporting! You wont get any reports.")
         else:
             msg.reply_text(
                 "Your current report preference is: `{}`".format(
@@ -87,19 +88,20 @@ def report_setting(update, context):
         if len(args) >= 1:
             if args[0] in ("yes", "on", "true"):
                 CHAT_REPORT_SETTINGS.update_one(
-                    {'chat_id': int(chat.id)},
-                    {"$set": {'should_report': True}},
-                    upsert=True)
+                    {"chat_id": int(chat.id)},
+                    {"$set": {"should_report": True}},
+                    upsert=True,
+                )
                 msg.reply_text(
                     "Turned on reporting! Admins who have turned on reports will be notified when /report "
-                    "or @admin are called."
-                )
+                    "or @admin are called.")
 
             elif args[0] in ("no", "off", "false"):
                 CHAT_REPORT_SETTINGS.update_one(
-                    {'chat_id': int(chat.id)},
-                    {"$set": {'should_report': False}},
-                    upsert=True)
+                    {"chat_id": int(chat.id)},
+                    {"$set": {"should_report": False}},
+                    upsert=True,
+                )
                 msg.reply_text(
                     "Turned off reporting! No admins will be notified on /report or @admin."
                 )
@@ -146,8 +148,7 @@ def report(update, context) -> str:
             msg = (
                 f"<b>Report from: </b>{html.escape(chat.title)}\n"
                 f"<b> × Report by:</b> {mention_html(user.id, user.first_name)}(<code>{user.id}</code>)\n"
-                f"<b> × Reported user:</b> {mention_html(reported_user.id, reported_user.first_name)} (<code>{reported_user.id}</code>)\n"
-            )
+                f"<b> × Reported user:</b> {mention_html(reported_user.id, reported_user.first_name)} (<code>{reported_user.id}</code>)\n")
             link = f'<b> × Reported message:</b> <a href="https://t.me/{chat.username}/{message.reply_to_message.message_id}">click here</a>'
             should_forward = False
             keyboard = [
@@ -211,8 +212,7 @@ def report(update, context) -> str:
                         )
 
         message.reply_to_message.reply_text(
-            reported, parse_mode=ParseMode.HTML
-        )
+            reported, parse_mode=ParseMode.HTML)
         return msg
 
     return ""
@@ -261,14 +261,14 @@ def report_buttons(update, context):
 
 
 def user_should_report(user_id: int) -> bool:
-    setting = USER_REPORT_SETTINGS.find_one({'user_id': user_id})
+    setting = USER_REPORT_SETTINGS.find_one({"user_id": user_id})
     if not setting:
         return True
     return setting["should_report"]
 
 
 def chat_should_report(chat_id: int) -> bool:
-    setting = CHAT_REPORT_SETTINGS.find_one({'chat_id': chat_id})
+    setting = CHAT_REPORT_SETTINGS.find_one({"chat_id": chat_id})
     if not setting:
         return True
     return setting["should_report"]
@@ -276,21 +276,18 @@ def chat_should_report(chat_id: int) -> bool:
 
 def __migrate__(old_chat_id, new_chat_id):
     CHAT_REPORT_SETTINGS.update_many(
-        {'chat_id': old_chat_id},
-        {"$set": {'chat_id': new_chat_id}}
+        {"chat_id": old_chat_id}, {"$set": {"chat_id": new_chat_id}}
     )
 
 
 def __chat_settings__(chat_id, user_id):
     return "This chat is setup to send user reports to admins, via /report and @admin: `{}`".format(
-        chat_should_report(chat_id)
-    )
+        chat_should_report(chat_id))
 
 
 def __user_settings__(user_id):
     return "You receive reports from chats you're admin in: `{}`.\nToggle this with /reports in PM.".format(
-        user_should_report(user_id)
-    )
+        user_should_report(user_id))
 
 
 __mod_name__ = "Reporting"
@@ -324,8 +321,7 @@ ADMIN_REPORT_HANDLER = MessageHandler(
     Filters.regex("(?i)@admin(s)?"), report, run_async=True
 )
 REPORT_BUTTON_HANDLER = CallbackQueryHandler(
-    report_buttons, pattern=r"report_"
-)
+    report_buttons, pattern=r"report_")
 
 dispatcher.add_handler(REPORT_HANDLER, REPORT_GROUP)
 dispatcher.add_handler(ADMIN_REPORT_HANDLER, REPORT_GROUP)

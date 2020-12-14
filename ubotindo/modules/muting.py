@@ -71,8 +71,7 @@ def mute(update, context):
     if member:
         if is_user_admin(chat, user_id, member=member):
             message.reply_text(
-                "Well i'm not gonna stop an admin from talking!"
-            )
+                "Well i'm not gonna stop an admin from talking!")
 
         elif member.can_send_messages is None or member.can_send_messages:
             context.bot.restrict_chat_member(
@@ -160,8 +159,7 @@ def unmute(update, context):
     else:
         message.reply_text(
             "This user isn't even in the chat, unmuting them won't make them talk more than they "
-            "already do!"
-        )
+            "already do!")
 
     return ""
 
@@ -208,8 +206,7 @@ def temp_mute(update, context):
 
     if not reason:
         message.reply_text(
-            "You haven't specified a time to mute this user for!"
-        )
+            "You haven't specified a time to mute this user for!")
         return ""
 
     split_reason = reason.split(None, 1)
@@ -257,8 +254,8 @@ def temp_mute(update, context):
         if excp.message == "Reply message not found":
             # Do not reply
             message.reply_text(
-                "shut up! 🤐 Taped for {}!".format(time_val), quote=False
-            )
+                "shut up! 🤐 Taped for {}!".format(time_val),
+                quote=False)
             return log
         else:
             LOGGER.warning(update)
@@ -290,11 +287,17 @@ An example of temporarily mute someone:
 __mod_name__ = "Muting"
 
 MUTE_HANDLER = CommandHandler(
-    "mute", mute, pass_args=True, filters=Filters.chat_type.groups, run_async=True
-)
+    "mute",
+    mute,
+    pass_args=True,
+    filters=Filters.chat_type.groups,
+    run_async=True)
 UNMUTE_HANDLER = CommandHandler(
-    "unmute", unmute, pass_args=True, filters=Filters.chat_type.groups, run_async=True
-)
+    "unmute",
+    unmute,
+    pass_args=True,
+    filters=Filters.chat_type.groups,
+    run_async=True)
 TEMPMUTE_HANDLER = CommandHandler(
     ["tmute", "tempmute"],
     temp_mute,

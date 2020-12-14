@@ -53,13 +53,11 @@ def magisk(update, context):
                 "https://github.com/topjohnwu/magisk_files/raw/canary/"
                 + data["uninstaller"]["link"]
             )
-        releases += (
-            f"*{type}*: \n"
-            f"• [Changelog](https://github.com/topjohnwu/magisk_files/blob/{branch[1]}/notes.md)\n"
-            f'• Zip - [{data["magisk"]["version"]}-{data["magisk"]["versionCode"]}]({data["magisk"]["link"]}) \n'
-            f'• App - [{data["app"]["version"]}-{data["app"]["versionCode"]}]({data["app"]["link"]}) \n'
-            f'• Uninstaller - [{data["magisk"]["version"]}-{data["magisk"]["versionCode"]}]({data["uninstaller"]["link"]})\n\n'
-        )
+        releases += (f"*{type}*: \n"
+                     f"• [Changelog](https://github.com/topjohnwu/magisk_files/blob/{branch[1]}/notes.md)\n"
+                     f'• Zip - [{data["magisk"]["version"]}-{data["magisk"]["versionCode"]}]({data["magisk"]["link"]}) \n'
+                     f'• App - [{data["app"]["version"]}-{data["app"]["versionCode"]}]({data["app"]["link"]}) \n'
+                     f'• Uninstaller - [{data["magisk"]["version"]}-{data["magisk"]["versionCode"]}]({data["uninstaller"]["link"]})\n\n')
 
     del_msg = update.message.reply_text(
         "*Latest Magisk Releases:*\n{}".format(releases),
@@ -81,9 +79,7 @@ def magisk(update, context):
 def device(update, context):
     args = context.args
     if len(args) == 0:
-        reply = (
-            "No codename provided, write a codename for fetching informations."
-        )
+        reply = "No codename provided, write a codename for fetching informations."
         del_msg = update.effective_message.reply_text(
             "{}".format(reply),
             parse_mode=ParseMode.MARKDOWN,
@@ -139,9 +135,7 @@ def device(update, context):
 def twrp(update, context):
     args = context.args
     if len(args) == 0:
-        reply = (
-            "No codename provided, write a codename for fetching informations."
-        )
+        reply = "No codename provided, write a codename for fetching informations."
         del_msg = update.effective_message.reply_text(
             "{}".format(reply),
             parse_mode=ParseMode.MARKDOWN,
@@ -176,9 +170,8 @@ def twrp(update, context):
     else:
         reply = f"*Latest Official TWRP for {device}*\n"
         db = get(DEVICES_DATA).json()
-        newdevice = (
-            device.strip("lte") if device.startswith("beyond") else device
-        )
+        newdevice = device.strip(
+            "lte") if device.startswith("beyond") else device
         try:
             brand = db[newdevice][0]["brand"]
             name = db[newdevice][0]["name"]
@@ -215,9 +208,7 @@ def los(update, context) -> str:
         device = ""
 
     if device == "":
-        reply_text = (
-            "*Please Type Your Device Codename*\nExample : `/los lavender`"
-        )
+        reply_text = "*Please Type Your Device Codename*\nExample : `/los lavender`"
         message.reply_text(
             reply_text,
             parse_mode=ParseMode.MARKDOWN,
@@ -240,13 +231,8 @@ def los(update, context) -> str:
         reply_text += f"*Build Size :* `{buildsize_b}`\n"
         reply_text += f"*Version :* `{version}`\n"
 
-        keyboard = [
-            [
-                InlineKeyboardButton(
-                    text="Click Here To Downloads", url=f"{url}"
-                )
-            ]
-        ]
+        keyboard = [[InlineKeyboardButton(
+            text="Click Here To Downloads", url=f"{url}")]]
         message.reply_text(
             reply_text,
             reply_markup=InlineKeyboardMarkup(keyboard),
@@ -380,17 +366,14 @@ DEVICE_HANDLER = DisableAbleCommandHandler(
     "device", device, pass_args=True, run_async=True
 )
 TWRP_HANDLER = DisableAbleCommandHandler(
-    "twrp", twrp, pass_args=True, run_async=True
-)
+    "twrp", twrp, pass_args=True, run_async=True)
 LOS_HANDLER = DisableAbleCommandHandler(
-    "los", los, pass_args=True, run_async=True
-)
+    "los", los, pass_args=True, run_async=True)
 BOOTLEG_HANDLER = DisableAbleCommandHandler(
     "bootleg", bootleg, pass_args=True, run_async=True
 )
 GSI_HANDLER = DisableAbleCommandHandler(
-    "gsi", gsi, pass_args=True, run_async=True
-)
+    "gsi", gsi, pass_args=True, run_async=True)
 
 
 dispatcher.add_handler(MAGISK_HANDLER)

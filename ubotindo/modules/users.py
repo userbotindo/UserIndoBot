@@ -80,8 +80,7 @@ def broadcast(update, context):
 
         update.effective_message.reply_text(
             "Broadcast complete. {} groups failed to receive the message, probably "
-            "due to being kicked.".format(failed)
-        )
+            "due to being kicked.".format(failed))
 
 
 def log_user(update, context):
@@ -89,8 +88,10 @@ def log_user(update, context):
     msg = update.effective_message
 
     users_db.update_user(
-        msg.from_user.id, msg.from_user.username, chat.id, chat.title
-    )
+        msg.from_user.id,
+        msg.from_user.username,
+        chat.id,
+        chat.title)
 
     if msg.reply_to_message:
         users_db.update_user(
@@ -121,12 +122,8 @@ def chats(update, context):
 
 def chat_checker(update, context):
     try:
-        if (
-            update.effective_message.chat.get_member(
-                context.bot.id
-            ).can_send_messages
-            is False
-        ):
+        if (update.effective_message.chat.get_member(
+                context.bot.id).can_send_messages is False):
             context.bot.leaveChat(update.effective_message.chat.id)
     except (TimedOut, Unauthorized, BadRequest):
         pass
@@ -137,8 +134,7 @@ def __user_info__(user_id):
         return """I've seen them in... Wow. Are they stalking me? They're in all the same places I am... oh. It's me."""
     num_chats = users_db.get_user_num_chats(user_id)
     return """I've seen them in <code>{}</code> chats in total.""".format(
-        num_chats
-    )
+        num_chats)
 
 
 def __stats__():

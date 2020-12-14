@@ -29,9 +29,10 @@ CHAT_SETTINGS_BLACKLISTS = {}
 
 def add_to_blacklist(chat_id, trigger):
     BL.find_one_and_update(
-        {'chat_id': chat_id, 'trigger': trigger},
-        {"$set": {'chat_id': chat_id, 'trigger': trigger}},
-        upsert=True)
+        {"chat_id": chat_id, "trigger": trigger},
+        {"$set": {"chat_id": chat_id, "trigger": trigger}},
+        upsert=True,
+    )
     global CHAT_BLACKLISTS
     if CHAT_BLACKLISTS.get(str(chat_id), set()) == set():
         CHAT_BLACKLISTS[str(chat_id)] = {trigger}
@@ -40,9 +41,7 @@ def add_to_blacklist(chat_id, trigger):
 
 
 def rm_from_blacklist(chat_id, trigger) -> bool:
-    data = BL.find_one_and_delete(
-        {'chat_id': chat_id, 'trigger': trigger}
-        )
+    data = BL.find_one_and_delete({"chat_id": chat_id, "trigger": trigger})
     if data:
         if trigger in CHAT_BLACKLISTS.get(str(chat_id), set()):
             CHAT_BLACKLISTS.get(str(chat_id), set()).remove(trigger)
@@ -59,11 +58,11 @@ def num_blacklist_filters() -> int:
 
 
 def num_blacklist_chat_filters(chat_id) -> int:
-    return BL.count_documents({'chat_id': chat_id})
+    return BL.count_documents({"chat_id": chat_id})
 
 
 def num_blacklist_filter_chats() -> int:
-    data = BL.distinct('chat_id')
+    data = BL.distinct("chat_id")
     return len(data)
 
 
@@ -81,10 +80,10 @@ def set_blacklist_strength(chat_id, blacklist_type, value):
     """
     global CHAT_SETTINGS_BLACKLISTS
     BL_SETTING.update_one(
-        {'chat_id': chat_id},
-        {"$set": {'blacklist_type': int(blacklist_type), 'value': str(value)}},
-        upsert=True
-        )
+        {"chat_id": chat_id},
+        {"$set": {"blacklist_type": int(blacklist_type), "value": str(value)}},
+        upsert=True,
+    )
     CHAT_SETTINGS_BLACKLISTS[str(chat_id)] = {
         "blacklist_type": int(blacklist_type),
         "value": value,
@@ -103,7 +102,7 @@ def __load_chat_blacklists():
     global CHAT_BLACKLISTS
     for chat in BL.find():
         CHAT_BLACKLISTS[chat["chat_id"]] = []
-    
+
     for x in BL.find():
         CHAT_BLACKLISTS[x["chat_id"]] += [x["trigger"]]
 
@@ -120,10 +119,8 @@ def __load_chat_settings_blacklists():
 
 
 def migrate_chat(old_chat_id, new_chat_id):
-    BL.update_many(
-        {'chat_id': old_chat_id},
-        {"$set": {'chat_id':new_chat_id}}
-        )
+    BL.update_many({"chat_id": old_chat_id},
+                   {"$set": {"chat_id": new_chat_id}})
     __load_chat_blacklists()
     __load_chat_settings_blacklists()
 

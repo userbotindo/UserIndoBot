@@ -67,8 +67,7 @@ def import_data(update, context):
     if msg.reply_to_message and msg.reply_to_message.document:
         try:
             file_info = context.bot.get_file(
-                msg.reply_to_message.document.file_id
-            )
+                msg.reply_to_message.document.file_id)
         except BadRequest:
             msg.reply_text(
                 "Try downloading and uploading the file yourself again, This one seem broken!"
@@ -92,8 +91,7 @@ def import_data(update, context):
             if data.get(str(chat.id)) is None:
                 if conn:
                     text = "Backup comes from another chat, I can't return another chat to chat *{}*".format(
-                        chat_name
-                    )
+                        chat_name)
                 else:
                     text = "Backup comes from another chat, I can't return another chat to this chat"
                 return msg.reply_text(text, parse_mode="markdown")
@@ -211,54 +209,34 @@ def export_data(update, context):
                     buttonlist.append(
                         ("{}".format(btn.name), "{}".format(btn.url), False)
                     )
-            isicat += (
-                "###button###: {}<###button###>{}<###splitter###>".format(
-                    note.value, str(buttonlist)
-                )
-            )
+            isicat += "###button###: {}<###button###>{}<###splitter###>".format(
+                note.value, str(buttonlist))
             buttonlist.clear()
         elif note.msgtype == 2:
             isicat += "###sticker###:{}<###splitter###>".format(note.file)
         elif note.msgtype == 3:
-            isicat += (
-                "###file###:{}<###TYPESPLIT###>{}<###splitter###>".format(
-                    note.file, note.value
-                )
-            )
+            isicat += "###file###:{}<###TYPESPLIT###>{}<###splitter###>".format(
+                note.file, note.value)
         elif note.msgtype == 4:
-            isicat += (
-                "###photo###:{}<###TYPESPLIT###>{}<###splitter###>".format(
-                    note.file, note.value
-                )
-            )
+            isicat += "###photo###:{}<###TYPESPLIT###>{}<###splitter###>".format(
+                note.file, note.value)
         elif note.msgtype == 5:
-            isicat += (
-                "###audio###:{}<###TYPESPLIT###>{}<###splitter###>".format(
-                    note.file, note.value
-                )
-            )
+            isicat += "###audio###:{}<###TYPESPLIT###>{}<###splitter###>".format(
+                note.file, note.value)
         elif note.msgtype == 6:
-            isicat += (
-                "###voice###:{}<###TYPESPLIT###>{}<###splitter###>".format(
-                    note.file, note.value
-                )
-            )
+            isicat += "###voice###:{}<###TYPESPLIT###>{}<###splitter###>".format(
+                note.file, note.value)
         elif note.msgtype == 7:
-            isicat += (
-                "###video###:{}<###TYPESPLIT###>{}<###splitter###>".format(
-                    note.file, note.value
-                )
-            )
+            isicat += "###video###:{}<###TYPESPLIT###>{}<###splitter###>".format(
+                note.file, note.value)
         elif note.msgtype == 8:
             isicat += "###video_note###:{}<###TYPESPLIT###>{}<###splitter###>".format(
-                note.file, note.value
-            )
+                note.file, note.value)
         else:
             isicat += "{}<###splitter###>".format(note.value)
     for x in range(count):
-        notes[
-            "#{}".format(namacat.split("<###splitter###>")[x])
-        ] = "{}".format(isicat.split("<###splitter###>")[x])
+        notes["#{}".format(namacat.split("<###splitter###>")[x])] = "{}".format(
+            isicat.split("<###splitter###>")[x])
     # Rules
     rules = chat_rules(chat_id)
     # Blacklist
@@ -365,18 +343,22 @@ def export_data(update, context):
         context.bot.sendMessage(
             MESSAGE_DUMP,
             "*Successfully imported backup:*\nChat: `{}`\nChat ID: `{}`\nOn: `{}`".format(
-                chat.title, chat_id, tgl
-            ),
+                chat.title,
+                chat_id,
+                tgl),
             parse_mode=ParseMode.MARKDOWN,
         )
     except BadRequest:
         pass
     context.bot.sendDocument(
         current_chat_id,
-        document=open("Userindo-Bot{}.backup".format(chat_id), "rb"),
+        document=open(
+            "Userindo-Bot{}.backup".format(chat_id),
+            "rb"),
         caption="*Successfully backup:*\nChat: `{}`\nChat ID: `{}`\nOn: `{}`\n\nNote: This `Userindobot-Backup` is specially made for notes.".format(
-            chat.title, chat_id, tgl
-        ),
+            chat.title,
+            chat_id,
+            tgl),
         timeout=360,
         reply_to_message_id=msg.message_id,
         parse_mode=ParseMode.MARKDOWN,
@@ -417,7 +399,7 @@ __help__ = """
 
 IMPORT_HANDLER = CommandHandler("import", import_data, run_async=True)
 EXPORT_HANDLER = CommandHandler(
-   "export", export_data, pass_chat_data=True, run_async=True
+    "export", export_data, pass_chat_data=True, run_async=True
 )
 
 dispatcher.add_handler(IMPORT_HANDLER)

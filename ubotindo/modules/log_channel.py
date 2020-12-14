@@ -38,12 +38,9 @@ if is_module_loaded(FILENAME):
             message = update.effective_message
             if result:
                 if chat.type == chat.SUPERGROUP and chat.username:
-                    result += (
-                        "\n<b>Link:</b> "
-                        '<a href="http://telegram.me/{}/{}">click here</a>'.format(
-                            chat.username, message.message_id
-                        )
-                    )
+                    result += ("\n<b>Link:</b> "
+                               '<a href="http://telegram.me/{}/{}">click here</a>'.format(chat.username,
+                                                                                          message.message_id))
                 log_chat = db.get_chat_log_channel(chat.id)
                 if log_chat:
                     try:
@@ -80,8 +77,8 @@ if is_module_loaded(FILENAME):
 
                 bot.send_message(
                     log_chat_id,
-                    result
-                    + "\n\nFormatting has been disabled due to an unexpected error.",
+                    result +
+                    "\n\nFormatting has been disabled due to an unexpected error.",
                 )
 
     @user_admin
@@ -127,17 +124,12 @@ if is_module_loaded(FILENAME):
                 context.bot.send_message(
                     message.forward_from_chat.id,
                     "This channel has been set as the log channel for {}.".format(
-                        chat.title or chat.first_name
-                    ),
+                        chat.title or chat.first_name),
                 )
             except Unauthorized as excp:
-                if (
-                    excp.message
-                    == "Forbidden: bot is not a member of the channel chat"
-                ):
+                if excp.message == "Forbidden: bot is not a member of the channel chat":
                     context.bot.send_message(
-                        chat.id, "Successfully set log channel!"
-                    )
+                        chat.id, "Successfully set log channel!")
                 else:
                     LOGGER.exception("ERROR in setting the log channel.")
 

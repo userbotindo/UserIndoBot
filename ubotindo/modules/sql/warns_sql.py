@@ -85,8 +85,7 @@ class WarnSettings(BASE):
 
     def __repr__(self):
         return "<{} has {} possible warns.>".format(
-            self.chat_id, self.warn_limit
-        )
+            self.chat_id, self.warn_limit)
 
 
 Warns.__table__.create(checkfirst=True)
@@ -211,11 +210,8 @@ def get_chat_warn_triggers(chat_id):
 
 def get_chat_warn_filters(chat_id):
     try:
-        return (
-            SESSION.query(WarnFilters)
-            .filter(WarnFilters.chat_id == str(chat_id))
-            .all()
-        )
+        return (SESSION.query(WarnFilters).filter(
+            WarnFilters.chat_id == str(chat_id)).all())
     finally:
         SESSION.close()
 
@@ -298,8 +294,9 @@ def num_warn_chat_filters(chat_id):
 def num_warn_filter_chats():
     try:
         return SESSION.query(
-            func.count(distinct(WarnFilters.chat_id))
-        ).scalar()
+            func.count(
+                distinct(
+                    WarnFilters.chat_id))).scalar()
     finally:
         SESSION.close()
 
@@ -326,11 +323,8 @@ def __load_chat_warn_filters():
 
 def migrate_chat(old_chat_id, new_chat_id):
     with WARN_INSERTION_LOCK:
-        chat_notes = (
-            SESSION.query(Warns)
-            .filter(Warns.chat_id == str(old_chat_id))
-            .all()
-        )
+        chat_notes = (SESSION.query(Warns).filter(
+            Warns.chat_id == str(old_chat_id)).all())
         for note in chat_notes:
             note.chat_id = str(new_chat_id)
         SESSION.commit()

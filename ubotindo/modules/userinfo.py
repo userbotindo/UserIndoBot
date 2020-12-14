@@ -42,7 +42,7 @@ def about_me(update, context):
     else:
         user = message.from_user
 
-    info = USER_INFO.find_one({'_id': user.id})["info"]
+    info = USER_INFO.find_one({"_id": user.id})["info"]
 
     if info:
         update.effective_message.reply_text(
@@ -77,9 +77,8 @@ def set_about_me(update, context):
     if len(info) == 2:
         if len(info[1]) < MAX_MESSAGE_LENGTH // 4:
             USER_INFO.update_one(
-                {'_id': user_id},
-                {"$set": {'info': info[1]}},
-                upsert=True)
+                {"_id": user_id}, {"$set": {"info": info[1]}}, upsert=True
+            )
             message.reply_text("Your bio has been saved successfully")
         else:
             message.reply_text(
@@ -100,7 +99,7 @@ def about_bio(update, context):
     else:
         user = message.from_user
 
-    info = USER_BIO.find_one({'_id': user.id})["bio"]
+    info = USER_BIO.find_one({"_id": user.id})["bio"]
 
     if info:
         update.effective_message.reply_text(
@@ -114,8 +113,7 @@ def about_bio(update, context):
         )
     else:
         update.effective_message.reply_text(
-            " Your bio  about you has been saved !"
-        )
+            " Your bio  about you has been saved !")
 
 
 @typing_action
@@ -127,8 +125,7 @@ def set_about_bio(update, context):
         user_id = repl_message.from_user.id
         if user_id == message.from_user.id:
             message.reply_text(
-                "Are you looking to change your own ... ?? That 's it."
-            )
+                "Are you looking to change your own ... ?? That 's it.")
             return
         elif user_id == context.bot.id and sender.id not in DEV_USERS:
             message.reply_text("Only DEV USERS can change my information.")
@@ -143,9 +140,8 @@ def set_about_bio(update, context):
         if len(bio) == 2:
             if len(bio[1]) < MAX_MESSAGE_LENGTH // 4:
                 USER_BIO.update_one(
-                    {'_id': user_id},
-                    {"$set": {'bio': bio[1]}},
-                    upsert=True)
+                    {"_id": user_id}, {"$set": {"bio": bio[1]}}, upsert=True
+                )
                 message.reply_text(
                     "{} bio has been successfully saved!".format(
                         repl_message.from_user.first_name
@@ -159,22 +155,20 @@ def set_about_bio(update, context):
                 )
     else:
         message.reply_text(
-            " His bio can only be saved if someone MESSAGE as a REPLY"
-        )
+            " His bio can only be saved if someone MESSAGE as a REPLY")
 
 
 def __user_info__(user_id):
-    bdata = USER_BIO.find_one({'_id': user_id})
+    bdata = USER_BIO.find_one({"_id": user_id})
     if bdata:
         bio = html.escape(bdata["bio"])
-    idata = USER_INFO.find_one({'_id': user_id})
+    idata = USER_INFO.find_one({"_id": user_id})
     if idata:
         me = html.escape(idata["info"])
 
     if bdata and idata:
         return "<b>About user:</b>\n{me}\n\n<b>What others say:</b>\n{bio}".format(
-            me=me, bio=bio
-        )
+            me=me, bio=bio)
     elif bdata:
         return "<b>What others say:</b>\n{}\n".format(bio)
     elif idata:
@@ -206,15 +200,13 @@ Reply to user's message: `/setbio He is such cool person`.
 __mod_name__ = "Bios/Abouts"
 
 SET_BIO_HANDLER = DisableAbleCommandHandler(
-    "setbio", set_about_bio, run_async=True
-)
+    "setbio", set_about_bio, run_async=True)
 GET_BIO_HANDLER = DisableAbleCommandHandler(
     "bio", about_bio, pass_args=True, run_async=True
 )
 
 SET_ABOUT_HANDLER = DisableAbleCommandHandler(
-    "setme", set_about_me, run_async=True
-)
+    "setme", set_about_me, run_async=True)
 GET_ABOUT_HANDLER = DisableAbleCommandHandler(
     "me", about_me, pass_args=True, run_async=True
 )
