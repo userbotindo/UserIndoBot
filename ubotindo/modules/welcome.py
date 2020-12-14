@@ -379,27 +379,33 @@ def new_member(update, context):
                         parse_mode=ParseMode.MARKDOWN,
                         reply_to_message_id=reply,
                     )
-                    bot.restrict_chat_member(
-                        chat.id,
-                        new_mem.id,
-                        permissions=ChatPermissions(
-                            can_send_messages=False,
-                            can_invite_users=False,
-                            can_pin_messages=False,
-                            can_send_polls=False,
-                            can_change_info=False,
-                            can_send_media_messages=False,
-                            can_send_other_messages=False,
-                            can_add_web_page_previews=False,
-                        ),
-                    )
-                    job_queue.run_once(
-                        partial(
-                            check_not_bot, new_mem, chat.id, message.message_id
-                        ),
-                        120,
-                        name="welcomemute",
-                    )
+                    try:
+                        bot.restrict_chat_member(
+                            chat.id,
+                            new_mem.id,
+                            permissions=ChatPermissions(
+                                can_send_messages=False,
+                                can_invite_users=False,
+                                can_pin_messages=False,
+                                can_send_polls=False,
+                                can_change_info=False,
+                                can_send_media_messages=False,
+                                can_send_other_messages=False,
+                                can_add_web_page_previews=False,
+                            ),
+                        )
+                        job_queue.run_once(
+                            partial(
+                                check_not_bot, new_mem, chat.id, message.message_id
+                            ),
+                            120,
+                            name="welcomemute",
+                        )
+                    except BadRequest as err:
+                        if err.message == "Not enough rights to restrict/unrestrict chat member":
+                            pass
+                        else:
+                            raise
 
         if welcome_bool:
             if media_wel:
