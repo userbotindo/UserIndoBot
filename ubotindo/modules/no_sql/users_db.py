@@ -33,28 +33,22 @@ def ensure_bot_in_db():
 
 
 def update_user(user_id, username, chat_id=None, chat_name=None):
-    user = USERS_DB.find_one({'_id': user_id})
-    if not user:
-        USERS_DB.insert_one({'_id': user_id, 'username': username})
-        user = user_id
-    else:
-        USERS_DB.update_one({'_id': user_id}, {"$set": {'username': username}})
-        user = user["_id"]
+    USERS_DB.update_one(
+        {'_id': user_id},
+        {"$set": {'username': username}},
+        upsert=True)
     
     if not (chat_id or chat_name):
         return
     
-    chat = CHATS_DB.find_one({'chat_id': chat_id})
-    if not chat:
-        CHATS_DB.insert_one({'chat_id': chat_id, 'chat_name': chat_name})
-        chat = chat_id
-    else:
-        CHATS_DB.update_one({'chat_id': chat_id}, {"$set": {'chat_name': chat_name}})
-        chat = chat["chat_id"]
+    CHATS_DB.update_one(
+        {'chat_id': chat_id},
+        {"$set": {'chat_name': chat_name}},
+        upsert=True)
 
-    member = CHAT_MEMBERS_DB.find_one({'chat_id': chat, 'user_id': user})
-    if not member:
-        CHAT_MEMBERS_DB.insert_one({'chat_id': chat, 'user_id': user})
+    member = CHAT_MEMBERS_DB.find_one({'chat_id': chat_id, 'user_id': user_id})
+    if member is None:
+        CHAT_MEMBERS_DB.insert_one({'chat_id': chat_id, 'user_id': user_id})
 
 
 def get_userid_by_name(username) -> dict:
