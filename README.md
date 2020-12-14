@@ -4,7 +4,7 @@
 [![ForTheBadge built-with-love](http://ForTheBadge.com/images/badges/built-with-love.svg)](https://github.com/UserBotIndo/)
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/8bfae649db3742a883e0ac1008755db3)](https://www.codacy.com/gh/userbotindo/UserIndoBot/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=userbotindo/UserIndoBot&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/8bfae649db3742a883e0ac1008755db3)](https://www.codacy.com/gh/userbotindo/UserIndoBot/dashboard?utm_source=github.com&utm_medium=referral&utm_content=userbotindo/UserIndoBot&utm_campaign=Badge_Grade)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/userbotindo/UserIndoBot/pulls)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/userbotindo/UserIndoBot/graphs/commit-activity)
 ![logo](https://i.ibb.co/zJdLsyg/Userindobot.png)
@@ -54,14 +54,15 @@ This is because markdown parsing is done by iterating through a dict, which is o
 There are two possible ways of configuring your bot: a config.py file, or ENV variables.
 
 The preferred version is to use a `config.py` file, as it makes it easier to see all your settings together.
-This file should be placed in your `UserindoBot` folder, alongside the `__main__.py` file. 
-This is where your bot token will be loaded from, as well as your database URI (if you're using a database), and most of 
+This file should be placed in your `UserindoBot` folder, alongside the `__main__.py` file.
+This is where your bot token will be loaded from, as well as your database URI (if you're using a database), and most of
 your other settings.
 
-It is recommended to import sample_config and extend the Config class, as this will ensure your config contains all 
+It is recommended to import sample_config and extend the Config class, as this will ensure your config contains all
 defaults set in the sample_config, hence making it easier to upgrade.
 
 An example `config.py` file could be:
+
 ```python
 from ubotindo.sample_config import Config
 
@@ -90,32 +91,38 @@ This will install all the necessary python packages.
 
 ### Database
 
-If you wish to use a database-dependent module (eg: locks, notes, userinfo, users, filters, welcomes),
+#### MongoDB
+
+[MongoDB](https://cloud.mongodb.com/) here is used to store users, chats, afk status, blacklist, global bans, data.
+
+#### SQL
+
+If you wish to use a database-dependent module (eg: locks, notes, filters, welcomes),
 you'll need to have a database installed on your system. I use Postgres, so I recommend using it for optimal compatibility.
 
 In the case of Postgres, this is how you would set up a database on a Debian/Ubuntu system. Other distributions may vary.
 
--   install PostgreSQL:
+- install PostgreSQL:
 
 `sudo apt-get update && sudo apt-get install postgresql`
 
--   change to the Postgres user:
+- change to the Postgres user:
 
 `sudo su - postgres`
 
--   create a new database user (change YOUR_USER appropriately):
+- create a new database user (change YOUR_USER appropriately):
 
 `createuser -P -s -e YOUR_USER`
 
 This will be followed by you need to input your password.
 
--   create a new database table:
+- create a new database table:
 
 `createdb -O YOUR_USER YOUR_DB_NAME`
 
 Change YOUR_USER and YOUR_DB_NAME appropriately.
 
--   finally:
+- finally:
 
 `psql YOUR_DB_NAME -h YOUR_HOST YOUR_USER`
 
@@ -130,6 +137,7 @@ Replace SqlDbType with whichever DB you're using (eg Postgres, MySQL, SQLite, et
 repeat for your username, password, hostname (localhost?), port (5432?), and DB name.
 
 ## Modules
+
 ### Setting load order
 
 The module load order can be changed via the `LOAD` and `NO_LOAD` configuration settings.
@@ -160,8 +168,8 @@ commands will allow the bot to load it and add the documentation for
 your module to the `/help` command. Setting the `__mod_name__` variable will also allow you to use a nicer,
 user-friendly name for a module.
 
-The `__migrate__()` function is used for migrating chats - when a chat is upgraded to a supergroup, the ID changes, so 
+The `__migrate__()` function is used for migrating chats - when a chat is upgraded to a supergroup, the ID changes, so
 it is necessary to migrate it in the DB.
 
-The `__stats__()` function is for retrieving module statistics, eg number of users, number of chats. This is accessed 
+The `__stats__()` function is for retrieving module statistics, eg number of users, number of chats. This is accessed
 through the `/stats` command, which is only available to the bot owner.
