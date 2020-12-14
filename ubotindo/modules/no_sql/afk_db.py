@@ -32,8 +32,10 @@ def check_afk_status(user_id) -> dict:
 
 
 def set_afk(user_id, reason: str="") -> None:
-    AFK_USERS.insert_one(
-        {'_id': user_id, 'reason': reason})
+    AFK_USERS.update_one(
+        {'_id': user_id},
+        {"$set": {'reason': reason}},
+        upsert=True)
     __load_afk_users()
 
 
