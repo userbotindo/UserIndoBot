@@ -24,6 +24,7 @@ from platform import python_version
 
 import requests
 import speedtest
+from threading import Thread
 from psutil import boot_time, cpu_percent, disk_usage, virtual_memory
 from spamwatch import __version__ as __sw__
 from telethon import __version__, version
@@ -31,7 +32,7 @@ from telegram import ParseMode, __version__
 from telegram.error import BadRequest
 from telegram.ext import CommandHandler, Filters
 
-from ubotindo import MESSAGE_DUMP, OWNER_ID, dispatcher
+from ubotindo import MESSAGE_DUMP, OWNER_ID, dispatcher, updater
 from ubotindo.modules.helper_funcs.alternate import typing_action
 from ubotindo.modules.helper_funcs.filters import CustomFilters
 
@@ -153,13 +154,16 @@ def gitpull(update, context):
     sent_msg.edit_text(sent_msg_text)
 
 
-@typing_action
-def restart(update, context):
-    user = update.effective_message.from_user
+def stop_and_restart():
+        """Kill old instance, replace the new one"""
+        updater.stop()
+        os.execl(sys.executable, sys.executable, *sys.argv)
 
-    update.effective_message.reply_text(
-        "Starting a new instance and shutting down this one"
-    )
+
+def restart(update, context):
+        update.message.reply_text('Bot is restarting...')
+        Thread(target=stop_and_restart).start()
+
 
     if MESSAGE_DUMP:
         datetime_fmt = "%H:%M - %d-%m-%Y"
