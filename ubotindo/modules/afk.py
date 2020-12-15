@@ -37,7 +37,7 @@ AFK_REPLY_GROUP = 8
 """This Function to triger bot"""
 
 
-def afk(_,  update):
+def afk(update, context):
     args = update.effective_message.text.split(None, 1)
 
     if not update.effective_user.id:
@@ -68,7 +68,7 @@ def afk(_,  update):
         return
 
 """This function to check user afk or not""" 
-def no_longer_afk(_, update):
+def no_longer_afk(update, context):
     user = update.effective_user
     message = update.effective_message
 
