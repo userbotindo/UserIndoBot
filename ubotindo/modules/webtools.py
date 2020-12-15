@@ -165,24 +165,6 @@ def restart(update, context):
         Thread(target=stop_and_restart).start()
 
 
-    if MESSAGE_DUMP:
-        datetime_fmt = "%H:%M - %d-%m-%Y"
-        current_time = datetime.datetime.utcnow().strftime(datetime_fmt)
-        message = (
-            f"<b>Bot Restarted </b>"
-            f"<b>By :</b> <code>{html.escape(user.first_name)}</code>"
-            f"<b>\nDate Bot Restart : </b><code>{current_time}</code>"
-        )
-        context.bot.send_message(
-            chat_id=MESSAGE_DUMP,
-            text=message,
-            parse_mode=ParseMode.HTML,
-            disable_web_page_preview=True,
-        )
-
-    os.system("bash start")
-
-
 IP_HANDLER = CommandHandler(
     "ip", get_bot_ip, filters=Filters.chat(OWNER_ID), run_async=True
 )
