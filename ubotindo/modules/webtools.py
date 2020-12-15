@@ -20,6 +20,7 @@ import os
 import platform
 import subprocess
 import time
+import sys
 from platform import python_version
 
 import requests
