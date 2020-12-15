@@ -162,7 +162,7 @@ def send(update, message, keyboard, backup_message):
     return msg
 
 
-@loggable
+ # loggable need add return statement
 def new_member(update, context):
 
     bot, job_queue = context.bot, context.job_queue
