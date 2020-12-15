@@ -798,7 +798,7 @@ def main():
 
     else:
         LOGGER.info("Using long polling.")
-        updater.start_polling(timeout=15, read_latency=5)
+        updater.start_polling(timeout=15, read_latency=5, clean=True)
         if MESSAGE_DUMP:
             updater.bot.send_message(
                 chat_id=MESSAGE_DUMP, text="System Started..."
