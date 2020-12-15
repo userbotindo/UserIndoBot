@@ -1,7 +1,5 @@
 ubotindo/config.py
 logfile
-ubotindo.session
-ubotindo.session-journal
 *.pyc
 .idea/
 .project
