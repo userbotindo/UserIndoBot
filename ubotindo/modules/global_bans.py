@@ -391,7 +391,7 @@ def check_and_ban(update, user_id, should_message=True):
         update.effective_chat.kick_member(user_id)
         if should_message:
             usr = gban_db.get_gbanned_user(user_id)
-            greason = usr.reason
+            greason = usr["reason"]
             if not greason:
                 greason = "No reason given"
 
