@@ -28,7 +28,6 @@ import speedtest
 from threading import Thread
 from psutil import boot_time, cpu_percent, disk_usage, virtual_memory
 from spamwatch import __version__ as __sw__
-from telethon import __version__, version
 from telegram import ParseMode, __version__
 from telegram.error import BadRequest
 from telegram.ext import CommandHandler, Filters
@@ -122,9 +121,8 @@ def system_status(update, context):
     status += "<b>Ram usage:</b> <code>" + str(mem[2]) + " %</code>\n"
     status += "<b>Storage used:</b> <code>" + str(disk[3]) + " %</code>\n\n"
     status += "<b>Python version:</b> <code>" + python_version() + "</code>\n"
-    status += "<b>PTB Lib version:</b> <code>" + str(__version__) + "</code>\n"
-    status += "<b>Telethon Lib Version:</b> <code>" + (version.__version__) + "</code>\n"
-    status += "<b>Spamwatch API:</b> <code>" + str(__sw__) + "</code>"
+    status += "<b>Library version:</b> <code>" + str(__version__) + "</code>\n"
+    status += "<b>Spamwatch API:</b> <code>" + str(__sw__) + "</code>\n"
     context.bot.sendMessage(
         update.effective_chat.id, status, parse_mode=ParseMode.HTML
     )
