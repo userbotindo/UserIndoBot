@@ -2,6 +2,7 @@ import os
 import datetime
 from telegram.ext import CommandHandler
 from telegram import Update
+from ubotindo import dispatcher
 from ubotindo.modules.helper_funcs.filters import CustomFilters
 from ubotindo.modules.helper_funcs.alternate import typing_action
 
@@ -22,3 +23,4 @@ def logs(update, context):
 LOG_HANDLER = CommandHandler(
     "logs", logs, filters=CustomFilters.dev_filter, run_async=True
 )
+dispatcher.add_handler(LOG_HANDLER)
