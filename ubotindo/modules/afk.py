@@ -158,7 +158,7 @@ def reply_afk(update, context):
         check_afk(update, context, user_id, fst_name, userc_id)
 
 
-def check_afk(update, user_id, fst_name, userc_id):
+def check_afk(update, context, user_id, fst_name, userc_id):
     if afk_db.is_afk(user_id):
         user = afk_db.check_afk_status(user_id)
         if not user["reason"]:
