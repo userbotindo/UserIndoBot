@@ -25,7 +25,7 @@ from telegram import (
     InlineKeyboardMarkup,
     ParseMode,
 )
-from telegram.error import BadRequest
+from telegram.error import BadRequest, Unauthorized
 from telegram.ext import (
     CallbackQueryHandler,
     CommandHandler,
@@ -244,6 +244,8 @@ def new_member(update, context):
                 except BadRequest as err:
                     if err.message == "Have no rights to send a message":
                         pass
+                except Unauthorized:
+                    return
 
             else:
                 buttons = sql.get_welc_buttons(chat.id)
