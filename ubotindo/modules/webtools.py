@@ -20,18 +20,19 @@ import os
 import platform
 import subprocess
 import time
+import sys
 from platform import python_version
 
 import requests
 import speedtest
+from threading import Thread
 from psutil import boot_time, cpu_percent, disk_usage, virtual_memory
 from spamwatch import __version__ as __sw__
-from telethon import __version__, version
 from telegram import ParseMode, __version__
 from telegram.error import BadRequest
 from telegram.ext import CommandHandler, Filters
 
-from ubotindo import MESSAGE_DUMP, OWNER_ID, dispatcher
+from ubotindo import MESSAGE_DUMP, OWNER_ID, dispatcher, updater
 from ubotindo.modules.helper_funcs.alternate import typing_action
 from ubotindo.modules.helper_funcs.filters import CustomFilters
 
@@ -120,9 +121,8 @@ def system_status(update, context):
     status += "<b>Ram usage:</b> <code>" + str(mem[2]) + " %</code>\n"
     status += "<b>Storage used:</b> <code>" + str(disk[3]) + " %</code>\n\n"
     status += "<b>Python version:</b> <code>" + python_version() + "</code>\n"
-    status += "<b>PTB Lib version:</b> <code>" + str(__version__) + "</code>\n"
-    status += "<b>Telethon Lib Version:</b> <code>" + (version.__version__) + "</code>\n"
-    status += "<b>Spamwatch API:</b> <code>" + str(__sw__) + "</code>"
+    status += "<b>Library version:</b> <code>" + str(__version__) + "</code>\n"
+    status += "<b>Spamwatch API:</b> <code>" + str(__sw__) + "</code>\n"
     context.bot.sendMessage(
         update.effective_chat.id, status, parse_mode=ParseMode.HTML
     )
@@ -153,30 +153,15 @@ def gitpull(update, context):
     sent_msg.edit_text(sent_msg_text)
 
 
-@typing_action
+def stop_and_restart():
+        """Kill old instance, replace the new one"""
+        updater.stop()
+        os.execl(sys.executable, sys.executable, *sys.argv)
+
+
 def restart(update, context):
-    user = update.effective_message.from_user
-
-    update.effective_message.reply_text(
-        "Starting a new instance and shutting down this one"
-    )
-
-    if MESSAGE_DUMP:
-        datetime_fmt = "%H:%M - %d-%m-%Y"
-        current_time = datetime.datetime.utcnow().strftime(datetime_fmt)
-        message = (
-            f"<b>Bot Restarted </b>"
-            f"<b>By :</b> <code>{html.escape(user.first_name)}</code>"
-            f"<b>\nDate Bot Restart : </b><code>{current_time}</code>"
-        )
-        context.bot.send_message(
-            chat_id=MESSAGE_DUMP,
-            text=message,
-            parse_mode=ParseMode.HTML,
-            disable_web_page_preview=True,
-        )
-
-    os.system("bash start")
+        update.message.reply_text('Bot is restarting...')
+        Thread(target=stop_and_restart).start()
 
 
 IP_HANDLER = CommandHandler(

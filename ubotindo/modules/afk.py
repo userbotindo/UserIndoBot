@@ -13,7 +13,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+"""Afk module: Tell anyone if you away from keyboard."""
 import random
 from time import sleep
 
@@ -32,6 +32,9 @@ from ubotindo.modules.users import get_user_id
 
 AFK_GROUP = 7
 AFK_REPLY_GROUP = 8
+
+
+"""This Function to triger bot"""
 
 
 def afk(update, context):
@@ -64,7 +67,7 @@ def afk(update, context):
     except BadRequest:
         return
 
-
+"""This function to check user afk or not""" 
 def no_longer_afk(update, context):
     user = update.effective_user
     message = update.effective_message
@@ -98,6 +101,7 @@ def no_longer_afk(update, context):
             return
 
 
+"""This method to tell if user afk"""
 def reply_afk(update, context):
     bot = context.bot
     message = update.effective_message
@@ -107,8 +111,7 @@ def reply_afk(update, context):
         [MessageEntity.TEXT_MENTION, MessageEntity.MENTION]
     ):
         entities = message.parse_entities(
-            [MessageEntity.TEXT_MENTION, MessageEntity.MENTION]
-        )
+            [MessageEntity.TEXT_MENTION, MessageEntity.MENTION])
 
         chk_users = []
         for ent in entities:
@@ -122,7 +125,7 @@ def reply_afk(update, context):
 
             if ent.type == MessageEntity.MENTION:
                 user_id = get_user_id(
-                    message.text[ent.offset : ent.offset + ent.length]
+                    message.text[ent.offset: ent.offset + ent.length]
                 )
                 if not user_id:
                     # Should never happen, since for a user to become AFK they
@@ -167,8 +170,7 @@ def check_afk(update, context, user_id, fst_name, userc_id):
             if int(userc_id) == int(user_id):
                 return
             res = "<b>{}</b> is away from keyboard! says it's because of <b>Reason:</b> <code>{}</code>".format(
-                fst_name, user["reason"]
-            )
+                fst_name, user["reason"])
             replafk = update.effective_message.reply_text(
                 res, parse_mode="html"
             )

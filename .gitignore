@@ -1,7 +1,5 @@
-ubotindo/config.py
+ubotindo/ubotindo-log.txt
 logfile
-ubotindo.session
-ubotindo.session-journal
 *.pyc
 .idea/
 .project
@@ -16,3 +14,4 @@ kangsticker.tgs
 kangsticker
 ubotindo.mp3
 gpic.png
+config.env

@@ -55,7 +55,6 @@ from ubotindo import (
 # needed to dynamically load modules
 # NOTE: Module order is not guaranteed, specify that in the config file!
 from ubotindo.modules import ALL_MODULES
-from ubotindo.modules.purge import client
 from ubotindo.modules.helper_funcs.chat_status import is_user_admin
 from ubotindo.modules.helper_funcs.filters import CustomFilters
 from ubotindo.modules.helper_funcs.misc import paginate_modules
@@ -796,21 +795,18 @@ def main():
             )
         else:
             updater.bot.set_webhook(url=URL + TOKEN)
-            client.run_until_disconnected()
 
     else:
         LOGGER.info("Using long polling.")
-        updater.start_polling(timeout=15, read_latency=5)
+        updater.start_polling(timeout=15, read_latency=5, clean=True)
         if MESSAGE_DUMP:
             updater.bot.send_message(
                 chat_id=MESSAGE_DUMP, text="System Started..."
             )
-        client.run_until_disconnected()
 
     updater.idle()
 
 
 if __name__ == "__main__":
     LOGGER.info("Successfully loaded modules: " + str(ALL_MODULES))
-    client.start(bot_token=TOKEN)
     main()
