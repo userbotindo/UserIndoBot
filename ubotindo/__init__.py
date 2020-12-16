@@ -44,7 +44,7 @@ if sys.version_info[0] < 3 or sys.version_info[1] < 6:
 load_dotenv("config.env")
 
 CONFIG_CHECK = os.environ.get(
-    "___________PLOX_______REMOVE_____THIS_____LINE__________", None)
+    "_____REMOVE_____THIS_____LINE_____") or None
 
 if CONFIG_CHECK:
     LOGGER.info(
@@ -52,11 +52,11 @@ if CONFIG_CHECK:
     )
     sys.exit(1)
 
-TOKEN = os.environ.get("TOKEN", None)
-OWNER_ID = int(os.environ.get("OWNER_ID", None))
-MESSAGE_DUMP = os.environ.get("MESSAGE_DUMP", None)
-GBAN_LOGS = os.environ.get("GBAN_LOGS", None)
-OWNER_USERNAME = os.environ.get("OWNER_USERNAME", None)
+TOKEN = os.environ.get("TOKEN")
+OWNER_ID = int(os.environ.get("OWNER_ID") or 0)
+MESSAGE_DUMP = os.environ.get("MESSAGE_DUMP") or None
+GBAN_LOGS = os.environ.get("GBAN_LOGS") or None
+OWNER_USERNAME = os.environ.get("OWNER_USERNAME") or None
 DEV_USERS = set(int(x) for x in os.environ.get("DEV_USERS", "").split())
 SUDO_USERS = set(int(x) for x in os.environ.get("SUDO_USERS", "").split())
 SUPPORT_USERS = set(
@@ -75,24 +75,24 @@ BLACKLIST_CHATS = set(
     int(x) for x in os.environ.get(
         "BLACKLIST_CHATS",
         "").split())
-WEBHOOK = bool(os.environ.get("WEBHOOK", False))
+WEBHOOK = bool(os.environ.get("WEBHOOK")) or False
 URL = os.environ.get("URL", "")
 PORT = int(os.environ.get("PORT", 5000))
-CERT_PATH = os.environ.get("CERT_PATH")
+CERT_PATH = os.environ.get("CERT_PATH") or None
 DB_URI = os.environ.get("DATABASE_URL")
 MONGO_URI = os.environ.get("MONGO_DB_URI")
-DONATION_LINK = os.environ.get("DONATION_LINK")
+DONATION_LINK = os.environ.get("DONATION_LINK") or None
 LOAD = os.environ.get("LOAD", "").split()
 NO_LOAD = os.environ.get("NO_LOAD", "").split()
-DEL_CMDS = bool(os.environ.get("DEL_CMDS", False))
-STRICT_GBAN = bool(os.environ.get("STRICT_GBAN", False))
+DEL_CMDS = bool(os.environ.get("DEL_CMDS")) or False
+STRICT_GBAN = bool(os.environ.get("STRICT_GBAN")) or False
 WORKERS = int(os.environ.get("WORKERS", 8))
 BAN_STICKER = os.environ.get("BAN_STICKER", "CAADAgADOwADPPEcAXkko5EB3YGYAg")
-CUSTOM_CMD = os.environ.get("CUSTOM_CMD", False)
-API_WEATHER = os.environ.get("API_OPENWEATHER", None)
-WALL_API = os.environ.get("WALL_API", None)
-SPAMWATCH = os.environ.get("SPAMWATCH_API", None)
-LASTFM_API_KEY = os.environ.get("LASTFM_API_KEY" "")
+CUSTOM_CMD = os.environ.get("CUSTOM_CMD") or False
+API_WEATHER = os.environ.get("API_OPENWEATHER") or None
+WALL_API = os.environ.get("WALL_API") or None
+SPAMWATCH = os.environ.get("SPAMWATCH_API") or None
+LASTFM_API_KEY = os.environ.get("LASTFM_API_KEY") or None
 
 # add owner to devusers
 DEV_USERS.add(OWNER_ID)

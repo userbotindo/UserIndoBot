@@ -64,21 +64,15 @@ defaults set in the sample_config, hence making it easier to upgrade.
 An example `config.py` file could be:
 
 ```python
-from ubotindo.sample_config import Config
-
-
-class Development(Config):
-    OWNER_ID = 1227561036 # your telegram ID
-    OWNER_USERNAME = "tomyprs25"  # your telegram username
-    API_KEY = "your bot api key"  # bot api key, as provided by the botfather
-    SQLALCHEMY_DATABASE_URI = 'postgresql://username:password@localhost:5432/database'  # sample db credentials
-    MESSAGE_DUMP = '-1234567890' # some group chat that your bot is a member of
-    USE_MESSAGE_DUMP = True
-    SUDO_USERS = []  # List of id's for users which have sudo access to the bot.
-    LOAD = []
-    NO_LOAD = []
-    TELETHON_HASH = None # for purge stuffs
-    TELETHON_ID = None
+    API_KEY = "" # your bot Token from BotFather
+    OWNER_ID = "1234567"  # If you dont know, run the bot and do /id in your private chat with it
+    OWNER_USERNAME = "userbotindo" # your telegram username
+    SQLALCHEMY_DATABASE_URI = "sqldbtype://username:pw@hostname:port/db_name"
+    MONGO_DB_URI = "mongodb+srv://username:pwd@host.port.mongodb.net/db_name"
+    MESSAGE_DUMP = "-100987654"  # needed to make sure 'save from' messages persist
+    LOAD = "" # list of loaded modules (seperate with space)
+    NO_LOAD = "afk android" # list of unloaded modules (seperate with space)
+    STRICT_GBAN = True
 ```
 
 ### Python dependencies
