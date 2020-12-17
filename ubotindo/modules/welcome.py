@@ -983,7 +983,10 @@ def user_button(update, context):
                 can_add_web_page_previews=True,
             ),
         )
-        bot.deleteMessage(chat.id, message.message_id)
+        try:
+            bot.deleteMessage(chat.id, message.message_id)
+        except BadRequest:
+            pass
         if member_dict["should_welc"]:
             if member_dict["media_wel"]:
                 sent = ENUM_FUNC_MAP[member_dict["welc_type"]](
