@@ -105,7 +105,11 @@ def __load_gban_stat_list() -> None:
 
 def migrate_chat(old_chat_id, new_chat_id) -> None:
     old = GBAN_SETTINGS.find_one_and_delete({'_id': old_chat_id})
-    GBAN_SETTINGS.insert_one({'_id': new_chat_id, 'setting': old['setting']})
+    if old:
+        setting = old["setting"]
+    else:
+        setting = True
+    GBAN_SETTINGS.insert_one({'_id': new_chat_id, 'setting': setting})
 
 
 # Create in memory userid to avoid disk access
