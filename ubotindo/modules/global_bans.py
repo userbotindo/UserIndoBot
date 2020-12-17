@@ -19,7 +19,7 @@ from io import BytesIO
 
 from requests import get
 from telegram import ChatAction, ParseMode
-from telegram.error import BadRequest, TelegramError
+from telegram.error import BadRequest, TelegramError, Unauthorized
 from telegram.ext import CommandHandler, Filters, MessageHandler
 from telegram.utils.helpers import mention_html
 
@@ -404,28 +404,31 @@ def check_and_ban(update, user_id, should_message=True):
 
 def enforce_gban(update, context):
     # Not using @restrict handler to avoid spamming - just ignore if cant gban.
-    if (
-        gban_db.does_chat_gban(update.effective_chat.id)
-        and update.effective_chat.get_member(
-            context.bot.id
-        ).can_restrict_members
-    ):
-        user = update.effective_user
-        chat = update.effective_chat
-        msg = update.effective_message
+    try:
+        if (
+            gban_db.does_chat_gban(update.effective_chat.id)
+            and update.effective_chat.get_member(
+                context.bot.id
+            ).can_restrict_members
+        ):
+            user = update.effective_user
+            chat = update.effective_chat
+            msg = update.effective_message
 
-        if user and not is_user_admin(chat, user.id):
-            check_and_ban(update, user.id)
-
-        if msg.new_chat_members:
-            new_members = update.effective_message.new_chat_members
-            for mem in new_members:
-                check_and_ban(update, mem.id)
-
-        if msg.reply_to_message:
-            user = msg.reply_to_message.from_user
             if user and not is_user_admin(chat, user.id):
-                check_and_ban(update, user.id, should_message=False)
+                check_and_ban(update, user.id)
+
+            if msg.new_chat_members:
+                new_members = update.effective_message.new_chat_members
+                for mem in new_members:
+                    check_and_ban(update, mem.id)
+
+            if msg.reply_to_message:
+                user = msg.reply_to_message.from_user
+                if user and not is_user_admin(chat, user.id):
+                    check_and_ban(update, user.id, should_message=False)
+    except Unauthorized:
+        pass
 
 
 @user_admin

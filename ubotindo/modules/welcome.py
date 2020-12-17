@@ -486,6 +486,8 @@ def left_member(update, context):
                 dispatcher.bot.delete_message(
                     chat.id, update.message.message_id
                 )
+            except Unauthorized:
+                return
             except BadRequest:
                 pass
             reply = False
