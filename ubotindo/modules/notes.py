@@ -650,7 +650,9 @@ __mod_name__ = "Notes"
 
 GET_HANDLER = CommandHandler("get", cmd_get, pass_args=True, run_async=True)
 HASH_GET_HANDLER = MessageHandler(
-    Filters.regex(r"^#[^\s]+"), hash_get, run_async=True
+    Filters.regex(r"^#[^\s]+") & ~Filters.chat_type.channel,
+    hash_get,
+    run_async=True,
 )
 
 SAVE_HANDLER = CommandHandler("save", save, run_async=True)
