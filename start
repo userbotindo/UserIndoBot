@@ -17,9 +17,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Attemp to Terminate and Remove previous session
-if [ -f ubotindo.session ]; then
-    kill $(pgrep -f 'python3 -m ubotindo')
-    rm -f ubotindo.session-journal ubotindo.session
+if [ ! -d .git ]; then
+    git clone https://github.com/userbotindo/UserIndoBot -b master tmp_git
+    mv tmp_git/.git .
+    rm -rf tmp_git
 fi
 
 # start
