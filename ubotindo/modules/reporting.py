@@ -125,7 +125,6 @@ def report(update, context) -> str:
         reported_user = message.reply_to_message.from_user
         chat_name = chat.title or chat.first or chat.username
         admin_list = chat.get_administrators()
-        update.effective_message
 
         isadmeme = chat.get_member(reported_user.id).status
         if isadmeme == "administrator" or isadmeme == "creator":
@@ -179,6 +178,17 @@ def report(update, context) -> str:
             msg = f'{mention_html(user.id, user.first_name)} is calling for admins in "{html.escape(chat_name)}"!'
             link = ""
             should_forward = True
+            keyboard = [
+                InlineKeyboardButton(
+                    "⚽ Kick",
+                    callback_data=f"report_{chat.id}=kick={reported_user.id}={reported_user.first_name}",
+                ),
+                InlineKeyboardButton(
+                    "⛔️ Ban",
+                    callback_data=f"report_{chat.id}=banned={reported_user.id}={reported_user.first_name}",
+                ),
+            ]
+            reply_markup = InlineKeyboardMarkup(keyboard)
 
         for admin in admin_list:
             if admin.user.is_bot:  # can't message bots
@@ -214,8 +224,9 @@ def report(update, context) -> str:
             reported, parse_mode=ParseMode.HTML
         )
         return msg
-
-    return ""
+    else:
+        message.reply_text("Hey... What should i report!")
+        return ""
 
 
 def report_buttons(update, context):
