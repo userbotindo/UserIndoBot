@@ -631,6 +631,11 @@ An "odds and ends" module for small, simple commands which don't really fit anyw
  × /paste : Paste any text file to Nekobin.
  × /gdpr: Deletes your information from the bot's database. Private chats only.
  × /markdownhelp: Quick summary of how markdown works in telegram - can only be called in private chats.
+
+Last.FM
+ × /setuser <username>: sets your last.fm username.
+ × /clearuser: removes your last.fm username from the bot's database.
+ × /lastfm: returns what you're scrobbling on last.fm.
 """
 
 __mod_name__ = "Miscs"
