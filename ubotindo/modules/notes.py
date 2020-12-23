@@ -290,7 +290,11 @@ def save(update, context):
 
     msg = update.effective_message
 
-    note_name, text, data_type, content, buttons = get_note_type(msg)
+    try:
+        note_name, text, data_type, content, buttons = get_note_type(msg)
+    except IndexError:
+        msg.reply_text("This isn't right things T_T\nUsage: /save <notename> <msg/reply to msg>")
+        return
     note_name = note_name.lower()
 
     if data_type is None:
@@ -320,7 +324,6 @@ def clear(update, context):
     user = update.effective_user
     msg = update.effective_message
     conn = connected(context.bot, update, chat, user.id)
-    note_name, text, data_type, content, buttons = get_note_type(msg)
 
     if not conn == False:
         chat_id = conn
@@ -338,7 +341,7 @@ def clear(update, context):
         if sql.rm_note(chat_id, notename):
             update.effective_message.reply_text(
                 "Successfully deleted '`{note_name}`' from {chat_name}!".format(
-                    note_name=note_name, chat_name=chat_name
+                    note_name=notename, chat_name=chat_name
                 ),
                 parse_mode=ParseMode.MARKDOWN,
             )
@@ -348,6 +351,9 @@ def clear(update, context):
                     chat_name=chat_name
                 )
             )
+    else:
+        msg.reply_text("Yeah let me clear nothing...")
+        return
 
 
 @typing_action
