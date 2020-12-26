@@ -75,7 +75,7 @@ BLACKLIST_CHATS = set(
     int(x) for x in os.environ.get(
         "BLACKLIST_CHATS",
         "").split())
-WEBHOOK = bool(os.environ.get("WEBHOOK")) or False
+WEBHOOK = eval(os.environ.get("WEBHOOK") or "False")
 URL = os.environ.get("URL", "")
 PORT = int(os.environ.get("PORT", 5000))
 CERT_PATH = os.environ.get("CERT_PATH") or None
@@ -84,8 +84,8 @@ MONGO_URI = os.environ.get("MONGO_DB_URI")
 DONATION_LINK = os.environ.get("DONATION_LINK") or None
 LOAD = os.environ.get("LOAD", "").split()
 NO_LOAD = os.environ.get("NO_LOAD", "").split()
-DEL_CMDS = bool(os.environ.get("DEL_CMDS")) or False
-STRICT_GBAN = bool(os.environ.get("STRICT_GBAN")) or False
+DEL_CMDS = eval(os.environ.get("DEL_CMDS") or "False")
+STRICT_GBAN = eval(os.environ.get("STRICT_GBAN") or "True")
 WORKERS = int(os.environ.get("WORKERS", 8))
 BAN_STICKER = os.environ.get("BAN_STICKER", "CAADAgADOwADPPEcAXkko5EB3YGYAg")
 CUSTOM_CMD = os.environ.get("CUSTOM_CMD") or False
@@ -96,6 +96,10 @@ LASTFM_API_KEY = os.environ.get("LASTFM_API_KEY") or None
 
 # add owner to devusers
 DEV_USERS.add(OWNER_ID)
+
+# make the Var type bool
+if str(CUSTOM_CMD).lower() == "false":
+    CUSTOM_CMD = False
 
 # Pass if SpamWatch token not set.
 if SPAMWATCH is None:

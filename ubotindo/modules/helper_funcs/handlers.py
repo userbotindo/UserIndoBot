@@ -17,6 +17,8 @@
 import telegram.ext as tg
 from telegram import Update
 
+from ubotindo import LOGGER
+
 try:
     from ubotindo import CUSTOM_CMD
 except BaseException:
@@ -24,6 +26,7 @@ except BaseException:
 
 if CUSTOM_CMD:
     CMD_STARTERS = CUSTOM_CMD
+    LOGGER.debug("Bot custom command handler = \"%s\"", CMD_STARTERS)
 else:
     CMD_STARTERS = "/"
 
