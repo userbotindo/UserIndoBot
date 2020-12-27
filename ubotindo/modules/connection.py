@@ -21,10 +21,10 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
 from telegram.error import BadRequest, Unauthorized
 from telegram.ext import CallbackQueryHandler, CommandHandler
 
-import ubotindo.modules.sql.connection_sql as sql
 from ubotindo import DEV_USERS, SUDO_USERS, dispatcher
 from ubotindo.modules.helper_funcs import chat_status
 from ubotindo.modules.helper_funcs.alternate import send_message, typing_action
+from ubotindo.modules.no_sql import connection_db as db
 
 user_admin = chat_status.user_admin
 
@@ -40,13 +40,13 @@ def allow_connections(update, context) -> str:
         if len(args) >= 1:
             var = args[0]
             if var == "no":
-                sql.set_allow_connect_to_chat(chat.id, False)
+                db.set_allow_connect_to_chat(chat.id, False)
                 send_message(
                     update.effective_message,
                     "Connection has been disabled for this chat",
                 )
             elif var == "yes":
-                sql.set_allow_connect_to_chat(chat.id, True)
+                db.set_allow_connect_to_chat(chat.id, True)
                 send_message(
                     update.effective_message,
                     "Connection has been enabled for this chat",
@@ -58,7 +58,7 @@ def allow_connections(update, context) -> str:
                     parse_mode=ParseMode.MARKDOWN,
                 )
         else:
-            get_settings = sql.allow_connect_to_chat(chat.id)
+            get_settings = db.allow_connect_to_chat(chat.id)
             if get_settings:
                 send_message(
                     update.effective_message,
@@ -133,7 +133,7 @@ def connect_chat(update, context):
 
             isadmin = getstatusadmin.status in ("administrator", "creator")
             ismember = getstatusadmin.status in ("member")
-            isallow = sql.allow_connect_to_chat(connect_chat)
+            isallow = db.allow_connect_to_chat(connect_chat)
 
             if (
                 (isadmin)
@@ -141,7 +141,7 @@ def connect_chat(update, context):
                 or (user.id in SUDO_USERS)
                 or (user.id in DEV_USERS)
             ):
-                connection_status = sql.connect(
+                connection_status = db.connect(
                     update.effective_message.from_user.id, connect_chat
                 )
                 if connection_status:
@@ -162,7 +162,7 @@ def connect_chat(update, context):
                         ),
                         parse_mode=ParseMode.MARKDOWN,
                     )
-                    sql.add_history_conn(user.id, str(conn_chat.id), chat_name)
+                    db.add_history_conn(user.id, str(conn_chat.id), chat_name)
                 else:
                     send_message(
                         update.effective_message, "Connection failed!"
@@ -173,7 +173,7 @@ def connect_chat(update, context):
                     "Connection to this chat is not allowed!",
                 )
         else:
-            gethistory = sql.get_history_conn(user.id)
+            gethistory = db.get_history_conn(user.id)
             if gethistory:
                 buttons = [
                     InlineKeyboardButton(
@@ -247,14 +247,20 @@ def connect_chat(update, context):
         )
         isadmin = getstatusadmin.status in ("administrator", "creator")
         ismember = getstatusadmin.status in ("member")
-        isallow = sql.allow_connect_to_chat(chat.id)
+        isallow = db.allow_connect_to_chat(chat.id)
+        if not isallow:
+            return send_message(
+                update.effective_message,
+                "Connection to this chat is not allowed!",
+            )
+
         if (
             (isadmin)
             or (isallow and ismember)
             or (user.id in SUDO_USERS)
             or (user.id in DEV_USERS)
         ):
-            connection_status = sql.connect(
+            connection_status = db.connect(
                 update.effective_message.from_user.id, chat.id
             )
             if connection_status:
@@ -265,7 +271,7 @@ def connect_chat(update, context):
                     parse_mode=ParseMode.MARKDOWN,
                 )
                 try:
-                    sql.add_history_conn(user.id, str(chat.id), chat_name)
+                    db.add_history_conn(user.id, str(chat.id), chat_name)
                     context.bot.send_message(
                         update.effective_message.from_user.id,
                         "You are connected to *{}*. \nUse `/helpconnect` to check available commands.".format(
@@ -279,21 +285,16 @@ def connect_chat(update, context):
                     pass
             else:
                 send_message(update.effective_message, "Connection failed!")
-        else:
-            send_message(
-                update.effective_message,
-                "Connection to this chat is not allowed!",
-            )
 
 
 def disconnect_chat(update, context):
 
     if update.effective_chat.type == "private":
-        disconnection_status = sql.disconnect(
+        disconnection_status = db.disconnect(
             update.effective_message.from_user.id
         )
         if disconnection_status:
-            sql.disconnected_chat = send_message(
+            db.disconnected_chat = send_message(
                 update.effective_message, "Disconnected from chat!"
             )
         else:
@@ -307,15 +308,22 @@ def disconnect_chat(update, context):
 def connected(bot, update, chat, user_id, need_admin=True):
     user = update.effective_user
 
-    if chat.type == chat.PRIVATE and sql.get_connected_chat(user_id):
+    if chat.type == chat.PRIVATE and db.get_connected_chat(user_id):
 
-        conn_id = sql.get_connected_chat(user_id).chat_id
+        conn_id = db.get_connected_chat(user_id)["chat_id"]
         getstatusadmin = bot.get_chat_member(
             conn_id, update.effective_message.from_user.id
         )
         isadmin = getstatusadmin.status in ("administrator", "creator")
         ismember = getstatusadmin.status in ("member")
-        isallow = sql.allow_connect_to_chat(conn_id)
+        isallow = db.allow_connect_to_chat(conn_id)
+        if not isallow:
+            send_message(
+                update.effective_message,
+                "The group changed the connection rights or you are no longer an admin.\nI've disconnected you.",
+            )
+            disconnect_chat(update, bot)
+            return 
 
         if (
             (isadmin)
@@ -337,12 +345,6 @@ def connected(bot, update, chat, user_id, need_admin=True):
                     )
             else:
                 return conn_id
-        else:
-            send_message(
-                update.effective_message,
-                "The group changed the connection rights or you are no longer an admin.\nI've disconnected you.",
-            )
-            disconnect_chat(update, bot)
     else:
         return False
 
@@ -392,7 +394,14 @@ def connect_button(update, context):
         )
         isadmin = getstatusadmin.status in ("administrator", "creator")
         ismember = getstatusadmin.status in ("member")
-        isallow = sql.allow_connect_to_chat(target_chat)
+        isallow = db.allow_connect_to_chat(target_chat)
+        if not isallow:
+            context.bot.answer_callback_query(
+                query.id,
+                "Connection to this chat is not allowed!",
+                show_alert=True,
+            )
+            return
 
         if (
             (isadmin)
@@ -400,7 +409,7 @@ def connect_button(update, context):
             or (user.id in SUDO_USERS)
             or (user.id in DEV_USERS)
         ):
-            connection_status = sql.connect(query.from_user.id, target_chat)
+            connection_status = db.connect(query.from_user.id, target_chat)
 
             if connection_status:
                 conn_chat = dispatcher.bot.getChat(
@@ -415,19 +424,13 @@ def connect_button(update, context):
                     ),
                     parse_mode=ParseMode.MARKDOWN,
                 )
-                sql.add_history_conn(user.id, str(conn_chat.id), chat_name)
+                db.add_history_conn(user.id, str(conn_chat.id), chat_name)
             else:
                 query.message.edit_text("Connection failed!")
-        else:
-            context.bot.answer_callback_query(
-                query.id,
-                "Connection to this chat is not allowed!",
-                show_alert=True,
-            )
     elif disconnect_match:
-        disconnection_status = sql.disconnect(query.from_user.id)
+        disconnection_status = db.disconnect(query.from_user.id)
         if disconnection_status:
-            sql.disconnected_chat = query.message.edit_text(
+            db.disconnected_chat = query.message.edit_text(
                 "Disconnected from chat!"
             )
         else:
@@ -435,7 +438,7 @@ def connect_button(update, context):
                 query.id, "You're not connected!", show_alert=True
             )
     elif clear_match:
-        sql.clear_history_conn(query.from_user.id)
+        db.clear_history_conn(query.from_user.id)
         query.message.edit_text("History connected has been cleared!")
     elif connect_close:
         query.message.edit_text("Closed.\nTo open again, type /connect")
