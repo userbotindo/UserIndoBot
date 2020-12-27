@@ -131,6 +131,12 @@ def last_fm(update, context):
         return
 
 
+def __stats__():
+    return "× {} saved Last.FM username.".format(
+        LASTFM_USER.count_documents({})
+    )
+
+
 SET_USER_HANDLER = CommandHandler("setuser", set_user, pass_args=True, run_async=True)
 CLEAR_USER_HANDLER = CommandHandler("clearuser", clear_user, run_async=True)
 LASTFM_HANDLER = DisableAbleCommandHandler("lastfm", last_fm, run_async=True)

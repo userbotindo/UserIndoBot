@@ -502,6 +502,7 @@ def staff_ids(update, context):
         )
 
 
+@typing_action
 def stats(update, context):
     update.effective_message.reply_text(
         "Current stats:\n" + "\n".join([mod.__stats__() for mod in STATS])
