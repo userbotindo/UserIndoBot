@@ -28,7 +28,7 @@ from ubotindo.modules.helper_funcs.alternate import send_message, typing_action
 from ubotindo.modules.helper_funcs.chat_status import is_user_admin, user_admin
 from ubotindo.modules.helper_funcs.string_handling import extract_time
 from ubotindo.modules.log_channel import loggable
-from ubotindo.modules.sql import antiflood_sql as sql
+from ubotindo.modules.no_sql import antiflood_db as db
 
 FLOOD_GROUP = 3
 
@@ -44,15 +44,15 @@ def check_flood(update, context) -> str:
 
     # ignore admins
     if is_user_admin(chat, user.id):
-        sql.update_flood(chat.id, None)
+        db.update_flood(chat.id, None)
         return ""
 
-    should_ban = sql.update_flood(chat.id, user.id)
+    should_ban = db.update_flood(chat.id, user.id)
     if not should_ban:
         return ""
 
     try:
-        getmode, getvalue = sql.get_flood_setting(chat.id)
+        getmode, getvalue = db.get_flood_setting(chat.id)
         if getmode == 1:
             chat.kick_member(user.id)
             execstrings = "Banned"
@@ -106,7 +106,7 @@ def check_flood(update, context) -> str:
         msg.reply_text(
             "I can't restrict people here, give me permissions first! Until then, I'll disable anti-flood."
         )
-        sql.set_flood(chat.id, 0)
+        db.set_flood(chat.id, 0)
         return (
             "<b>{}:</b>"
             "\n#INFO"
@@ -142,7 +142,7 @@ def set_flood(update, context) -> str:
     if len(args) >= 1:
         val = args[0].lower()
         if val == "off" or val == "no" or val == "0":
-            sql.set_flood(chat_id, 0)
+            db.set_flood(chat_id, 0)
             if conn:
                 text = (
                     "Antiflood has been disabled in {}.".format(chat_name)
@@ -154,7 +154,7 @@ def set_flood(update, context) -> str:
         elif val.isdigit():
             amount = int(val)
             if amount <= 0:
-                sql.set_flood(chat_id, 0)
+                db.set_flood(chat_id, 0)
                 if conn:
                     text = message.reply_text(
                         "Antiflood has been disabled in {}.".format(chat_name)
@@ -179,7 +179,7 @@ def set_flood(update, context) -> str:
                 return ""
 
             else:
-                sql.set_flood(chat_id, amount)
+                db.set_flood(chat_id, amount)
                 if conn:
                     text = (
                         "Anti-flood has been set to {} in chat: {}".format(
@@ -226,6 +226,7 @@ def flood(update, context):
     user = update.effective_user  # type: Optional[User]
     msg = update.effective_message
 
+
     conn = connected(context.bot, update, chat, user.id, need_admin=False)
     if conn:
         chat_id = conn
@@ -240,7 +241,7 @@ def flood(update, context):
         chat_id = update.effective_chat.id
         chat_name = update.effective_message.chat.title
 
-    limit = sql.get_flood_limit(chat_id)
+    limit = db.get_flood_limit(chat_id)
     if limit == 0:
         if conn:
             text = (
@@ -292,13 +293,13 @@ def set_flood_mode(update, context):
     if args:
         if args[0].lower() == "ban":
             settypeflood = "ban"
-            sql.set_flood_strength(chat_id, 1, "0")
+            db.set_flood_strength(chat_id, 1, "0")
         elif args[0].lower() == "kick":
             settypeflood = "kick"
-            sql.set_flood_strength(chat_id, 2, "0")
+            db.set_flood_strength(chat_id, 2, "0")
         elif args[0].lower() == "mute":
             settypeflood = "mute"
-            sql.set_flood_strength(chat_id, 3, "0")
+            db.set_flood_strength(chat_id, 3, "0")
         elif args[0].lower() == "tban":
             if len(args) == 1:
                 teks = ("It looks like you tried to set time value for antiflood"
@@ -310,7 +311,7 @@ def set_flood_mode(update, context):
                 )
                 return
             settypeflood = "tban for {}".format(args[1])
-            sql.set_flood_strength(chat_id, 4, str(args[1]))
+            db.set_flood_strength(chat_id, 4, str(args[1]))
         elif args[0].lower() == "tmute":
             if len(args) == 1:
                 teks = (
@@ -323,7 +324,7 @@ def set_flood_mode(update, context):
                 )
                 return
             settypeflood = "tmute for {}".format(args[1])
-            sql.set_flood_strength(chat_id, 5, str(args[1]))
+            db.set_flood_strength(chat_id, 5, str(args[1]))
         else:
             send_message(
                 update.effective_message,
@@ -354,7 +355,7 @@ def set_flood_mode(update, context):
             )
         )
     else:
-        getmode, getvalue = sql.get_flood_setting(chat.id)
+        getmode, getvalue = db.get_flood_setting(chat.id)
         if getmode == 1:
             settypeflood = "ban"
         elif getmode == 2:
@@ -381,11 +382,11 @@ def set_flood_mode(update, context):
 
 
 def __migrate__(old_chat_id, new_chat_id):
-    sql.migrate_chat(old_chat_id, new_chat_id)
+    db.migrate_chat(old_chat_id, new_chat_id)
 
 
 def __chat_settings__(chat_id, user_id):
-    limit = sql.get_flood_limit(chat_id)
+    limit = db.get_flood_limit(chat_id)
     if limit == 0:
         return "Not enforcing to flood control."
     else:
