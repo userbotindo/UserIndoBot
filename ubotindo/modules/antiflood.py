@@ -144,12 +144,12 @@ def set_flood(update, context) -> str:
         if val == "off" or val == "no" or val == "0":
             sql.set_flood(chat_id, 0)
             if conn:
-                text = message.reply_text(
+                text = (
                     "Antiflood has been disabled in {}.".format(chat_name)
                 )
             else:
-                text = message.reply_text("Antiflood has been disabled.")
-            send_message(update.effective_message, text, parse_mode="markdown")
+                text = ("Antiflood has been disabled.")
+            send_message(message, text, parse_mode="markdown")
 
         elif val.isdigit():
             amount = int(val)
@@ -243,26 +243,25 @@ def flood(update, context):
     limit = sql.get_flood_limit(chat_id)
     if limit == 0:
         if conn:
-            text = msg.reply_text(
+            text = (
                 "I'm not enforcing any flood control in {}!".format(chat_name)
             )
         else:
-            text = msg.reply_text("I'm not enforcing any flood control here!")
-        send_message(update.effective_message, text, parse_mode="markdown")
+            text = ("I'm not enforcing any flood control here!")
     else:
         if conn:
-            text = msg.reply_text(
+            text = (
                 "I'm currently restricting members after {} consecutive messages in {}.".format(
                     limit, chat_name
                 )
             )
         else:
-            text = msg.reply_text(
+            text = (
                 "I'm currently restricting members after {} consecutive messages.".format(
                     limit
                 )
             )
-        send_message(update.effective_message, text, parse_mode="markdown")
+    send_message(msg, text, parse_mode="markdown")
 
 
 @user_admin
@@ -302,8 +301,10 @@ def set_flood_mode(update, context):
             sql.set_flood_strength(chat_id, 3, "0")
         elif args[0].lower() == "tban":
             if len(args) == 1:
-                teks = """It looks like you tried to set time value for antiflood but you didn't specified time; Try, `/setfloodmode tban <timevalue>`.
-Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks."""
+                teks = ("It looks like you tried to set time value for antiflood"
+                "but you didn't specified time;\nTry, `/setfloodmode tban <timevalue>`.\n"
+                "Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks."
+                )
                 send_message(
                     update.effective_message, teks, parse_mode="markdown"
                 )
@@ -313,9 +314,9 @@ Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks.
         elif args[0].lower() == "tmute":
             if len(args) == 1:
                 teks = (
-                    update.effective_message,
-                    """It looks like you tried to set time value for antiflood but you didn't specified time; Try, `/setfloodmode tmute <timevalue>`.
-Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks.""",
+                    "It looks like you tried to set time value for antiflood"
+                    "but you didn't specified time;\nTry, `/setfloodmode tmute <timevalue>`.\n"
+                    "Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks.",
                 )
                 send_message(
                     update.effective_message, teks, parse_mode="markdown"
@@ -330,16 +331,18 @@ Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks.
             )
             return
         if conn:
-            text = msg.reply_text(
+            send_message(
+                msg,
                 "Exceeding consecutive flood limit will result in {} in {}!".format(
                     settypeflood, chat_name
-                )
+                ),
             )
         else:
-            text = msg.reply_text(
+            send_message(
+                msg,
                 "Exceeding consecutive flood limit will result in {}!".format(
                     settypeflood
-                )
+                ),
             )
         return (
             "<b>{}:</b>\n"
@@ -363,13 +366,13 @@ Examples of time value: 4m = 4 minutes, 3h = 3 hours, 6d = 6 days, 5w = 5 weeks.
         elif getmode == 5:
             settypeflood = "tmute for {}".format(getvalue)
         if conn:
-            text = msg.reply_text(
+            msg.reply_text(
                 "Sending more messages than flood limit will result in {} in {}.".format(
                     settypeflood, chat_name
                 )
             )
         else:
-            text = msg.reply_text(
+            msg.reply_text(
                 "Sending more message than flood limit will result in {}.".format(
                     settypeflood
                 )
