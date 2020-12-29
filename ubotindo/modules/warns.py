@@ -56,7 +56,7 @@ from ubotindo.modules.helper_funcs.filters import CustomFilters
 from ubotindo.modules.helper_funcs.misc import split_message
 from ubotindo.modules.helper_funcs.string_handling import split_quotes
 from ubotindo.modules.log_channel import loggable
-from ubotindo.modules.sql import warns_sql as sql
+from ubotindo.modules.no_sql import warns_db as db
 
 WARN_HANDLER_GROUP = 9
 CURRENT_WARNING_FILTER_STRING = (
@@ -77,10 +77,10 @@ def warn(
     else:
         warner_tag = "Automated warn filter."
 
-    limit, soft_warn = sql.get_warn_setting(chat.id)
-    num_warns, reasons = sql.warn_user(user.id, chat.id, reason)
+    limit, soft_warn = db.get_warn_setting(chat.id)
+    num_warns, reasons = db.warn_user(user.id, chat.id, reason)
     if num_warns >= limit:
-        sql.reset_warns(user.id, chat.id)
+        db.reset_warns(user.id, chat.id)
         if soft_warn:  # kick
             chat.unban_member(user.id)
             reply = "That's {} warnings, {} has been kicked!".format(
@@ -179,7 +179,7 @@ def button(update, context):
     if match:
         user_id = match.group(1)
         chat = update.effective_chat
-        res = sql.remove_warn(user_id, chat.id)
+        res = db.remove_warn(user_id, chat.id)
         if res:
             update.effective_message.edit_text(
                 "Last warn removed by {}.".format(
@@ -253,7 +253,7 @@ def reset_warns(update, context):
     user_id = extract_user(message, args)
 
     if user_id:
-        sql.reset_warns(user_id, chat.id)
+        db.reset_warns(user_id, chat.id)
         message.reply_text("Warnings have been reset!")
         warned = chat.get_member(user_id).user
         return (
@@ -284,7 +284,7 @@ def remove_warns(update, context):
     user_id = extract_user(message, args)
 
     if user_id:
-        sql.remove_warn(user_id, chat.id)
+        db.remove_warn(user_id, chat.id)
         message.reply_text("Last warn has been removed!")
         warned = chat.get_member(user_id).user
         return (
@@ -323,12 +323,12 @@ def warns(update, context):
             chat_id = update.effective_chat.id
             chat_name = chat.title
 
-    result = sql.get_warns(user_id, chat_id)
+    result = db.get_warns(user_id, chat_id)
 
     num = 1
     if result and result[0] != 0:
         num_warns, reasons = result
-        limit, _ = sql.get_warn_setting(chat_id)
+        limit, _ = db.get_warn_setting(chat_id)
 
         if reasons:
             if conn:
@@ -395,12 +395,12 @@ def add_warn_filter(update, context):
     else:
         return
 
-    # Note: perhaps handlers can be removed somehow using sql.get_chat_filters
+    # Note: perhaps handlers can be removed somehow using db.get_chat_filters
     for handler in dispatcher.handlers.get(WARN_HANDLER_GROUP, []):
         if handler.filters == (keyword, chat_id):
             dispatcher.remove_handler(handler, WARN_HANDLER_GROUP)
 
-    sql.add_warn_filter(chat_id, keyword, content)
+    db.add_warn_filter(chat_id, keyword, content)
 
     update.effective_message.reply_text(
         "Warn filter added for `{}` in *{}*!".format(keyword, chat_name),
@@ -438,7 +438,7 @@ def remove_warn_filter(update, context):
 
     to_remove = extracted[0]
 
-    chat_filters = sql.get_chat_warn_triggers(chat_id)
+    chat_filters = db.get_chat_warn_triggers(chat_id)
 
     if not chat_filters:
         msg.reply_text("No warning filters are active here!")
@@ -446,7 +446,7 @@ def remove_warn_filter(update, context):
 
     for filt in chat_filters:
         if filt == to_remove:
-            sql.remove_warn_filter(chat_id, to_remove)
+            db.remove_warn_filter(chat_id, to_remove)
             msg.reply_text("Yep, I'll stop warning people for that.")
             raise DispatcherHandlerStop
 
@@ -468,7 +468,7 @@ def list_warn_filters(update, context):
         else:
             chat_id = update.effective_chat.id
 
-    all_handlers = sql.get_chat_warn_triggers(chat_id)
+    all_handlers = db.get_chat_warn_triggers(chat_id)
 
     if not all_handlers:
         update.effective_message.reply_text(
@@ -498,7 +498,7 @@ def reply_filter(update, context) -> str:
     chat = update.effective_chat
     message = update.effective_message
 
-    chat_warn_filters = sql.get_chat_warn_triggers(chat.id)
+    chat_warn_filters = db.get_chat_warn_triggers(chat.id)
     to_match = extract_text(message)
     if not to_match:
         return ""
@@ -507,8 +507,8 @@ def reply_filter(update, context) -> str:
         pattern = r"( |^|[^\w])" + re.escape(keyword) + r"( |$|[^\w])"
         if re.search(pattern, to_match, flags=re.IGNORECASE):
             user = update.effective_user
-            warn_filter = sql.get_warn_filter(chat.id, keyword)
-            return warn(user, chat, warn_filter.reply, message)
+            warn_filter = db.get_warn_filter(chat.id, keyword)
+            return warn(user, chat, warn_filter["reply"], message)
     return ""
 
 
@@ -537,7 +537,7 @@ def set_warn_limit(update, context) -> str:
             if int(args[0]) < 3:
                 msg.reply_text("The minimum warn limit is 3!")
             else:
-                sql.set_warn_limit(chat_id, int(args[0]))
+                db.set_warn_limit(chat_id, int(args[0]))
                 msg.reply_text(
                     "Updated the warn limit to `{}` in *{}*".format(
                         escape_markdown(args[0]), chat_name
@@ -557,7 +557,7 @@ def set_warn_limit(update, context) -> str:
         else:
             msg.reply_text("Give me a number as an arg!")
     else:
-        limit, _ = sql.get_warn_setting(chat_id)
+        limit, _ = db.get_warn_setting(chat_id)
 
         msg.reply_text(
             "The current warn in {} limit is {}".format(chat_name, limit)
@@ -586,7 +586,7 @@ def set_warn_strength(update, context):
 
     if args:
         if args[0].lower() in ("on", "yes"):
-            sql.set_warn_strength(chat_id, False)
+            db.set_warn_strength(chat_id, False)
             msg.reply_text("Too many warns will now result in a ban!")
             return (
                 "<b>{}:</b>\n"
@@ -597,7 +597,7 @@ def set_warn_strength(update, context):
             )
 
         elif args[0].lower() in ("off", "no"):
-            sql.set_warn_strength(chat_id, True)
+            db.set_warn_strength(chat_id, True)
             msg.reply_text(
                 "Too many warns will now result in a kick! Users will be able to join again after."
             )
@@ -612,7 +612,7 @@ def set_warn_strength(update, context):
         else:
             msg.reply_text("I only understand on/yes/no/off!")
     else:
-        _, soft_warn = sql.get_warn_setting(chat_id)
+        _, soft_warn = db.get_warn_setting(chat_id)
         if soft_warn:
             msg.reply_text(
                 "Warns are currently set to *kick* users when they exceed the limits.",
@@ -630,10 +630,10 @@ def __stats__():
     return (
         "× {} overall warns, across {} chats.\n"
         "× {} warn filters, across {} chats.".format(
-            sql.num_warns(),
-            sql.num_warn_chats(),
-            sql.num_warn_filters(),
-            sql.num_warn_filter_chats(),
+            db.num_warns(),
+            db.num_warn_chats(),
+            db.num_warn_filters(),
+            db.num_warn_filter_chats(),
         )
     )
 
@@ -641,16 +641,16 @@ def __stats__():
 def __import_data__(chat_id, data):
     for user_id, count in data.get("warns", {}).items():
         for x in range(int(count)):
-            sql.warn_user(user_id, chat_id)
+            db.warn_user(user_id, chat_id)
 
 
 def __migrate__(old_chat_id, new_chat_id):
-    sql.migrate_chat(old_chat_id, new_chat_id)
+    db.migrate_chat(old_chat_id, new_chat_id)
 
 
 def __chat_settings__(chat_id, user_id):
-    num_warn_filters = sql.num_warn_chat_filters(chat_id)
-    limit, soft_warn = sql.get_warn_setting(chat_id)
+    num_warn_filters = db.num_warn_chat_filters(chat_id)
+    limit, soft_warn = db.get_warn_setting(chat_id)
     return (
         "This chat has `{}` warn filters. It takes `{}` warns "
         "before the user gets *{}*.".format(
