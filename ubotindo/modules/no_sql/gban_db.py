@@ -109,7 +109,11 @@ def migrate_chat(old_chat_id, new_chat_id) -> None:
         setting = old["setting"]
     else:
         setting = True
-    GBAN_SETTINGS.insert_one({'_id': new_chat_id, 'setting': setting})
+    GBAN_SETTINGS.update_one(
+        {'_id': new_chat_id},
+        {"$set": {'setting': setting}},
+        upsert=True,
+    )
 
 
 # Create in memory userid to avoid disk access
