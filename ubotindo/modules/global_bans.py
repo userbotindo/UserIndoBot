@@ -428,7 +428,7 @@ def enforce_gban(update, context):
                 user = msg.reply_to_message.from_user
                 if user and not is_user_admin(chat, user.id):
                     check_and_ban(update, user.id, should_message=False)
-    except Unauthorized:
+    except (Unauthorized, BadRequest):
         pass
 
 
