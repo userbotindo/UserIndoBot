@@ -42,11 +42,11 @@ def about_me(update, context):
     else:
         user = message.from_user
 
-    info = USER_INFO.find_one({'_id': user.id})["info"]
+    info = USER_INFO.find_one({'_id': user.id})
 
     if info:
         update.effective_message.reply_text(
-            "*{}*:\n{}".format(user.first_name, escape_markdown(info)),
+            "*{}*:\n{}".format(user.first_name, escape_markdown(info["info"])),
             parse_mode=ParseMode.MARKDOWN,
         )
     elif message.reply_to_message:
@@ -100,11 +100,11 @@ def about_bio(update, context):
     else:
         user = message.from_user
 
-    info = USER_BIO.find_one({'_id': user.id})["bio"]
+    info = USER_BIO.find_one({'_id': user.id})
 
     if info:
         update.effective_message.reply_text(
-            "*{}*:\n{}".format(user.first_name, escape_markdown(info)),
+            "*{}*:\n{}".format(user.first_name, escape_markdown(info["bio"])),
             parse_mode=ParseMode.MARKDOWN,
         )
     elif message.reply_to_message:
