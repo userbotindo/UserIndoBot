@@ -157,95 +157,75 @@ def gban(update, context):
         )
         return
 
-    if gban_db.is_user_gbanned(user_id):
-        if not reason:
-            message.reply_text(
-                "This user is already gbanned; I'd change the reason, but you haven't given me one..."
-            )
-            return
-
-        old_reason = gban_db.update_gban_reason(
-            user_id, user_chat.username or user_chat.first_name, reason
-        )
-        user_id, new_reason = extract_user_and_text(message, args)
-
-        if old_reason:
-            banner = update.effective_user
-            bannerid = banner.id
-            bannername = banner.first_name
-            new_reason = f"{new_reason} // GBanned by {bannername} banner id: {bannerid}"
-
-            context.bot.sendMessage(
-                GBAN_LOGS,
-                "<b>Global Ban Reason Update</b>"
-                "\n<b>Sudo Admin:</b> {}"
-                "\n<b>User:</b> {}"
-                "\n<b>ID:</b> <code>{}</code>"
-                "\n<b>Previous Reason:</b> {}"
-                "\n<b>New Reason:</b> {}".format(
-                    mention_html(banner.id, banner.first_name),
-                    mention_html(
-                        user_chat.id, user_chat.first_name or "Deleted Account"
-                    ),
-                    user_chat.id,
-                    old_reason,
-                    new_reason,
-                ),
-                parse_mode=ParseMode.HTML,
-            )
-
-            message.reply_text(
-                "This user is already gbanned, for the following reason:\n"
-                "<code>{}</code>\n"
-                "I've gone and updated it with your new reason!".format(
-                    html.escape(old_reason)
-                ),
-                parse_mode=ParseMode.HTML,
-            )
-
-        else:
-            message.reply_text(
-                "This user is already gbanned, but had no reason set; I've gone and updated it!"
-            )
-
-        return
-
-    message.reply_text(
-        f"<b>Beginning of Global Ban for</b> {mention_html(user_chat.id, user_chat.first_name)}"
-        f"\n<b>With ID</b>: <code>{user_chat.id}</code>"
-        f"\n<b>Reason</b>: <code>{reason or 'No reason given'}</code>",
-        parse_mode=ParseMode.HTML,
-    )
-
     banner = update.effective_user
     bannerid = banner.id
     bannername = banner.first_name
     reason = f"{reason} // GBanned by {bannername} banner id: {bannerid}"
 
-    context.bot.sendMessage(
-        GBAN_LOGS,
-        "<b>New Global Ban</b>"
-        "\n#GBAN"
-        "\n<b>Status:</b> <code>Enforcing</code>"
-        "\n<b>Sudo Admin:</b> {}"
-        "\n<b>User:</b> {}"
-        "\n<b>ID:</b> <code>{}</code>"
-        "\n<b>Reason:</b> {}".format(
-            mention_html(banner.id, banner.first_name),
-            mention_html(user_chat.id, user_chat.first_name),
-            user_chat.id,
-            reason or "No reason given",
-        ),
-        parse_mode=ParseMode.HTML,
-    )
+    if gban_db.is_user_gbanned(user_id):
+        old_reason = gban_db.update_gban_reason(
+            user_id, user_chat.username or user_chat.first_name, reason
+        )
 
-    try:
-        context.bot.kick_chat_member(chat.id, user_chat.id)
-    except BadRequest as excp:
-        if excp.message in GBAN_ERRORS:
-            pass
+        context.bot.sendMessage(
+            GBAN_LOGS,
+            "<b>Global Ban Reason Update</b>"
+            "\n<b>Sudo Admin:</b> {}"
+            "\n<b>User:</b> {}"
+            "\n<b>ID:</b> <code>{}</code>"
+            "\n<b>Previous Reason:</b> {}"
+            "\n<b>New Reason:</b> {}".format(
+                mention_html(banner.id, banner.first_name),
+                mention_html(
+                    user_chat.id, user_chat.first_name or "Deleted Account"
+                ),
+                user_chat.id,
+                old_reason,
+                reason,
+            ),
+            parse_mode=ParseMode.HTML,
+        )
 
-    gban_db.gban_user(user_id, user_chat.username or user_chat.first_name, reason)
+        message.reply_text(
+            "This user is already gbanned, for the following reason:\n"
+            "<code>{}</code>\n"
+            "I've gone and updated it with your new reason!".format(
+                html.escape(old_reason)
+            ),
+            parse_mode=ParseMode.HTML,
+        )
+    else:
+        message.reply_text(
+            f"<b>Beginning of Global Ban for</b> {mention_html(user_chat.id, user_chat.first_name)}"
+            f"\n<b>With ID</b>: <code>{user_chat.id}</code>"
+            f"\n<b>Reason</b>: <code>{reason or 'No reason given'}</code>",
+            parse_mode=ParseMode.HTML,
+        )
+
+        context.bot.sendMessage(
+            GBAN_LOGS,
+            "<b>New Global Ban</b>"
+            "\n#GBAN"
+            "\n<b>Status:</b> <code>Enforcing</code>"
+            "\n<b>Sudo Admin:</b> {}"
+            "\n<b>User:</b> {}"
+            "\n<b>ID:</b> <code>{}</code>"
+            "\n<b>Reason:</b> {}".format(
+                mention_html(banner.id, banner.first_name),
+                mention_html(user_chat.id, user_chat.first_name),
+                user_chat.id,
+                reason,
+            ),
+            parse_mode=ParseMode.HTML,
+        )
+
+        try:
+            context.bot.kick_chat_member(chat.id, user_chat.id)
+        except BadRequest as excp:
+            if excp.message in GBAN_ERRORS:
+                pass
+
+        gban_db.gban_user(user_id, user_chat.username or user_chat.first_name, reason)
 
 
 @typing_action
