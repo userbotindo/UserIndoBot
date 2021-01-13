@@ -465,7 +465,7 @@ def getlink(update, context):
     if args:
         pattern = re.compile(r"-\d+")
     else:
-        message.reply_text("You don't seem to be referring to any chats.")
+        return message.reply_text("You don't seem to be referring to any chats.")
     links = "Invite link(s):\n"
     for chat_id in pattern.findall(message.text):
         try:
