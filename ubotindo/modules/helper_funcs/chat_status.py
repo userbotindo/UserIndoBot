@@ -167,7 +167,10 @@ def bot_admin(func):
         if is_bot_admin(update.effective_chat, context.bot.id):
             return func(update, context, *args, **kwargs)
         else:
-            update.effective_message.reply_text("I'm not admin!")
+            try:
+                update.effective_message.reply_text("I'm not admin!")
+            except BadRequest:
+                return
 
     return is_admin
 
