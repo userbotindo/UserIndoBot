@@ -45,6 +45,8 @@ def typing_action(func):
                         update.effective_message.chat.id
                     )
                 )
+        except error.Unauthorized:
+            return
 
     return command_func
 
