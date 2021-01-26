@@ -37,7 +37,9 @@ def gtrans(update, context):
         lang = "en"
     try:
         translate_text = (
-            msg.reply_to_message.text or msg.reply_to_message.caption
+            msg.reply_to_message.text or
+            msg.reply_to_message.caption or
+            msg.reply_to_message.poll.question
         )
     except AttributeError:
         return msg.reply_text("Give me the text to translate!")
