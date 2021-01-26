@@ -29,7 +29,7 @@ from threading import Thread
 from psutil import boot_time, cpu_percent, disk_usage, virtual_memory
 from spamwatch import __version__ as __sw__
 from telegram import ParseMode, __version__
-from telegram.error import BadRequest
+from telegram.error import BadRequest, TelegramError
 from telegram.ext import CommandHandler, Filters
 
 from ubotindo import MESSAGE_DUMP, OWNER_ID, dispatcher, updater
@@ -47,7 +47,7 @@ def leavechat(update, context):
         try:
             bot.leave_chat(int(chat_id))
             update.effective_message.reply_text("Left the group successfully!")
-        except telegram.TelegramError:
+        except TelegramError:
             update.effective_message.reply_text("Attempt failed.")
     else:
         update.effective_message.reply_text("Give me a valid chat id")
