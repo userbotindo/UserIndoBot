@@ -19,7 +19,7 @@ from io import BytesIO
 
 from requests import get
 from telegram import ChatAction, ParseMode
-from telegram.error import BadRequest, TelegramError, Unauthorized
+from telegram.error import BadRequest, TelegramError, Unauthorized, TimedOut
 from telegram.ext import CommandHandler, Filters, MessageHandler
 from telegram.utils.helpers import mention_html
 
@@ -408,7 +408,7 @@ def enforce_gban(update, context):
                 user = msg.reply_to_message.from_user
                 if user and not is_user_admin(chat, user.id):
                     check_and_ban(update, user.id, should_message=False)
-    except (Unauthorized, BadRequest):
+    except (Unauthorized, BadRequest, TimedOut):
         pass
 
 
