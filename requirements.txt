@@ -8,7 +8,7 @@ dnspython
 emoji
 feedparser
 future
-git+https://github.com/TomyPrs/python-markdown2.git
+git+https://github.com/userbotindo/python-markdown2.git
 google_trans_new
 gtts
 lxml
