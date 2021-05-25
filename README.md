@@ -6,7 +6,7 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/8bfae649db3742a883e0ac1008755db3)](https://www.codacy.com/gh/userbotindo/UserIndoBot/dashboard?utm_source=github.com&utm_medium=referral&utm_content=userbotindo/UserIndoBot&utm_campaign=Badge_Grade)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/userbotindo/UserIndoBot/pulls)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/userbotindo/UserIndoBot/graphs/commit-activity)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-no-red.svg)](https://github.com/userbotindo/UserIndoBot/graphs/commit-activity)
 ![logo](https://i.ibb.co/zJdLsyg/Userindobot.png)
 
 A modular telegram Python bot running on python3 with sqlalchemy database.
@@ -17,6 +17,11 @@ simple to use. Note that this project uses a well-known Telegram-bot of its time
 Can be found on telegram as [UserbotIndo](https://t.me/userbotindobot).
 
 Join the [Group Support](https://t.me/userbotindo) if you just want to stay in the loop about new features or announcements.
+
+
+## NOTICE
+
+This project is no longer under active maintenance. Bug fixes may still be released, but no new features will be added. We'll no longer be responding to an Issue or Pull Request unless they are related to any security or critical bug concerns. You can use [Anjani](https://github.com/userbotindo/anjani), our new group management bot, an improvement from this bot.
 
 ## Credits
 
