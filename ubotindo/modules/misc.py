@@ -417,6 +417,8 @@ def wall(update, context):
     chat_id = update.effective_chat.id
     msg = update.effective_message
     msg_id = update.effective_message.message_id
+    if not WALL_API:
+        return msg.reply_text("This feature currently unavailable!")
     args = context.args
     query = " ".join(args)
     if not query:
@@ -441,21 +443,24 @@ def wall(update, context):
                 wallpaper = wallpapers[index]
                 wallpaper = wallpaper.get("url_image")
                 wallpaper = wallpaper.replace("\\", "")
-                context.bot.send_photo(
-                    chat_id,
-                    photo=wallpaper,
-                    caption="Preview",
-                    reply_to_message_id=msg_id,
-                    timeout=60,
-                )
-                context.bot.send_document(
-                    chat_id,
-                    document=wallpaper,
-                    filename="wallpaper",
-                    caption=caption,
-                    reply_to_message_id=msg_id,
-                    timeout=60,
-                )
+                try:
+                    context.bot.send_photo(
+                        chat_id,
+                        photo=wallpaper,
+                        caption="Preview",
+                        reply_to_message_id=msg_id,
+                        timeout=60,
+                    )
+                    context.bot.send_document(
+                        chat_id,
+                        document=wallpaper,
+                        filename="wallpaper",
+                        caption=caption,
+                        reply_to_message_id=msg_id,
+                        timeout=60,
+                    )
+                except BadRequest as err:
+                    msg.reply_text(err.message)
 
 
 @typing_action
